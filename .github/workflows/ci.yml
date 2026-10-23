@@ -41,6 +41,11 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    # Official Playwright image: Chromium and system libs are preinstalled, so
+    # there is no apt/browser download step to stall on.
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.0-jammy
+      options: --ipc=host
     steps:
       - uses: actions/checkout@v4
 
@@ -55,11 +60,9 @@ jobs:
       - name: Build extension
         run: npm run build
 
-      - name: Install Chromium (new headless shell)
-        run: npx playwright install --with-deps chromium
-
       - name: E2E (headless, no display required)
         run: npm run test:e2e:all
+        timeout-minutes: 10
 
       - name: Upload traces on failure
         if: failure()
