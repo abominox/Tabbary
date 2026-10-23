@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light theme (default) */
+:root {
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bfdbfe;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+  --color-accent-700: #1d4ed8;
+  --color-accent-800: #1e40af;
+  --color-accent-900: #1e3a8a;
+  --color-surface-base: #ffffff;
+  --color-surface-elevated: #f9fafb;
+  --color-surface-hover: #f3f4f6;
+  --color-surface-border: #e5e7eb;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+}
+
+/* Dark theme */
+.dark {
+  --color-accent-50: #172554;
+  --color-accent-100: #1e3a5f;
+  --color-accent-200: #1e40af;
+  --color-accent-300: #2563eb;
+  --color-accent-400: #3b82f6;
+  --color-accent-500: #60a5fa;
+  --color-accent-600: #93c5fd;
+  --color-accent-700: #bfdbfe;
+  --color-accent-800: #dbeafe;
+  --color-accent-900: #eff6ff;
+  --color-surface-base: #111827;
+  --color-surface-elevated: #1f2937;
+  --color-surface-hover: #374151;
+  --color-surface-border: #374151;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+}
+
+html,
+body,
+#app-root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

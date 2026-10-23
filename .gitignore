@@ -1,0 +1,14 @@
+research/
+PLAN.md
+HANDOFF*.md
+m1-*.md
+node_modules/
+dist/
+dist-e2e/
+*.zip
+.DS_Store
+.vite/
+# E2E test temp directories (created per-test by the harness)
+windrow-e2e-*_/
+# Playwright browser downloads (local dev)
+ms-playwright/

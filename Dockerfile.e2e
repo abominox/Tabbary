@@ -1,0 +1,27 @@
+# Windrow E2E Test Harness
+#
+# Build: docker build -f Dockerfile.e2e -t windrow-e2e .
+# Run:   docker run --rm windrow-e2e
+#
+# Uses the official Playwright Docker image which has Chromium + system deps
+# preinstalled. Runs tests with xvfb-run (virtual display) since extensions
+# require headed mode in Chromium.
+
+FROM mcr.microsoft.com/playwright:v1.61.0-jammy
+
+WORKDIR /app
+
+# Copy dependency manifests and install
+COPY package*.json ./
+RUN npm ci
+
+# Copy the full source and build the extension
+COPY . .
+RUN npm run build
+
+# Verify the dist/ is valid (extension should be loadable)
+RUN test -f dist/manifest.json && echo "dist/manifest.json OK" || (echo "dist/manifest.json MISSING" && exit 1)
+
+# Run e2e tests under xvfb (virtual framebuffer for headed mode)
+# xvfb-run is installed in the Playwright base image
+CMD ["xvfb-run", "-a", "npm", "run", "test:e2e"]

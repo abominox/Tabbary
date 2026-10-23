@@ -1,0 +1,12 @@
+services:
+  e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    # No mount volumes — the extension is baked into the image
+    # (reproducible build; no host filesystem dependency)
+    # For local dev iteration, replace with bind mount:
+    # volumes:
+    #   - ./dist:/app/dist
+    stdin_open: true
+    tty: true

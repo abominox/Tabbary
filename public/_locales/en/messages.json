@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "Windrow"
+  },
+  "extDescription": {
+    "message": "A self-hosted tab and session manager."
+  },
+  "commandOpenFullTab": {
+    "message": "Open Windrow full-tab manager"
+  }
+}
