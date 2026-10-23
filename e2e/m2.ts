@@ -54,12 +54,17 @@ async function main() {
     await waitFor(async () => {
       const s = await querySW<Session[]>(page, { type: 'getSessions' });
       if (s.length < 2) return false;
-      // Wait until both sessions have their tabs persisted.
+      // Wait for the *specific* URLs, not just a non-zero count: saves are
+      // debounced and coalesced, so a count check can pass mid-flight.
       const all = await Promise.all(
-        s.map(async (x) => (await querySW<Tab[]>(page, { type: 'getSessionTabs', sessionId: x.id })).length),
+        s.map(async (x) => {
+          const tabs = await querySW<Tab[]>(page, { type: 'getSessionTabs', sessionId: x.id });
+          return tabs.map((t) => t.url);
+        }),
       );
-      return all.every((n) => n > 0);
-    }, 15000, 400, 'two sessions with tabs');
+      const want = ['https://example.com/a1', 'https://example.com/a2', 'https://github.com/x/y'];
+      return all.some((urls) => want.every((w) => urls.includes(w)));
+    }, 20000, 400, 'session A fully persisted');
 
     let sessions = await querySW<Session[]>(page, { type: 'getSessions' });
     const sessA = sessions.find(s => s.windowId === winA)!;
