@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Windrow">
+  <rect width="32" height="32" rx="8" fill="#101828"/>
+  <g fill="none" stroke="#E8E4DA" stroke-width="2" stroke-linecap="round">
+    <path d="M7 11h18"/>
+    <path d="M7 16h18"/>
+    <path d="M7 21h11"/>
+  </g>
+  <circle cx="24" cy="21" r="3" fill="#39C6A0"/>
+</svg>
