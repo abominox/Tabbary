@@ -39,6 +39,12 @@ export function registerWindowListeners(): void {
     });
 
     swCache.bindWindow(window.id, sessionId);
+
+    // A new window usually already contains a tab (the URL passed to
+    // windows.create, or the NTP). Nothing else schedules a save until the
+    // next tab event, so capture the initial state now.
+    requestSaveSession(window.id);
+
     broadcast({ type: 'sessionsChanged' });
   });
 

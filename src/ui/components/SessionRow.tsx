@@ -1,17 +1,31 @@
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib';
 import { formatRelativeTime } from '@/lib';
-import type { Session } from '@/models';
+import type { Session, Tab } from '@/models';
+import { TabMarkStrip } from './TabMarkStrip';
 
 interface SessionRowProps {
   session: Session;
+  tabs?: Tab[];
   onOpen: (sessionId: string) => void;
   onDelete: (sessionId: string) => void;
   onRename: (sessionId: string, name: string) => void;
+  onFork?: (sessionId: string) => void;
+  /** HTML5 drag support: called when the row starts being dragged. */
+  onDragStart?: (e: React.DragEvent, sessionId: string) => void;
   className?: string;
 }
 
-export function SessionRow({ session, onOpen, onDelete, onRename, className }: SessionRowProps) {
+export function SessionRow({
+  session,
+  tabs = [],
+  onOpen,
+  onDelete,
+  onRename,
+  onFork,
+  onDragStart,
+  className,
+}: SessionRowProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState(session.name || '');
@@ -51,23 +65,35 @@ export function SessionRow({ session, onOpen, onDelete, onRename, className }: S
   }, [renaming]);
 
   const displayName = session.name?.trim() || 'Untitled';
+  const isActive = session.state === 'active';
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      draggable={onDragStart != null && !renaming}
+      onDragStart={onDragStart ? (e) => onDragStart(e, session.id) : undefined}
       className={cn(
-        'group flex items-center gap-2 rounded px-2 py-1.5 text-xs transition-colors hover:bg-surface-hover cursor-pointer',
+        'group flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-xs transition-colors hover:bg-surface-hover',
         className,
       )}
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
     >
       {/* State indicator */}
       <div
         className={cn(
           'h-2 w-2 shrink-0 rounded-full',
-          session.state === 'active' ? 'bg-green-500' : 'bg-surface-border',
+          isActive ? 'bg-green-500' : 'bg-surface-border',
         )}
       />
-      <div className="flex min-w-0 flex-1 flex-col">
+
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
         {renaming ? (
           <input
             ref={inputRef}
@@ -84,9 +110,17 @@ export function SessionRow({ session, onOpen, onDelete, onRename, className }: S
           />
         ) : (
           <>
-            <span className="truncate text-text-primary font-medium">{displayName}</span>
-            <span className="text-text-muted text-[10px]">
-              v{session.version} · {formatRelativeTime(session.closedAt ?? session.updatedAt)}
+            <span className="flex items-baseline gap-1.5">
+              <span className="truncate font-medium text-text-primary">{displayName}</span>
+              <span className="ml-auto shrink-0 font-mono text-[10px] text-text-muted">
+                {tabs.length}
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <TabMarkStrip tabs={tabs} muted={!isActive} size={14} max={4} />
+              <span className="truncate text-[10px] text-text-muted">
+                {formatRelativeTime(session.closedAt ?? session.updatedAt)}
+              </span>
             </span>
           </>
         )}
@@ -102,7 +136,7 @@ export function SessionRow({ session, onOpen, onDelete, onRename, className }: S
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
           className={cn(
-            'rounded px-1 py-0.5 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-border hover:text-text-primary',
+            'rounded px-1 py-0.5 text-text-muted opacity-0 transition-opacity hover:bg-surface-border hover:text-text-primary group-hover:opacity-100 focus-visible:opacity-100',
             menuOpen && 'opacity-100',
           )}
           aria-label="Session actions"
@@ -110,7 +144,7 @@ export function SessionRow({ session, onOpen, onDelete, onRename, className }: S
           ⋯
         </button>
         {menuOpen && (
-          <div className="absolute right-0 top-full z-20 mt-0.5 w-28 rounded border border-surface-border bg-surface-elevated py-1 shadow-lg">
+          <div className="absolute right-0 top-full z-20 mt-0.5 w-32 rounded border border-surface-border bg-surface-elevated py-1 shadow-lg">
             <button
               type="button"
               onClick={() => {
@@ -122,6 +156,18 @@ export function SessionRow({ session, onOpen, onDelete, onRename, className }: S
             >
               Rename
             </button>
+            {onFork && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onFork(session.id);
+                }}
+                className="flex w-full items-center px-3 py-1 text-[11px] text-text-primary hover:bg-surface-hover"
+              >
+                Save a copy
+              </button>
+            )}
             <button
               type="button"
               onClick={() => {

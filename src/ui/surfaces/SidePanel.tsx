@@ -3,24 +3,19 @@ import { useSessions } from '@/hooks/useSessions';
 import { SearchBar } from '../components/SearchBar';
 import { TagRail } from '../components/TagRail';
 import { ActiveSession } from '../components/ActiveSession';
-import { ClosedSessionsList } from '../components/ClosedSessionsList';
-import { SurfaceSwitcher } from '../components/SurfaceSwitcher';
+import { SessionList } from '../components/SessionList';
 import { SyncBadge } from '../components/SyncBadge';
-import { cn } from '@/lib';
 
 /**
  * Side Panel — primary surface, two-pane "library + active" layout.
  *
  * ┌──────────┬──────────────────┐
  * │ 🔍search │ ACTIVE: Research │
- * │──────────│  • ycombinator  │
- * │ #refs  × │  • arxiv.org    │
- * │ #work  × │  • github/...   │
- * │ #home  × │────────────────│
- * │──────────│ LIBRARY          │
- * │ active   │  Research v3 2h │
- * │ closed ▾ │  Shopping    1d │
- * │          │  Admin       3d │
+ * │──────────│  • ycombinator   │
+ * │ #refs    │  • arxiv.org     │
+ * │ #work    │──────────────────│
+ * │──────────│ LIBRARY (rows    │
+ * │ filter   │ with tab marks)  │
  * └──────────┴──────────────────┘
  */
 export function SidePanel() {
@@ -31,6 +26,7 @@ export function SidePanel() {
   const activeSessionId = useStore((s) => s.activeSessionId);
   const tabs = useStore((s) => s.tabs);
   const groups = useStore((s) => s.groups);
+  const tabsBySession = useStore((s) => s.tabsBySession);
   const tags = useStore((s) => s.tags);
   const search = useStore((s) => s.search);
   const filter = useStore((s) => s.filter);
@@ -43,38 +39,36 @@ export function SidePanel() {
 
   const activeSession = sessions.find((s) => s.id === activeSessionId) ?? null;
 
-  // Filtered sessions for the library
-  const filteredSessions = sessions.filter((s) => {
-    // Always show the active session in the library if filter=all, but showing it separately
-    // is handled by the ActiveSession component above. The library shows everything that matches
-    // the filter criteria.
-    if (filter === 'active') return s.state === 'active';
-    if (filter === 'closed') return s.state === 'closed';
-    return true; // 'all'
-  }).filter((s) => {
-    // Tag filter
-    if (selectedTagIds.length === 0) return true;
-    return s.tags?.some((t) => selectedTagIds.includes(t));
-  }).filter((s) => {
-    // Search filter
-    if (!search.trim()) return true;
-    const q = search.toLowerCase();
-    return (
-      (s.name ?? '').toLowerCase().includes(q) ||
-      s.id.toLowerCase().includes(q)
-    );
-  }).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-
-  // Keep the library list focused on non-active sessions since the active one is shown above.
-  // But in M1 we show everything and let the filter handle it.
+  const filteredSessions = sessions
+    .filter((s) => (filter === 'active' ? s.state === 'active' : filter === 'closed' ? s.state === 'closed' : true))
+    .filter((s) =>
+      selectedTagIds.length === 0 ? true : s.tags?.some((t) => selectedTagIds.includes(t)),
+    )
+    .filter((s) => {
+      if (!search.trim()) return true;
+      const q = search.toLowerCase();
+      if ((s.name ?? '').toLowerCase().includes(q)) return true;
+      return (tabsBySession[s.id] ?? []).some(
+        (t) => t.title.toLowerCase().includes(q) || t.url.toLowerCase().includes(q),
+      );
+    })
+    .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* ── Header ── */}
-      <header className="flex items-center gap-1.5 border-b border-surface-border px-2 py-1.5 shrink-0">
-        <span className="text-sm font-bold text-text-primary mr-auto leading-none">Windrow</span>
-        <SurfaceSwitcher />
+      <header className="flex shrink-0 items-center gap-1.5 border-b border-surface-border px-2 py-1.5">
+        <span className="mr-auto text-sm font-bold leading-none text-text-primary">Windrow</span>
         <SyncBadge status={syncStatus} />
+        <button
+          type="button"
+          onClick={() => chrome.runtime.openOptionsPage()}
+          className="rounded px-1 text-[13px] leading-none text-text-muted hover:text-text-primary"
+          aria-label="Settings"
+          title="Settings"
+        >
+          ⚙
+        </button>
       </header>
 
       {/* ── Body: two-pane ── */}
@@ -87,7 +81,6 @@ export function SidePanel() {
             onClear={clearSearch}
             placeholder="Search…"
           />
-
           <TagRail
             tags={tags}
             selectedTagIds={selectedTagIds}
@@ -99,22 +92,25 @@ export function SidePanel() {
 
         {/* ── Right content ── */}
         <main className="flex flex-1 flex-col overflow-hidden bg-surface-base">
-          {/* Active session section */}
-          <section className="flex-1 overflow-hidden flex flex-col">
-            <ActiveSession
-              session={activeSession}
-              tabs={tabs}
-              groups={groups}
-            />
+          <section className="flex flex-1 flex-col overflow-hidden">
+            <ActiveSession session={activeSession} tabs={tabs} groups={groups} />
           </section>
 
-          {/* Divider */}
-          <div className="border-t border-surface-border shrink-0" />
+          <div className="shrink-0 border-t border-surface-border" />
 
-          {/* Library section */}
-          <section className="flex-1 overflow-hidden flex flex-col min-h-0">
-            <ClosedSessionsList
+          <section className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <SessionList
+              heading="Sessions"
               sessions={filteredSessions}
+              tabsBySession={tabsBySession}
+              activeSessionId={activeSessionId}
+              emptyMessage="No sessions match"
+              onDropTabs={async (targetSessionId, tabIds) => {
+                await import('@/messaging/bus').then(({ sendMessage }) =>
+                  sendMessage({ type: 'moveTabs', tabIds, targetSessionId }),
+                );
+                await useStore.getState().onSessionsChanged();
+              }}
             />
           </section>
         </main>

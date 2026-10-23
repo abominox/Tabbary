@@ -6,5 +6,6 @@ export {
   tagsRepo,
   bookmarksRepo,
   sessionVersionsRepo,
+  sessionOps,
   settingsRepo,
 } from './repositories';

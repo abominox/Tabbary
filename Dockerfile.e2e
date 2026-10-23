@@ -3,9 +3,10 @@
 # Build: docker build -f Dockerfile.e2e -t windrow-e2e .
 # Run:   docker run --rm windrow-e2e
 #
-# Uses the official Playwright Docker image which has Chromium + system deps
-# preinstalled. Runs tests with xvfb-run (virtual display) since extensions
-# require headed mode in Chromium.
+# Uses the official Playwright Docker image, which has Chromium + system deps
+# preinstalled. Tests run headless via Chromium's new headless shell
+# (channel: 'chromium'), so no display or xvfb is required. This also means
+# CI never opens a window on a developer's desktop.
 
 FROM mcr.microsoft.com/playwright:v1.61.0-jammy
 
@@ -22,6 +23,5 @@ RUN npm run build
 # Verify the dist/ is valid (extension should be loadable)
 RUN test -f dist/manifest.json && echo "dist/manifest.json OK" || (echo "dist/manifest.json MISSING" && exit 1)
 
-# Run e2e tests under xvfb (virtual framebuffer for headed mode)
-# xvfb-run is installed in the Playwright base image
-CMD ["xvfb-run", "-a", "npm", "run", "test:e2e"]
+# Headless by default; pass WINDROW_HEADED=1 with a display to watch it run.
+CMD ["npm", "run", "test:e2e:all"]

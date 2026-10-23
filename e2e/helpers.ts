@@ -22,12 +22,18 @@ export function cleanUserDataDir(dir: string): void {
 
 /**
  * Launch a persistent context with the unpacked extension loaded.
- * Extensions require headed mode; the `--load-extension` + `--disable-extensions-except`
- * pair ensures only our extension loads.
+ *
+ * Runs headless by default using Chromium's *new* headless shell
+ * (`channel: 'chromium'`), which supports extensions. The old headless mode
+ * (`headless: true` without a channel) does not load extensions at all.
+ *
+ * Set WINDROW_HEADED=1 to watch the run in a real window (useful when debugging).
  */
 export async function launchContext(userDataDir: string): Promise<BrowserContext> {
+  const headed = process.env.WINDROW_HEADED === '1';
+
   return chromium.launchPersistentContext(userDataDir, {
-    headless: false,
+    ...(headed ? { headless: false } : { headless: true, channel: 'chromium' }),
     args: [
       `--disable-extensions-except=${EXTENSION_PATH}`,
       `--load-extension=${EXTENSION_PATH}`,

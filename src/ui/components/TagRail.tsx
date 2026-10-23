@@ -18,8 +18,8 @@ export function TagRail({
   onFilterChange,
   className,
 }: TagRailProps) {
-  const visibleTags = tags.slice(0, 8);
-  const hasMore = tags.length > 8;
+  const visibleTags = tags.slice(0, 30);
+  const hasMore = tags.length > 30;
 
   return (
     <div className={cn('flex flex-col gap-2', className)}>
@@ -52,7 +52,7 @@ export function TagRail({
           })}
           {hasMore && (
             <span className="text-text-muted px-1 text-[10px] leading-5">
-              +{tags.length - 8} more
+              +{tags.length - 30} more
             </span>
           )}
         </div>

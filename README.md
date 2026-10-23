@@ -7,9 +7,9 @@ survives crashes and restarts, and can be restored later with its tab groups int
 Everything lives in your own browser profile. There is no account, no telemetry, and no
 paid tier.
 
-> **Status: early (M1 of 6).** The service worker, data layer, and side panel are working.
-> The full-tab manager, popup, options page, import/export, and sync are not implemented
-> yet. See [Roadmap](#roadmap).
+> **Status: early (M2 of 6).** The service worker, data layer, side panel, full-tab
+> manager, drag-and-drop, revision history, and settings are working. The popup, dedicated
+> window, import/export, and sync are not implemented yet. See [Roadmap](#roadmap).
 
 ## Why
 
@@ -22,8 +22,15 @@ client-side encryption and a sync server you can run yourself.
 - **Auto-saved sessions** — every window is a session, persisted on tab, group, and window
   events, and marked closed when the window goes away.
 - **Tab groups** — Chrome tab groups are captured with the session and restored with it.
-- **Version history** — per-session snapshots with pruning, so a bad restore is recoverable.
-- **Side panel UI** — live active session, closed sessions, search, tags, rename/delete.
+- **Full-tab manager** — three panes: tags, session lists, and a detail view with groups,
+  tab rows, and per-session tags.
+- **Drag and drop** — drag tabs onto another session to move them; merge sessions with
+  duplicate detection.
+- **Revision history** — per-session snapshots with pruning. Restoring a revision snapshots
+  the current state first, so it is reversible.
+- **Settings** — startup, capture, theme, density, revision limit, and sync placeholders,
+  persisted in IndexedDB.
+- **Side panel UI** — live active session, session rows with tab-icon strips, search, tags.
 - **Restore on startup** — configurable (`yes` / `no` / `ask`).
 - **Native tab discard** — uses `chrome.tabs.discard`, not a URL-rewriting suspender.
 - **Least-privilege manifest** — zero host permissions at install; `history`, `bookmarks`
@@ -50,15 +57,24 @@ Chrome 116 or newer is required.
 npm run dev        # Vite + CRXJS with HMR; reload the unpacked extension once
 npm run build      # type-check + production build → dist/
 npm test           # unit tests (Vitest)
-npm run test:e2e   # E2E (Playwright, requires a prior build + chromium)
+npm run test:e2e   # M1 E2E (Playwright)
+npm run test:e2e:m2 # M2 E2E (full-tab, DnD, revisions, settings)
+npm run test:e2e:all
 npm run typecheck  # TypeScript only
 ```
 
 ### E2E
 
-The E2E suite launches a real headed Chromium with the built extension and drives the
-M1 cycle: create a window → tabs are captured → close the window → session becomes closed →
-restart → restore. The Docker path runs it under `xvfb-run`:
+The E2E suites launch a persistent Chromium with the built extension and drive the real
+message bus. **They run headless by default** using Chromium's new headless shell
+(`channel: 'chromium'`), which supports extensions without opening a window. The legacy
+headless mode cannot load extensions, so do not remove the channel.
+
+```bash
+WINDROW_HEADED=1 npm run test:e2e:m2   # watch it in a real window
+```
+
+In a container, use the same headless path (no `xvfb-run` needed):
 
 ```bash
 docker compose -f docker-compose.e2e.yml run --rm e2e
@@ -99,14 +115,15 @@ No host permissions are requested at install.
 | Milestone | Scope | State |
 |---|---|---|
 | M1 | Skeleton, service worker, data layer, side panel | ✅ done |
-| M2 | Full-tab manager, drag-and-drop, version-history UI, settings page | ⬜ next |
-| M3 | Popup, dedicated window, restore matching, duplicate merge, tags UI | ⬜ |
+| M2 | Full-tab manager, drag-and-drop, revision history, settings | ✅ done |
+| M3 | Popup, dedicated window, restore matching, duplicate merge UI, tags UI | ⬜ next |
 | M4 | Self-hosted sync server + client-side encryption, recovery key | ⬜ |
 | M5 | Encrypted export/import, OneTab/generic importers, bookmark types | ⬜ |
 | M6 | Tab suspender polish, onboarding, themes, store release | ⬜ |
 
-Known gaps: the options page, popup, and dedicated-window surfaces are placeholders; there
-is no import/export yet; `src/sync/` throws `not implemented`.
+Known gaps: the popup and dedicated-window surfaces are placeholders; there is no
+import/export yet; `src/sync/` throws `not implemented`; the settings page exposes sync
+fields that are inert until M4.
 
 ## Contributing
 

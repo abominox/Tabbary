@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import type { Session, Tab, TabGroup, Tag, Bookmark } from '@/models';
+import type { Session, Tab, TabGroup, Tag, Settings } from '@/models';
+import { DEFAULT_SETTINGS } from '@/models';
 import { sendMessage } from '@/messaging/bus';
 
 export type FilterMode = 'all' | 'active' | 'closed';
@@ -11,8 +12,11 @@ export interface AppState {
   activeSessionId: string | null;
   tabs: Tab[];
   groups: TabGroup[];
+  /** Tabs per session — powers the rail's icon strips and the full-tab detail. */
+  tabsBySession: Record<string, Tab[]>;
   tags: Tag[];
   tagsLoaded: boolean;
+  settings: Settings;
 
   // Search & filter
   search: string;
@@ -37,6 +41,9 @@ export interface AppState {
   onTabsChanged: (sessionId: string) => Promise<void>;
   onSyncStatusChanged: (status: SyncStatus) => void;
   loadTags: () => Promise<void>;
+  loadSettings: () => Promise<void>;
+  saveSettings: (patch: Partial<Settings>) => Promise<void>;
+  resetSettings: () => Promise<void>;
 }
 
 /**
@@ -72,8 +79,10 @@ export const useStore = create<AppState>((set, get) => ({
   activeSessionId: null,
   tabs: [],
   groups: [],
+  tabsBySession: {},
   tags: [],
   tagsLoaded: false,
+  settings: DEFAULT_SETTINGS,
   search: '',
   filter: 'all',
   selectedTagIds: [],
@@ -82,15 +91,23 @@ export const useStore = create<AppState>((set, get) => ({
 
   hydrate: async () => {
     try {
-      const sessions = await sendMessage({ type: 'getSessions' });
+      const [sessions, settings] = await Promise.all([
+        sendMessage({ type: 'getSessions' }),
+        sendMessage({ type: 'getSettings' }).catch(() => null),
+      ]);
       if (!Array.isArray(sessions)) return;
-      set({ sessions });
+      set({ sessions, ...(settings ? { settings } : {}) });
 
       const active = sessions.find((s) => s.state === 'active');
       if (active) {
         set({ activeSessionId: active.id });
         await get().refreshTabs(active.id);
       }
+
+      // Load tabs for every session so rails/detail can render without
+      // a round-trip per selection.
+      await hydrateAllTabs(sessions, set, get);
+      await get().loadTags();
     } catch {
       // SW not ready yet — UI renders empty states gracefully
     }
@@ -120,10 +137,11 @@ export const useStore = create<AppState>((set, get) => ({
     try {
       const tabs = await sendMessage({ type: 'getSessionTabs', sessionId });
       if (!Array.isArray(tabs)) return;
-      set({
+      set((state) => ({
         tabs,
         groups: deriveGroups(tabs, sessionId),
-      });
+        tabsBySession: { ...state.tabsBySession, [sessionId]: tabs },
+      }));
     } catch {
       // SW not ready
     }
@@ -136,7 +154,6 @@ export const useStore = create<AppState>((set, get) => ({
       set({ sessions });
 
       const { activeSessionId } = get();
-      // If current active session is gone (e.g. closed), pick a new one
       const stillActive = activeSessionId
         ? sessions.find((s) => s.id === activeSessionId && s.state === 'active')
         : null;
@@ -150,27 +167,26 @@ export const useStore = create<AppState>((set, get) => ({
           set({ activeSessionId: null, tabs: [], groups: [] });
         }
       }
+
+      await hydrateAllTabs(sessions, set, get);
+      await get().loadTags();
     } catch {
       // ignore
     }
   },
 
   onTabsChanged: async (sessionId) => {
-    const { activeSessionId } = get();
-    if (sessionId === activeSessionId) {
-      await get().refreshTabs(sessionId);
-    }
+    await get().refreshTabs(sessionId);
   },
 
   onSyncStatusChanged: (status) => set({ syncStatus: status }),
 
   loadTags: async () => {
-    // M1: no getTags message yet — tags are M2+. Stub for future.
-    // For now, derive unique tags from sessions' tag arrays.
+    // Tags live on sessions in the current schema; derive the rail from them.
     const { sessions } = get();
     const allTagNames = [...new Set(sessions.flatMap((s) => s.tags ?? []))];
-    const derived: Tag[] = allTagNames.map((name, i) => ({
-      id: `tag-${i}`,
+    const derived: Tag[] = allTagNames.map((name) => ({
+      id: name,
       name,
       color: undefined,
       createdAt: 0,
@@ -179,4 +195,39 @@ export const useStore = create<AppState>((set, get) => ({
     }));
     set({ tags: derived, tagsLoaded: true });
   },
+
+  loadSettings: async () => {
+    const settings = await sendMessage({ type: 'getSettings' }).catch(() => null);
+    if (settings) set({ settings });
+  },
+
+  saveSettings: async (patch) => {
+    const updated = await sendMessage({ type: 'updateSettings', patch });
+    set({ settings: updated ?? { ...get().settings, ...patch } });
+  },
+
+  resetSettings: async () => {
+    const updated = await sendMessage({ type: 'resetSettings' });
+    set({ settings: updated ?? DEFAULT_SETTINGS });
+  },
 }));
+
+/** Fetch tabs for every session and store them in one set() to avoid N renders. */
+async function hydrateAllTabs(
+  sessions: Session[],
+  set: (partial: Partial<AppState> | ((s: AppState) => Partial<AppState>)) => void,
+  _get: () => AppState,
+): Promise<void> {
+  const entries = await Promise.all(
+    sessions.map(async (s) => {
+      try {
+        const tabs = await sendMessage({ type: 'getSessionTabs', sessionId: s.id });
+        return [s.id, Array.isArray(tabs) ? tabs : []] as const;
+      } catch {
+        return [s.id, []] as const;
+      }
+    }),
+  );
+  const tabsBySession = Object.fromEntries(entries);
+  set({ tabsBySession });
+}
