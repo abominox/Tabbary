@@ -49,35 +49,25 @@
 
       <div class="hero-grid">
         <div>
-          <h1 id="hero-title">Your windows,<br><span class="accent">kept</span> the way<br><span class="thin">you left them.</span></h1>
+          <h1 id="hero-title">Your tabs,<br><span class="accent">kept</span> the way<br><span class="thin">you left them.</span></h1>
           <p class="lede">
-            Windrow saves every browser window as a session the moment it changes — tabs,
-            groups, and all. Close a window by accident, or crash, and it is still there.
-            Everything lives in your profile.
+            Windrow is a tab manager. It captures the tabs you are working on — across groups
+            and windows — as a session, continuously and without a save button. Close
+            something by accident, or crash, and it is still there.
           </p>
           <div class="hero-actions">
             <a class="btn btn-solid" href="#install">Install from source</a>
             <a class="btn btn-ghost" href="https://github.com/abominox/Windrow">Source <span class="mono">↗</span></a>
           </div>
         </div>
-
-        <aside class="status-card" aria-labelledby="status-title">
-          <h2 id="status-title">Current state</h2>
-          <dl>
-            <dt>Version</dt><dd>0.6.0</dd>
-            <dt>Licence</dt><dd>MIT</dd>
-            <dt>Account</dt><dd class="ok">not required</dd>
-            <dt>Host access</dt><dd>none at install</dd>
-            <dt>Telemetry</dt><dd>none</dd>
-            <dt>Sync</dt><dd>optional, self-hosted</dd>
-          </dl>
-          <div class="line"></div>
-          <p>
-            Six milestones complete. Not on the Chrome Web Store yet — load the build
-            yourself in about a minute.
-          </p>
-        </aside>
       </div>
+
+      <dl class="glance" aria-label="At a glance">
+        <div><dt>Licence</dt><dd>MIT</dd></div>
+        <div><dt>Account</dt><dd>not required</dd></div>
+        <div><dt>Host access</dt><dd>none at install</dd></div>
+        <div><dt>Sync</dt><dd>self-hosted, optional</dd></div>
+      </dl>
     </section>
 
     <!-- ── Ledger ───────────────────────────────────── -->
@@ -95,8 +85,8 @@
 
       <dl class="ledger">
         <div class="ledger-row">
-          <dt>Session capture</dt>
-          <dd>Every window is a session, written on tab, group and window events.</dd>
+          <dt>Tab capture</dt>
+          <dd>Tabs are saved continuously as you work, grouped into sessions; no save button.</dd>
           <span class="tag done">done</span>
         </div>
         <div class="ledger-row">
@@ -106,7 +96,7 @@
         </div>
         <div class="ledger-row">
           <dt>Restore matching</dt>
-          <dd>Windows Chrome reopens are matched back by URL overlap, not duplicated.</dd>
+          <dd>On restart, your tabs are matched back to their sessions by URL, not duplicated.</dd>
           <span class="tag done">done</span>
         </div>
         <div class="ledger-row">
@@ -115,8 +105,8 @@
           <span class="tag done">done</span>
         </div>
         <div class="ledger-row">
-          <dt>Four surfaces</dt>
-          <dd>Popup, side panel, dedicated window, and a three-pane full-tab manager.</dd>
+          <dt>Search</dt>
+          <dd>Across every saved tab, session and bookmark — titles and URLs.</dd>
           <span class="tag done">done</span>
         </div>
         <div class="ledger-row">
@@ -157,10 +147,10 @@
       <div class="section-head">
         <span class="section-num">02</span>
         <div>
-          <h2 id="surfaces-title">One library, four ways in</h2>
+          <h2 id="surfaces-title">One tab library, four ways in</h2>
           <p>
-            The surfaces share state, so moving between them is free. Pick the one that fits
-            the moment rather than the one the product insists on.
+            The surfaces share state, so moving between them is free. Each one shows the same
+            tabs and sessions; only the amount of space changes.
           </p>
         </div>
       </div>
@@ -300,9 +290,10 @@
           use the feature that needs them, and can be revoked afterwards without uninstalling.
         </p>
         <p>
-          <strong>Sync is ciphertext-only.</strong> If you enable it, sessions are encrypted on
-          this device with a key the server never sees. The server stores blobs it cannot read,
-          which is why there is no password reset.
+          <strong>Sync is ciphertext-only.</strong> Sessions are encrypted on this device with a
+          key the server never sees. You can point it at the hosted instance or run your own —
+          the server is a single Node process with no dependencies. Because it cannot read the
+          blobs, there is no password reset.
         </p>
         <p>
           <strong>Export is plain JSON.</strong> A backup you can read, diff, and script against

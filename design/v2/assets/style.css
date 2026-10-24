@@ -148,29 +148,24 @@ h1 .thin { color: var(--ink-3); }
 .btn-ghost:hover { background: var(--paper-2); }
 .btn .mono { font-family: var(--mono); font-size: .72rem; opacity: .65; }
 
-/* status ledger, right column */
-.status-card {
-  border: 1px solid var(--ink);
-  background: var(--paper);
-  padding: 1.05rem 1.1rem 1.15rem;
+/* at-a-glance ledger (replaces the status card) */
+.glance {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0; margin: 2.4rem 0 0;
+  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule);
 }
-.status-card h2 {
-  font-family: var(--mono); font-size: .6rem; letter-spacing: .16em;
-  text-transform: uppercase; color: var(--ink-3);
-  margin: 0 0 .75rem; font-weight: 500;
+.glance > div {
+  padding: .8rem 1rem .85rem 0;
+  border-right: 1px solid var(--rule);
 }
-.status-card dl {
-  margin: 0; display: grid; grid-template-columns: auto 1fr;
-  gap: .34rem .8rem; font-size: .74rem; align-items: baseline;
+.glance > div:last-child { border-right: 0; }
+.glance > div + div { padding-left: 1rem; }
+.glance dt {
+  font-family: var(--mono); font-size: .58rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-3); margin: 0 0 .2rem;
 }
-.status-card dt { font-family: var(--mono); color: var(--ink-3); font-size: .68rem; }
-.status-card dd { margin: 0; color: var(--ink); }
-.status-card .ok { color: var(--moss); font-weight: 600; }
-.status-card .line {
-  border-top: 1px solid var(--rule); margin: .85rem 0 .7rem;
-}
-.status-card p {
-  margin: 0; font-size: .7rem; color: var(--ink-3); line-height: 1.5;
+.glance dd {
+  margin: 0; font-size: .84rem; color: var(--ink); font-weight: 500;
 }
 
 /* ── rulings ──────────────────────────────────────────── */
@@ -294,9 +289,14 @@ footer nav { margin-left: auto; display: flex; gap: 1.2rem; flex-wrap: wrap; }
 footer nav a { color: var(--ink-3); text-decoration: none; }
 footer nav a:hover { color: var(--ink); text-decoration: underline; }
 
+@media (max-width: 760px) {
+  .glance { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .glance > div:nth-child(2) { border-right: 0; }
+  .glance > div:nth-child(n + 3) { border-top: 1px solid var(--rule); }
+}
+
 @media (max-width: 900px) {
   .hero-grid, .surfaces, .install-grid { grid-template-columns: 1fr; }
-  .status-card { order: 2; }
   h1 { font-size: clamp(2.2rem, 9vw, 3rem); }
   .mast nav a:not(.cta):not([data-keep]) { display: none; }
   .ledger-row { grid-template-columns: minmax(0, 1fr) auto; }

@@ -2,15 +2,15 @@
 
 **Rows of tabs, quietly kept.** A local-first tab and session manager for Chrome (MV3).
 
-Windrow treats a browser window as a *session*: it is captured automatically as you browse,
-survives crashes and restarts, and can be restored later with its tab groups intact.
-Everything lives in your own browser profile. There is no account, no telemetry, and no
-paid tier.
+Windrow is a **tab manager**. The tabs you are working on — across groups and windows —
+are captured continuously as a *session*, so they survive crashes and restarts and can be
+restored later with their tab groups intact. Everything lives in your own browser profile.
+There is no account, no telemetry, and no paid tier.
 
-> **Status: early (M4).** The service worker, data layer, side panel, full-tab manager,
-> drag-and-drop, revision history, settings, import/export, popup, dedicated window, restore
-> matching, tag management, and optional self-hosted sync are working. The browser-bookmark
-> UI is not implemented yet. See [Roadmap](#roadmap).
+> **Status: 0.6, feature-complete for 1.0.** Tab capture, restore matching, revision
+> history, four surfaces, tags, bookmarks, import/export, optional self-hosted sync, and
+> tab suspension are all implemented and tested. What remains is store packaging: real
+> screenshots and the listing review. See [Roadmap](#roadmap).
 
 ## Why
 
@@ -20,8 +20,8 @@ client-side encryption and a sync server you can run yourself.
 
 ## Features (working today)
 
-- **Auto-saved sessions** — every window is a session, persisted on tab, group, and window
-  events, and marked closed when the window goes away.
+- **Auto-saved sessions** — your tabs are captured continuously, organised into sessions,
+  and persisted on tab and group events; no save button to forget.
 - **Tab groups** — Chrome tab groups are captured with the session and restored with it.
 - **Full-tab manager** — three panes: tags, session lists, and a detail view with groups,
   tab rows, and per-session tags.
@@ -34,8 +34,8 @@ client-side encryption and a sync server you can run yourself.
   plain URL lists; imports are always additive.
 - **Popup** — click the toolbar icon for the current window, recent sessions, and search.
 - **Dedicated window** — the same manager in a compact two-pane window (Alt+W via the UI).
-- **Restore matching** — on startup, windows Chrome reopens are matched back to their recorded
-  sessions by URL overlap, so history survives a restart instead of fragmenting.
+- **Restore matching** — on startup, the tabs Chrome reopens are matched back to their
+  recorded sessions by URL overlap, so history survives a restart instead of fragmenting.
 - **Tags** — real tag management: counts, bulk rename, and bulk delete across sessions.
 - **Optional self-hosted sync** — one blob per session, encrypted on your device
   (AES-GCM), pushed to a small server you run. Compare-and-swap writes, a monotonic
@@ -136,8 +136,8 @@ No host permissions are requested at install.
 | M3 | Popup, dedicated window, restore matching, tags UI | ✅ done |
 | M4 | Self-hosted sync server + client-side encryption, recovery key | ✅ done |
 | M5a | Export/import (JSON + encrypted), OneTab and URL-list importers | ✅ done |
-| M5b | Browser-bookmark type, session/tag bookmark UI, more importers | ⬜ next |
-| M6 | Tab suspender polish, onboarding, themes, store release | ⬜ |
+| M5b | Browser-bookmark type, session/tag bookmark UI, more importers | ✅ done |
+| M6 | Tab suspender polish, onboarding, themes, store release | ✅ code done · ⬜ listing |
 
 Known gaps: bookmarks exist in the schema but have no UI yet. Sync covers sessions only
 (tags ride along inside each session blob); there is no bookmark sync or Web Push — the
@@ -147,21 +147,21 @@ client polls.
 
 `yes` (default) works in two passes:
 
-1. **Match** the windows Chrome reopened against recorded sessions by URL overlap
+1. **Match** the tabs Chrome reopened against recorded sessions by URL overlap
    (`src/lib/restore.ts`, weighted coverage + Jaccard + size closeness, threshold 0.5).
    A match re-binds the existing session, so history survives instead of fragmenting into
    "new" sessions.
-2. If nothing matched and no window is open, **restore the most recently closed session**.
+2. If nothing matched and no tabs are open, **restore the most recently closed session**.
 
 `ask` leaves everything alone and shows a prompt in the full-tab manager listing the
-candidates and their match confidence. Matching only runs for windows Chrome creates within
-20 seconds of startup — outside that window, a new window is treated as new. The decision is
-recorded and exposed through `getRestoreReport`.
+candidates and their match confidence. Matching only runs within 20 seconds of startup —
+after that, a newly opened window is treated as new. The decision is recorded and exposed
+through `getRestoreReport`.
 
 ## Sync (optional)
 
-Sync is off by default and requires **your own server**. There is no vendor, no
-account, and no hosted option.
+Sync is off by default. It runs against a small self-hosted server; a hosted instance is
+available, and the same server runs anywhere you have a VPS. There is no account either way.
 
 ### What the server can and cannot see
 
@@ -201,6 +201,9 @@ Each session is one blob. Writes carry the revision they were based on:
 export WINDROW_PAIRING_SECRET="$(openssl rand -base64 32)"
 node server/index.mjs            # or: docker compose -f server/compose.yaml up -d
 ```
+
+Point the extension at any instance — hosted, your own VPS, or localhost. The server holds
+ciphertext only, so hosting it somewhere you rent does not give that host your data.
 
 See [server/README.md](server/README.md) for the API, configuration, TLS, and
 backup notes.

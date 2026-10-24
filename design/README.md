@@ -1,7 +1,8 @@
 # Website redesign — for approval
 
-**Status: proposal. Nothing here is deployed.** The live site is still the v1 page in
-`site/`. These files live under `design/` and are excluded from the Pages workflow.
+**Status: approved and promoted.** The ledger design is now the live site (`site/`),
+with tab-first copy and the hero status card removed per the review. `design/v2/` is kept
+as the source of record; promote again with `cp -r design/v2/* site/`.
 
 ## What's here
 
@@ -56,9 +57,24 @@ change the live site.
 
 ## Open questions
 
-1. **Direction** — adopt "ledger", keep v1, or blend.
-2. **Status card** — keep it in the hero (specific, but reads as unfinished), or drop it.
-3. **Sync in the store listing** — include it, or document it as an optional self-hosted
-   add-on.
+1. ~~Direction~~ → **adopted: ledger.**
+2. ~~Status card~~ → **removed**, replaced by a four-item facts strip.
+3. ~~Sync in the listing~~ → **included**, documented as self-hosted with a hosted option.
 
 See the deck for the reasoning behind each.
+
+## Icons
+
+`design/icons/build.mjs` renders the mark at 16/32/48/128 plus store promo tiles, all
+headless. The glyph is three tab rows with the live one marked — rows of tabs, one active.
+
+| File | Use |
+|---|---|
+| `public/icons/icon{16,32,48,128}.png` | Extension + toolbar |
+| `public/icons/mark.svg` | Site favicon and docs |
+| `design/assets/promo-1280x800.png` | Chrome Web Store promo tile |
+| `design/assets/promo-440x280.png` | Small promo tile |
+| `design/assets/icon-sheet.png` | Review sheet across sizes |
+
+Rendered under 3 KB for the 128px icon; alpha verified at the corners so it sits correctly
+on light and dark toolbars.

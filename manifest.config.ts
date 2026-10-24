@@ -34,6 +34,7 @@ export default defineManifest({
     default_popup: 'popup.html',
     default_icon: {
       16: 'icons/icon16.png',
+      32: 'icons/icon32.png',
       48: 'icons/icon48.png',
       128: 'icons/icon128.png',
     },
@@ -73,6 +74,7 @@ export default defineManifest({
   },
   icons: {
     16: 'icons/icon16.png',
+    32: 'icons/icon32.png',
     48: 'icons/icon48.png',
     128: 'icons/icon128.png',
   },

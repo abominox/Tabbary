@@ -3,36 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Windrow — a local-first tab and session manager</title>
+<title>Windrow — rows of tabs, quietly kept</title>
 <meta name="description" content="Windrow is a free, MIT-licensed Chrome extension that saves every browser window as a session you can restore, with tab groups intact. Local-first, no account, no telemetry.">
-<meta name="theme-color" content="#f5f2ea" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f1e8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11131a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/style.css">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Windrow — rows of tabs, quietly kept">
 <meta property="og:description" content="A local-first tab and session manager for Chrome. Auto-saved sessions, tab groups, version history. Free and MIT-licensed.">
-<meta property="og:image" content="https://abominox.github.io/Windrow/assets/og.png">
+<meta property="og:image" content="assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:url" content="https://abominox.github.io/Windrow/">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://abominox.github.io/Windrow/">
 </head>
 <body>
-<a class="skip" href="#install">Skip to how to install</a>
+<a class="skip" href="#install">Skip to install</a>
 
-<header class="top">
+<header class="mast">
   <div class="wrap">
-    <a class="brand" href="./">
-      <img src="assets/mark.svg" alt="" width="26" height="26">
-      Windrow
+    <a class="wordmark" href="./">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M3 7h18"/><path d="M3 12h18"/><path d="M3 17h11"/>
+        </g>
+        <circle cx="19" cy="17" r="2.6" fill="#C8402A"/>
+      </svg>
+      Windrow <em>v0.6 · MIT</em>
     </a>
     <nav aria-label="Primary">
-      <a href="#features" data-wide>Features</a>
-      <a href="#principles" data-wide>Why</a>
-      <a href="#status">Status</a>
-      <a href="https://github.com/abominox/Windrow">GitHub</a>
+      <a href="#ledger">Status</a>
+      <a href="#surfaces">Surfaces</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#install" class="cta">Install</a>
     </nav>
   </div>
 </header>
@@ -40,321 +43,300 @@
 <main>
   <div class="wrap">
 
+    <!-- ── Hero ─────────────────────────────────────── -->
     <section class="hero" aria-labelledby="hero-title">
-      <p class="eyebrow">MIT · local-first · Chrome 116+</p>
-      <h1 id="hero-title">Your browser windows, kept the way you left them.</h1>
-      <p class="lede">
-        Windrow saves every window as a session the moment it changes — tabs, groups and
-        all. Close a window by accident, or crash, and it is still there to restore.
-        Everything stays in your profile. No account, no telemetry, no subscription.
-      </p>
-      <div class="cta">
-        <a class="btn btn-primary" href="#install">Install from source</a>
-        <a class="btn btn-ghost" href="https://github.com/abominox/Windrow">
-          View the code <small>↗</small>
-        </a>
-      </div>
-      <p class="hero-meta">
-        <span><i class="dot"></i> No account required</span>
-        <span>Data leaves only if you run a sync server</span>
-        <span>Early development</span>
-      </p>
-    </section>
+      <p class="kicker">A local-first tab and session manager</p>
 
-    <figure class="shot">
-      <div class="shot-bar">
-        <i></i><i></i><i></i>
-        <span class="url">windrow · side panel</span>
-      </div>
-      <svg viewBox="0 0 1000 560" role="img" aria-label="Windrow's side panel: a rail listing active and closed sessions, each with a strip of tab icons, next to the active session's tab groups.">
-        <!-- app frame -->
-        <rect width="1000" height="560" fill="var(--paper-raised)"/>
-        <rect x="0" y="0" width="248" height="560" fill="var(--paper)"/>
-        <line x1="248" y1="0" x2="248" y2="560" stroke="var(--rule)"/>
-
-        <!-- brand -->
-        <rect x="18" y="18" width="22" height="22" rx="6" fill="#101828"/>
-        <line x1="24" y1="26" x2="34" y2="26" stroke="#E8E4DA" stroke-width="1.6" stroke-linecap="round"/>
-        <line x1="24" y1="31" x2="34" y2="31" stroke="#E8E4DA" stroke-width="1.6" stroke-linecap="round"/>
-        <circle cx="34" cy="35" r="2.2" fill="#39C6A0"/>
-        <text x="48" y="33" font-family="var(--sans)" font-size="13" font-weight="650" fill="var(--ink)">Windrow</text>
-        <text x="18" y="54" font-family="var(--mono)" font-size="8.5" fill="var(--ink-mute)">v0.1 · MIT</text>
-
-        <!-- segmented mode switch -->
-        <rect x="14" y="64" width="220" height="28" rx="7" fill="var(--paper-raised)" stroke="var(--rule)"/>
-        <rect x="17" y="67" width="70" height="22" rx="5" fill="var(--ink)"/>
-        <text x="52" y="82" text-anchor="middle" font-family="var(--sans)" font-size="9" font-weight="600" fill="var(--paper)">Active</text>
-        <text x="122" y="82" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="var(--ink-mute)">Closed</text>
-        <text x="192" y="82" text-anchor="middle" font-family="var(--sans)" font-size="9" fill="var(--ink-mute)">Saved</text>
-
-        <!-- section heading -->
-        <text x="16" y="114" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)" letter-spacing="1">ACTIVE SESSIONS · 3</text>
-
-        <!-- session rows with icon strips -->
-        <!-- row 1 -->
-        <rect x="12" y="122" width="224" height="46" rx="7" fill="var(--paper-raised)"/>
-        <circle cx="22" cy="134" r="2.4" fill="#39C6A0"/>
-        <text x="30" y="137" font-family="var(--sans)" font-size="10.5" font-weight="600" fill="var(--ink)">Window 1 · Today</text>
-        <text x="226" y="137" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="var(--ink-mute)">12</text>
-        <g font-family="var(--mono)" font-size="7.5" font-weight="700" text-anchor="middle">
-          <rect x="18" y="145" width="14" height="14" rx="3.5" fill="#DCE6FF"/><text x="25" y="155" fill="#1F4FD8">D</text>
-          <rect x="35" y="145" width="14" height="14" rx="3.5" fill="#DFF3EC"/><text x="42" y="155" fill="#0F7A5F">O</text>
-          <rect x="52" y="145" width="14" height="14" rx="3.5" fill="#F3E7D8"/><text x="59" y="155" fill="#9A5B12">G</text>
-          <rect x="69" y="145" width="14" height="14" rx="3.5" fill="#E6E2F5"/><text x="76" y="155" fill="#5B45A8">W</text>
-        </g>
-        <text x="90" y="155" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">+8</text>
-
-        <!-- row 2 -->
-        <rect x="12" y="174" width="224" height="46" rx="7" fill="var(--paper-raised)" stroke="var(--rule-soft)"/>
-        <circle cx="22" cy="186" r="2.4" fill="#39C6A0"/>
-        <text x="30" y="189" font-family="var(--sans)" font-size="10.5" font-weight="600" fill="var(--ink)">Auth rewrite — OIDC</text>
-        <text x="226" y="189" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="var(--ink-mute)">13</text>
-        <g font-family="var(--mono)" font-size="7.5" font-weight="700" text-anchor="middle">
-          <rect x="18" y="197" width="14" height="14" rx="3.5" fill="#DCE6FF"/><text x="25" y="207" fill="#1F4FD8">D</text>
-          <rect x="35" y="197" width="14" height="14" rx="3.5" fill="#DFF3EC"/><text x="42" y="207" fill="#0F7A5F">O</text>
-          <rect x="52" y="197" width="14" height="14" rx="3.5" fill="#F3E7D8"/><text x="59" y="207" fill="#9A5B12">G</text>
-          <rect x="69" y="197" width="14" height="14" rx="3.5" fill="#E6E2F5"/><text x="76" y="207" fill="#5B45A8">W</text>
-        </g>
-        <text x="90" y="207" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">+9</text>
-
-        <!-- row 3 -->
-        <rect x="12" y="226" width="224" height="46" rx="7" fill="var(--paper-raised)" stroke="var(--rule-soft)"/>
-        <circle cx="22" cy="238" r="2.4" fill="#39C6A0"/>
-        <text x="30" y="241" font-family="var(--sans)" font-size="10.5" font-weight="600" fill="var(--ink)">Postgres indexing</text>
-        <text x="226" y="241" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="var(--ink-mute)">7</text>
-        <g font-family="var(--mono)" font-size="7.5" font-weight="700" text-anchor="middle">
-          <rect x="18" y="249" width="14" height="14" rx="3.5" fill="#DCE6FF"/><text x="25" y="259" fill="#1F4FD8">D</text>
-          <rect x="35" y="249" width="14" height="14" rx="3.5" fill="#DFF3EC"/><text x="42" y="259" fill="#0F7A5F">O</text>
-          <rect x="52" y="249" width="14" height="14" rx="3.5" fill="#F3E7D8"/><text x="59" y="259" fill="#9A5B12">G</text>
-          <rect x="69" y="249" width="14" height="14" rx="3.5" fill="#E6E2F5"/><text x="76" y="259" fill="#5B45A8">W</text>
-        </g>
-        <text x="90" y="259" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">+3</text>
-
-        <!-- closed heading -->
-        <text x="16" y="298" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)" letter-spacing="1">CLOSED SESSIONS · 4</text>
-
-        <!-- closed rows: desaturated strips -->
-        <rect x="12" y="306" width="224" height="42" rx="7" fill="var(--paper-raised)" stroke="var(--rule-soft)"/>
-        <text x="22" y="322" font-family="var(--sans)" font-size="10" fill="var(--ink-soft)">Kitchen renovation</text>
-        <text x="226" y="322" text-anchor="end" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">8</text>
-        <g opacity=".38" font-family="var(--mono)" font-size="7" font-weight="700" text-anchor="middle">
-          <rect x="18" y="328" width="12" height="12" rx="3" fill="#DCE6FF"/><text x="24" y="337" fill="#1F4FD8">D</text>
-          <rect x="33" y="328" width="12" height="12" rx="3" fill="#DFF3EC"/><text x="39" y="337" fill="#0F7A5F">O</text>
-          <rect x="48" y="328" width="12" height="12" rx="3" fill="#F3E7D8"/><text x="54" y="337" fill="#9A5B12">G</text>
-        </g>
-        <rect x="12" y="354" width="224" height="42" rx="7" fill="var(--paper-raised)" stroke="var(--rule-soft)"/>
-        <text x="22" y="370" font-family="var(--sans)" font-size="10" fill="var(--ink-soft)">Trip: Lisbon &amp; Porto</text>
-        <text x="226" y="370" text-anchor="end" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">7</text>
-        <g opacity=".38" font-family="var(--mono)" font-size="7" font-weight="700" text-anchor="middle">
-          <rect x="18" y="376" width="12" height="12" rx="3" fill="#E6E2F5"/><text x="24" y="385" fill="#5B45A8">W</text>
-          <rect x="33" y="376" width="12" height="12" rx="3" fill="#DCE6FF"/><text x="39" y="385" fill="#1F4FD8">D</text>
-        </g>
-
-        <!-- footer status -->
-        <text x="16" y="516" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">LOCAL-FIRST</text>
-        <text x="16" y="530" font-family="var(--sans)" font-size="8.5" fill="var(--ink-mute)">Stored in this profile · no account</text>
-
-        <!-- main: active session -->
-        <text x="276" y="34" font-family="var(--mono)" font-size="8.5" fill="var(--mint)" letter-spacing="1">LIVE · AUTO-CAPTURED</text>
-        <text x="276" y="62" font-family="var(--sans)" font-size="20" font-weight="650" fill="var(--ink)" letter-spacing="-.4">Auth rewrite — OIDC flow</text>
-        <text x="276" y="82" font-family="var(--sans)" font-size="10" fill="var(--ink-soft)">Window 2 · 13 tabs in 3 groups · saved 2 seconds ago</text>
-
-        <!-- group: specs -->
-        <rect x="272" y="102" width="700" height="112" rx="9" fill="var(--paper)" stroke="var(--rule)"/>
-        <text x="290" y="124" font-family="var(--sans)" font-size="10.5" font-weight="650" fill="var(--ink)">Specs</text>
-        <text x="328" y="124" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">4 tabs</text>
-        <g font-family="var(--sans)" font-size="9.5" fill="var(--ink-soft)">
-          <rect x="290" y="134" width="13" height="13" rx="3" fill="#DCE6FF"/>
-          <text x="299" y="143.5" text-anchor="middle" font-family="var(--mono)" font-size="7" font-weight="700" fill="#1F4FD8">D</text>
-          <text x="311" y="144">RFC 6749 — The OAuth 2.0 Authorization Framework</text>
-          <text x="940" y="144" text-anchor="end" font-family="var(--mono)" font-size="7.5" fill="var(--ink-mute)">datatracker.ietf.org</text>
-
-          <rect x="290" y="156" width="13" height="13" rx="3" fill="#DCE6FF"/>
-          <text x="299" y="165.5" text-anchor="middle" font-family="var(--mono)" font-size="7" font-weight="700" fill="#1F4FD8">D</text>
-          <text x="311" y="166">RFC 7636 — Proof Key for Code Exchange (PKCE)</text>
-          <text x="940" y="166" text-anchor="end" font-family="var(--mono)" font-size="7.5" fill="var(--ink-mute)">datatracker.ietf.org</text>
-
-          <rect x="290" y="178" width="13" height="13" rx="3" fill="#DFF3EC"/>
-          <text x="299" y="187.5" text-anchor="middle" font-family="var(--mono)" font-size="7" font-weight="700" fill="#0F7A5F">O</text>
-          <text x="311" y="188">OpenID Connect Core 1.0</text>
-          <text x="940" y="188" text-anchor="end" font-family="var(--mono)" font-size="7.5" fill="var(--ink-mute)">openid.net</text>
-        </g>
-
-        <!-- group: code -->
-        <rect x="272" y="226" width="700" height="112" rx="9" fill="var(--paper)" stroke="var(--rule)"/>
-        <text x="290" y="248" font-family="var(--sans)" font-size="10.5" font-weight="650" fill="var(--ink)">Code</text>
-        <text x="322" y="248" font-family="var(--mono)" font-size="8" fill="var(--ink-mute)">4 tabs</text>
-        <g font-family="var(--sans)" font-size="9.5" fill="var(--ink-soft)">
-          <rect x="290" y="258" width="13" height="13" rx="3" fill="#F3E7D8"/>
-          <text x="299" y="267.5" text-anchor="middle" font-family="var(--mono)" font-size="7" font-weight="700" fill="#9A5B12">G</text>
-          <rect x="308" y="259" width="8" height="8" rx="4" fill="none" stroke="var(--amber)" stroke-width="1.2"/>
-          <text x="322" y="268">Pull request #482 · move token refresh to server</text>
-          <text x="940" y="268" text-anchor="end" font-family="var(--mono)" font-size="7.5" fill="var(--ink-mute)">github.com</text>
-
-          <rect x="290" y="280" width="13" height="13" rx="3" fill="#F3E7D8"/>
-          <text x="299" y="289.5" text-anchor="middle" font-family="var(--mono)" font-size="7" font-weight="700" fill="#9A5B12">G</text>
-          <text x="311" y="290">auth/session.ts at main</text>
-          <text x="940" y="290" text-anchor="end" font-family="var(--mono)" font-size="7.5" fill="var(--ink-mute)">github.com</text>
-
-          <rect x="290" y="302" width="13" height="13" rx="3" fill="#F3E7D8"/>
-          <text x="299" y="311.5" text-anchor="middle" font-family="var(--mono)" font-size="7" font-weight="700" fill="#9A5B12">G</text>
-          <text x="311" y="312">Issues · refresh token race on mobile</text>
-          <text x="940" y="312" text-anchor="end" font-family="var(--mono)" font-size="7.5" fill="var(--ink-mute)">github.com</text>
-        </g>
-
-        <!-- restore bar -->
-        <rect x="272" y="356" width="700" height="58" rx="9" fill="var(--paper)" stroke="var(--rule)"/>
-        <text x="292" y="378" font-family="var(--sans)" font-size="10" font-weight="600" fill="var(--ink)">Restore this session</text>
-        <text x="292" y="395" font-family="var(--sans)" font-size="9" fill="var(--ink-mute)">13 tabs · 3 groups · history kept automatically</text>
-        <rect x="806" y="372" width="146" height="26" rx="6" fill="var(--cobalt)"/>
-        <text x="879" y="389" text-anchor="middle" font-family="var(--sans)" font-size="9.5" font-weight="600" fill="#fff">Restore in new window</text>
-      </svg>
-    </figure>
-
-    <section id="features" aria-labelledby="features-title">
-      <h2 id="features-title">What it does today</h2>
-      <p class="section-lede">
-        Windrow runs as a Chrome MV3 extension. This is the M5-era build — a working core, not a
-        mockup — so the list is deliberately short.
-      </p>
-      <div class="grid">
-        <article class="card">
-          <span class="tag">Capture</span>
-          <h3>Sessions save themselves</h3>
-          <p>Every window is a session, written on tab, group, and window events. There is no
-             “save” button to forget.</p>
-        </article>
-        <article class="card">
-          <span class="tag">Groups</span>
-          <h3>Tab groups come back intact</h3>
-          <p>Names, colors, and membership are captured through <code>chrome.tabGroups</code>
-             and rebuilt on restore.</p>
-        </article>
-        <article class="card">
-          <span class="tag">History</span>
-          <h3>Every change is recoverable</h3>
-          <p>Per-session snapshots are pruned to a limit, so restoring the wrong version is not
-             a one-way door.</p>
-        </article>
-        <article class="card">
-          <span class="tag">Surfaces</span>
-          <h3>Side panel and full tab</h3>
-          <p>The side panel stays live while you browse. The full-tab manager gives you a
-             three-pane workspace with drag-and-drop between sessions.</p>
-        </article>
-        <article class="card">
-          <span class="tag">Memory</span>
-          <h3>Native discard</h3>
-          <p>Uses <code>chrome.tabs.discard</code> rather than rewriting URLs through a CDN
-             suspender, so pages keep their real address.</p>
-        </article>
-        <article class="card">
-          <span class="tag">Recovery</span>
-          <h3>Windows are recognised, not duplicated</h3>
-          <p>When Chrome reopens your windows, Windrow matches them back to their sessions by
-             URL overlap — so history survives a restart instead of fragmenting.</p>
-        </article>
-        <article class="card">
-          <span class="tag">Sync</span>
-          <h3>Your server, your ciphertext</h3>
-          <p>Optional sync to a server you run. Sessions are encrypted on this device first,
-             so the server stores blobs it cannot read. No account, no vendor.</p>
-        </article>
-        <article class="card">
-          <span class="tag">Portability</span>
-          <h3>Your data leaves with you</h3>
-          <p>Export plain JSON or a passphrase-encrypted file. Import a Windrow backup, a
-             OneTab export, or just a list of URLs. No lock-in.</p>
-        </article>
-        <article class="card">
-          <span class="tag">Privacy</span>
-          <h3>Nothing leaves the browser</h3>
-          <p>No host permissions at install. No account, no analytics. Optional permissions are
-             requested only when you use the feature.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="principles" aria-labelledby="principles-title">
-      <h2 id="principles-title">Why another one</h2>
-      <p class="section-lede">
-        Session managers tend to put restoration, history, and sync behind a subscription.
-        Windrow takes the opposite position.
-      </p>
-      <div class="principles">
-        <div class="principle">
-          <span class="n">01</span>
-          <div>
-            <h3>Free means free</h3>
-            <p>No paid tier above it, no trial, no feature held back. MIT-licensed, so the
-               whole thing can be forked if this project ever stops being useful.</p>
-          </div>
-        </div>
-        <div class="principle">
-          <span class="n">02</span>
-          <div>
-            <h3>Local by default, sync by choice</h3>
-            <p>The current build stores everything in IndexedDB and never makes a network
-               request. When sync lands, it will talk to a server you run, with encryption on
-               your device before anything is sent.</p>
-          </div>
-        </div>
-        <div class="principle">
-          <span class="n">03</span>
-          <div>
-            <h3>Ask for less</h3>
-            <p>The manifest requests no host permissions at install. <code>history</code> and
-               <code>bookmarks</code> are optional and off until you turn them on.</p>
+      <div class="hero-grid">
+        <div>
+          <h1 id="hero-title">Your tabs,<br><span class="accent">kept</span> the way<br><span class="thin">you left them.</span></h1>
+          <p class="lede">
+            Windrow is a tab manager. It captures the tabs you are working on — across groups
+            and windows — as a session, continuously and without a save button. Close
+            something by accident, or crash, and it is still there.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-solid" href="#install">Install from source</a>
+            <a class="btn btn-ghost" href="https://github.com/abominox/Windrow">Source <span class="mono">↗</span></a>
           </div>
         </div>
       </div>
+
+      <dl class="glance" aria-label="At a glance">
+        <div><dt>Licence</dt><dd>MIT</dd></div>
+        <div><dt>Account</dt><dd>not required</dd></div>
+        <div><dt>Host access</dt><dd>none at install</dd></div>
+        <div><dt>Sync</dt><dd>self-hosted, optional</dd></div>
+      </dl>
     </section>
 
-    <section id="status" aria-labelledby="status-title">
-      <h2 id="status-title">Honest status</h2>
-      <p class="section-lede">
-        Windrow is early. If a feature is missing below, it is not hiding in a menu.
-      </p>
-      <table class="status">
-        <thead>
-          <tr><th scope="col">Milestone</th><th scope="col">Scope</th><th scope="col">State</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>M1</td><td>Service worker, data layer, side panel</td><td><span class="pill">done</span></td></tr>
-          <tr><td>M2</td><td>Full-tab manager, drag-and-drop, history UI, settings</td><td><span class="pill">done</span></td></tr>
-          <tr><td>M3</td><td>Popup, dedicated window, restore matching, tags UI</td><td><span class="pill">done</span></td></tr>
-          <tr><td>M4</td><td>Self-hosted sync, client-side encryption</td><td><span class="pill">done</span></td></tr>
-          <tr><td>M5a</td><td>Export/import (JSON + encrypted), OneTab import</td><td><span class="pill">done</span></td></tr>
-          <tr><td>M5b</td><td>Browser bookmarks, bookmark UI, more importers</td><td><span class="pill next">next</span></td></tr>
-          <tr><td>M6</td><td>Suspender polish, onboarding, store release</td><td><span class="pill todo">planned</span></td></tr>
-        </tbody>
-      </table>
+    <!-- ── Ledger ───────────────────────────────────── -->
+    <section class="section" id="ledger" aria-labelledby="ledger-title">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <div>
+          <h2 id="ledger-title">What is actually built</h2>
+          <p>
+            Every line below is implemented and covered by tests. Nothing here is a mockup,
+            a roadmap promise, or a screenshot of something that does not exist.
+          </p>
+        </div>
+      </div>
+
+      <dl class="ledger">
+        <div class="ledger-row">
+          <dt>Tab capture</dt>
+          <dd>Tabs are saved continuously as you work, grouped into sessions; no save button.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Tab groups</dt>
+          <dd>Names, colours and membership captured and rebuilt on restore.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Restore matching</dt>
+          <dd>On restart, your tabs are matched back to their sessions by URL, not duplicated.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Revision history</dt>
+          <dd>Per-session snapshots; restoring one snapshots the current state first.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Search</dt>
+          <dd>Across every saved tab, session and bookmark — titles and URLs.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Tags</dt>
+          <dd>Counts, bulk rename, bulk delete across every session carrying them.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Bookmarks</dt>
+          <dd>Session, tag and browser scopes; folders; open a folder as a session.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Import / export</dt>
+          <dd>Plain JSON or passphrase-encrypted; OneTab and URL-list import.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Sync</dt>
+          <dd>Ciphertext-only self-hosted server; AES-GCM; 24-word recovery phrase.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Tab suspension</dt>
+          <dd>Native discard with a conservative policy; preview before applying.</dd>
+          <span class="tag done">done</span>
+        </div>
+        <div class="ledger-row">
+          <dt>Store listing</dt>
+          <dd>Icons, screenshots, privacy policy and review submission.</dd>
+          <span class="tag next">next</span>
+        </div>
+      </dl>
     </section>
 
-    <section id="install" aria-labelledby="install-title">
-      <h2 id="install-title">Install from source</h2>
-      <p class="section-lede">
-        There is no store listing yet. You need Node 22+ and Chrome 116 or newer. The build
-        runs locally; no account or key is involved.
-      </p>
-      <div class="install">
+    <!-- ── Surfaces ─────────────────────────────────── -->
+    <section class="section" id="surfaces" aria-labelledby="surfaces-title">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <div>
+          <h2 id="surfaces-title">One tab library, four ways in</h2>
+          <p>
+            The surfaces share state, so moving between them is free. Each one shows the same
+            tabs and sessions; only the amount of space changes.
+          </p>
+        </div>
+      </div>
+
+      <div class="surfaces">
+        <ul class="surface-list">
+          <li>
+            <span class="k">pop</span>
+            <span><strong>Popup</strong><span class="d">Current window, recent sessions, search.</span></span>
+            <span class="sc">click icon</span>
+          </li>
+          <li>
+            <span class="k">side</span>
+            <span><strong>Side panel</strong><span class="d">Stays open beside the page you are reading.</span></span>
+            <span class="sc">alt + a</span>
+          </li>
+          <li>
+            <span class="k">tab</span>
+            <span><strong>Full tab</strong><span class="d">Three panes: tags, sessions, detail. Drag between them.</span></span>
+            <span class="sc">alt + s</span>
+          </li>
+          <li>
+            <span class="k">win</span>
+            <span><strong>Dedicated window</strong><span class="d">A compact two-pane view for a second screen.</span></span>
+            <span class="sc">from the popup</span>
+          </li>
+          <li>
+            <span class="k">tag</span>
+            <span><strong>Tags &amp; bookmarks</strong><span class="d">Management views for the things sessions accumulate.</span></span>
+            <span class="sc">alt + t / b</span>
+          </li>
+        </ul>
+
+        <figure class="diagram" aria-label="The same session list rendered as a popup, a side panel, and a full tab.">
+          <svg viewBox="0 0 420 300" role="img">
+            <rect width="420" height="300" fill="none"/>
+            <!-- popup -->
+            <g transform="translate(6,10)">
+              <rect width="150" height="190" rx="6" fill="#F4F1E8" stroke="#14181F" stroke-width="1.2"/>
+              <rect x="0" y="0" width="150" height="22" rx="6" fill="#14181F"/>
+              <text x="9" y="15" font-family="SF Mono, monospace" font-size="7.5" fill="#F4F1E8">WINDROW</text>
+              <rect x="8" y="30" width="134" height="14" rx="3" fill="#EEEADE" stroke="#D5CFC0"/>
+              <g font-family="Helvetica, Arial, sans-serif" font-size="7" fill="#14181F">
+                <text x="8" y="60" font-weight="bold">Window 1</text>
+                <text x="136" y="60" text-anchor="end" fill="#6A7180">12</text>
+                <text x="8" y="78">Auth rewrite</text>
+                <text x="136" y="78" text-anchor="end" fill="#6A7180">13</text>
+                <text x="8" y="96">Postgres indexing</text>
+                <text x="136" y="96" text-anchor="end" fill="#6A7180">7</text>
+                <text x="8" y="114" fill="#6A7180">Kitchen renovation</text>
+                <text x="136" y="114" text-anchor="end" fill="#6A7180">8</text>
+              </g>
+              <g font-family="SF Mono, monospace" font-size="6" font-weight="700" text-anchor="middle">
+                <rect x="8" y="64" width="10" height="10" rx="2" fill="#DCE6FF"/><text x="13" y="71.5" fill="#1F4FD8">D</text>
+                <rect x="20" y="64" width="10" height="10" rx="2" fill="#DFF3EC"/><text x="25" y="71.5" fill="#0F7A5F">O</text>
+                <rect x="32" y="64" width="10" height="10" rx="2" fill="#F3E7D8"/><text x="37" y="71.5" fill="#9A5B12">G</text>
+                <rect x="8" y="82" width="10" height="10" rx="2" fill="#E6E2F5"/><text x="13" y="89.5" fill="#5B45A8">W</text>
+                <rect x="20" y="82" width="10" height="10" rx="2" fill="#DCE6FF"/><text x="25" y="89.5" fill="#1F4FD8">D</text>
+              </g>
+              <rect x="8" y="164" width="66" height="18" rx="3" fill="#14181F"/>
+              <text x="41" y="176" text-anchor="middle" font-family="Helvetica" font-size="6.5" fill="#F4F1E8">Open manager</text>
+            </g>
+
+            <!-- side panel -->
+            <g transform="translate(166,10)">
+              <rect width="118" height="190" rx="6" fill="#F4F1E8" stroke="#14181F" stroke-width="1.2"/>
+              <rect x="0" y="0" width="28" height="190" rx="6" fill="#EEEADE" stroke="#D5CFC0"/>
+              <g font-family="SF Mono, monospace" font-size="5.5" fill="#6A7180">
+                <text x="4" y="18" transform="rotate(-90 4 18)">ACTIVE · CLOSED · SAVED</text>
+              </g>
+              <g font-family="Helvetica, Arial, sans-serif" font-size="7" fill="#14181F">
+                <text x="36" y="24" font-weight="bold">Window 1 · Today</text>
+                <text x="36" y="40" fill="#6A7180">Auth rewrite — OIDC</text>
+                <text x="36" y="56" fill="#6A7180">Postgres indexing</text>
+                <text x="36" y="72" fill="#6A7180">Kitchen renovation</text>
+              </g>
+              <line x1="34" y1="80" x2="110" y2="80" stroke="#D5CFC0"/>
+              <g font-family="Helvetica" font-size="6.5" fill="#3B414D">
+                <text x="36" y="96">Specs · 4</text>
+                <text x="36" y="110">Code · 4</text>
+                <text x="36" y="124">Reference · 5</text>
+                <text x="36" y="138">Ungrouped · 2</text>
+              </g>
+            </g>
+
+            <!-- full tab -->
+            <g transform="translate(294,10)">
+              <rect width="120" height="190" rx="6" fill="#F4F1E8" stroke="#14181F" stroke-width="1.2"/>
+              <rect x="0" y="0" width="30" height="190" fill="#EEEADE" stroke="#D5CFC0"/>
+              <rect x="30" y="0" width="34" height="190" fill="#F4F1E8" stroke="#D5CFC0"/>
+              <g font-family="Helvetica" font-size="5.5" fill="#6A7180">
+                <text x="4" y="14">tags</text>
+                <text x="34" y="14">sessions</text>
+              </g>
+              <g font-family="Helvetica" font-size="6" fill="#14181F">
+                <text x="70" y="20" font-weight="bold">Auth rewrite</text>
+                <text x="70" y="32" fill="#6A7180">13 tabs · 3 groups</text>
+              </g>
+              <g font-family="Helvetica" font-size="5.5" fill="#3B414D">
+                <rect x="68" y="40" width="46" height="34" rx="3" fill="#EEEADE" stroke="#D5CFC0"/>
+                <text x="72" y="50">Specs</text>
+                <text x="72" y="60">Code</text>
+                <text x="72" y="70">Reference</text>
+              </g>
+              <rect x="66" y="86" width="50" height="12" rx="3" fill="#C8402A"/>
+              <text x="91" y="94.5" text-anchor="middle" font-family="Helvetica" font-size="5" fill="#fff">Restore</text>
+            </g>
+
+            <text x="6" y="222" font-family="SF Mono, monospace" font-size="7" fill="#6A7180">Popup</text>
+            <text x="166" y="222" font-family="SF Mono, monospace" font-size="7" fill="#6A7180">Side panel</text>
+            <text x="294" y="222" font-family="SF Mono, monospace" font-size="7" fill="#6A7180">Full tab</text>
+
+            <text x="6" y="252" font-family="Helvetica, Arial, sans-serif" font-size="8.5" fill="#3B414D">One library. The same sessions, rendered for the space you have.</text>
+          </svg>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ── Privacy ──────────────────────────────────── -->
+    <section class="section" id="privacy" aria-labelledby="privacy-title">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <div>
+          <h2 id="privacy-title">The boring promises, kept</h2>
+          <p>No growth loop, no account system, no telemetry. These are properties of the build, not policy statements.</p>
+        </div>
+      </div>
+
+      <div class="statement">
+        <p>
+          <strong>No host permissions at install.</strong> Windrow cannot read the page you are
+          on. Tab access is scoped to Chrome's tab metadata, which is what a session manager
+          needs and nothing more.
+        </p>
+        <p>
+          <strong>History and bookmarks are optional.</strong> They are requested only when you
+          use the feature that needs them, and can be revoked afterwards without uninstalling.
+        </p>
+        <p>
+          <strong>Sync is ciphertext-only.</strong> Sessions are encrypted on this device with a
+          key the server never sees. You can point it at the hosted instance or run your own —
+          the server is a single Node process with no dependencies. Because it cannot read the
+          blobs, there is no password reset.
+        </p>
+        <p>
+          <strong>Export is plain JSON.</strong> A backup you can read, diff, and script against
+          — and an encrypted variant if you would rather it were not readable.
+        </p>
+      </div>
+
+      <div class="facts">
+        <div class="fact"><b>0</b><span>host permissions at install</span></div>
+        <div class="fact"><b>0</b><span>network calls by default</span></div>
+        <div class="fact"><b>256-bit</b><span>AES-GCM session blobs</span></div>
+        <div class="fact"><b>MIT</b><span>licence, whole codebase</span></div>
+      </div>
+    </section>
+
+    <!-- ── Install ──────────────────────────────────── -->
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <div>
+          <h2 id="install-title">Install from source</h2>
+          <p>Chrome 116+. No account, no key, no store listing yet. About a minute, once.</p>
+        </div>
+      </div>
+
+      <div class="install-grid">
         <div>
 <pre><code><span class="c"># clone and build</span>
 git clone https://github.com/abominox/Windrow.git
 cd Windrow
 npm ci
 npm run build</code></pre>
-          <p style="font-size:.86rem;color:var(--ink-mute);margin:0">
-            Verify it first if you like: <code>npm test</code> runs 46 unit tests,
-            <code>npm run typecheck</code> runs the compiler.
+          <p style="font-size:.8rem;color:var(--ink-3);margin:0">
+            Verify first if you like: <code>npm test</code> runs 195 unit tests,
+            <code>npm run test:server</code> exercises the sync server.
           </p>
         </div>
         <ol class="steps">
           <li>Open <code>chrome://extensions</code>.</li>
-          <li>Turn on <strong>Developer mode</strong> (top right).</li>
+          <li>Turn on <strong>Developer mode</strong>.</li>
           <li>Choose <strong>Load unpacked</strong>.</li>
           <li>Select the <code>dist/</code> folder.</li>
-          <li>Pin Windrow, then open the side panel.</li>
+          <li>Click the Windrow icon.</li>
         </ol>
       </div>
     </section>
@@ -364,15 +346,11 @@ npm run build</code></pre>
 
 <footer>
   <div class="wrap">
-    <a class="brand" href="./">
-      <img src="assets/mark.svg" alt="" width="22" height="22">
-      Windrow
-    </a>
-    <span>MIT licensed · early development</span>
+    <span>Windrow 0.6 · rows of tabs, quietly kept</span>
     <nav aria-label="Footer">
       <a href="https://github.com/abominox/Windrow">Source</a>
       <a href="https://github.com/abominox/Windrow/issues">Issues</a>
-      <a href="https://github.com/abominox/Windrow/blob/main/LICENSE">License</a>
+      <a href="https://github.com/abominox/Windrow/blob/main/LICENSE">MIT licence</a>
     </nav>
   </div>
 </footer>
