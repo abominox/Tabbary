@@ -2,6 +2,7 @@
 // Handles all messages from UI surfaces (side panel, popup, tab, window).
 
 import { sessionsRepo, tabsRepo, tagsRepo, settingsRepo, sessionVersionsRepo, sessionOps, tabGroupsRepo } from '@/db';
+import { exportAll, importText } from '@/db/io';
 import { onMessageTyped } from '@/messaging';
 import { swCache } from './cache';
 import { broadcast } from '@/messaging';
@@ -199,6 +200,16 @@ export function registerBusHandlers(): void {
       const copy = await sessionOps.duplicateSession(msg.sessionId);
       broadcast({ type: 'sessionsChanged' });
       return copy ?? null;
+    },
+
+    async exportData() {
+      return exportAll();
+    },
+
+    async importData(msg) {
+      const result = await importText(msg.text);
+      if (result.sessions > 0) broadcast({ type: 'sessionsChanged' });
+      return result;
     },
   });
 }

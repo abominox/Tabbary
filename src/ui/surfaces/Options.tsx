@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../app/store';
 import { cn } from '@/lib';
+import { DataPanel } from '../components/DataPanel';
 import type { Settings } from '@/models';
 
 type SectionId =
@@ -8,6 +9,7 @@ type SectionId =
   | 'interface'
   | 'sessions'
   | 'tabs'
+  | 'data'
   | 'sync'
   | 'history'
   | 'account';
@@ -17,6 +19,7 @@ const SECTIONS: { id: SectionId; label: string }[] = [
   { id: 'interface', label: 'Interface' },
   { id: 'sessions', label: 'Sessions' },
   { id: 'tabs', label: 'Tabs' },
+  { id: 'data', label: 'Import & export' },
   { id: 'sync', label: 'Sync & backup' },
   { id: 'history', label: 'Storage & history' },
   { id: 'account', label: 'Account' },
@@ -227,8 +230,18 @@ export function Options() {
             </Panel>
           )}
 
-          {section === 'sync' && (
+          {section === 'data' && (
             <Panel
+              title="Import & export"
+              description="Move your sessions in and out. Everything is processed on this device."
+            >
+              <div className="px-3 py-3">
+                <DataPanel />
+              </div>
+            </Panel>
+          )}
+
+          {section === 'sync' && (            <Panel
               title="Sync & backup"
               description="Local backups are free and on by default. Sync is optional."
             >

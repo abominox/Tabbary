@@ -87,6 +87,13 @@ export interface DuplicateSessionMessage {
   type: 'duplicateSession';
   sessionId: string;
 }
+export interface ExportDataMessage {
+  type: 'exportData';
+}
+export interface ImportDataMessage {
+  type: 'importData';
+  text: string;
+}
 
 // ── Events (SW → UI push) ──
 export interface SessionsChangedEvent {
@@ -122,6 +129,8 @@ export type Message =
   | ResetSettingsMessage
   | TagSessionMessage
   | DuplicateSessionMessage
+  | ExportDataMessage
+  | ImportDataMessage
   | SessionsChangedEvent
   | TabsChangedEvent
   | SyncStatusChangedEvent;
@@ -162,4 +171,8 @@ export type MessageResponse<T> = T extends { type: 'getSessions' }
                       ? Settings
                       : T extends { type: 'duplicateSession' }
                         ? import('@/models').Session | null
-                        : void;
+                        : T extends { type: 'exportData' }
+                          ? import('@/db/io').ExportResult
+                          : T extends { type: 'importData' }
+                            ? import('@/db/io').ImportTextResult
+                            : void;

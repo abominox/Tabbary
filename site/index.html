@@ -214,7 +214,7 @@
     <section id="features" aria-labelledby="features-title">
       <h2 id="features-title">What it does today</h2>
       <p class="section-lede">
-        Windrow runs as a Chrome MV3 extension. This is the M2 build — a working core, not a
+        Windrow runs as a Chrome MV3 extension. This is the M3-era build — a working core, not a
         mockup — so the list is deliberately short.
       </p>
       <div class="grid">
@@ -247,6 +247,12 @@
           <h3>Native discard</h3>
           <p>Uses <code>chrome.tabs.discard</code> rather than rewriting URLs through a CDN
              suspender, so pages keep their real address.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Portability</span>
+          <h3>Your data leaves with you</h3>
+          <p>Export plain JSON or a passphrase-encrypted file. Import a Windrow backup, a
+             OneTab export, or just a list of URLs. No lock-in.</p>
         </article>
         <article class="card">
           <span class="tag">Privacy</span>
@@ -306,7 +312,8 @@
           <tr><td>M2</td><td>Full-tab manager, drag-and-drop, history UI, settings</td><td><span class="pill">done</span></td></tr>
           <tr><td>M3</td><td>Popup, dedicated window, restore matching, tags UI</td><td><span class="pill next">next</span></td></tr>
           <tr><td>M4</td><td>Self-hosted sync, client-side encryption</td><td><span class="pill todo">planned</span></td></tr>
-          <tr><td>M5</td><td>Export/import, OneTab import, bookmark types</td><td><span class="pill todo">planned</span></td></tr>
+          <tr><td>M5a</td><td>Export/import (JSON + encrypted), OneTab import</td><td><span class="pill">done</span></td></tr>
+          <tr><td>M5b</td><td>Browser bookmarks, bookmark UI, more importers</td><td><span class="pill todo">planned</span></td></tr>
           <tr><td>M6</td><td>Suspender polish, onboarding, store release</td><td><span class="pill todo">planned</span></td></tr>
         </tbody>
       </table>

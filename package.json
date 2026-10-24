@@ -1,6 +1,6 @@
 {
   "name": "windrow",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,8 @@
     "test": "vitest run",
     "test:e2e": "tsx e2e/m1.ts",
     "test:e2e:m2": "tsx e2e/m2.ts",
-    "test:e2e:all": "tsx e2e/m1.ts && tsx e2e/m2.ts",
+    "test:e2e:io": "tsx e2e/io.ts",
+    "test:e2e:all": "tsx e2e/m1.ts && tsx e2e/m2.ts && tsx e2e/io.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

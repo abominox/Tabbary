@@ -7,9 +7,10 @@ survives crashes and restarts, and can be restored later with its tab groups int
 Everything lives in your own browser profile. There is no account, no telemetry, and no
 paid tier.
 
-> **Status: early (M2 of 6).** The service worker, data layer, side panel, full-tab
-> manager, drag-and-drop, revision history, and settings are working. The popup, dedicated
-> window, import/export, and sync are not implemented yet. See [Roadmap](#roadmap).
+> **Status: early (M5a).** The service worker, data layer, side panel, full-tab manager,
+> drag-and-drop, revision history, settings, and import/export are working. The popup,
+> dedicated window, browser-bookmark sync, and cloud sync are not implemented yet. See
+> [Roadmap](#roadmap).
 
 ## Why
 
@@ -28,6 +29,9 @@ client-side encryption and a sync server you can run yourself.
   duplicate detection.
 - **Revision history** — per-session snapshots with pruning. Restoring a revision snapshots
   the current state first, so it is reversible.
+- **Import / export** — plain JSON (human-readable, no lock-in) or a passphrase-encrypted
+  file (PBKDF2-SHA256 600k → AES-GCM-256). Imports Windrow bundles, OneTab exports, and
+  plain URL lists; imports are always additive.
 - **Settings** — startup, capture, theme, density, revision limit, and sync placeholders,
   persisted in IndexedDB.
 - **Side panel UI** — live active session, session rows with tab-icon strips, search, tags.
@@ -59,6 +63,7 @@ npm run build      # type-check + production build → dist/
 npm test           # unit tests (Vitest)
 npm run test:e2e   # M1 E2E (Playwright)
 npm run test:e2e:m2 # M2 E2E (full-tab, DnD, revisions, settings)
+npm run test:e2e:io # import/export E2E (real download + file import)
 npm run test:e2e:all
 npm run typecheck  # TypeScript only
 ```
@@ -116,14 +121,49 @@ No host permissions are requested at install.
 |---|---|---|
 | M1 | Skeleton, service worker, data layer, side panel | ✅ done |
 | M2 | Full-tab manager, drag-and-drop, revision history, settings | ✅ done |
-| M3 | Popup, dedicated window, restore matching, duplicate merge UI, tags UI | ⬜ next |
+| M3 | Popup, dedicated window, restore matching, tags UI | ⬜ next |
 | M4 | Self-hosted sync server + client-side encryption, recovery key | ⬜ |
-| M5 | Encrypted export/import, OneTab/generic importers, bookmark types | ⬜ |
+| M5a | Export/import (JSON + encrypted), OneTab and URL-list importers | ✅ done |
+| M5b | Browser-bookmark type, session/tag bookmark UI, more importers | ⬜ |
 | M6 | Tab suspender polish, onboarding, themes, store release | ⬜ |
 
-Known gaps: the popup and dedicated-window surfaces are placeholders; there is no
-import/export yet; `src/sync/` throws `not implemented`; the settings page exposes sync
-fields that are inert until M4.
+Known gaps: the popup and dedicated-window surfaces are placeholders; `src/sync/` throws
+`not implemented`, and the settings page exposes sync fields that are inert until M4;
+bookmarks exist in the schema but have no UI yet.
+
+## Import / export
+
+Settings → **Import & export**.
+
+**Export** produces `windrow-YYYY-MM-DD.json` containing every session with its tab groups,
+tabs (title, URL, pinned flag, order), tags, and timestamps. That file is plain, readable
+JSON — it is meant to be a backup you can inspect, script against, and keep even if this
+project stops being maintained.
+
+**Encrypted export** wraps the same bundle in
+
+```
+PBKDF2-SHA256 (600 000 iterations, 16-byte salt) → AES-GCM-256 (12-byte IV)
+```
+
+all via WebCrypto on your device. The envelope is self-describing, so a future version can
+change the KDF without breaking old files. There is no recovery path: the passphrase is
+never stored.
+
+**Import** is additive and never modifies existing sessions. It accepts:
+
+| Format | Notes |
+|---|---|
+| Windrow JSON | Validated; unknown/newer versions refused |
+| Windrow encrypted | Prompts for the passphrase, decrypts locally |
+| OneTab export | Both the JSON-array and plain-text forms |
+| URL list | One per line; duplicates dropped |
+
+Chrome-internal URLs (`chrome://`, `about:`, `javascript:`, extension pages) are stripped on
+export and refused on import, since they cannot be restored elsewhere.
+
+Imported sessions are stored as **closed** with fresh ids and no window binding, so
+importing the same file twice creates two copies rather than clobbering live state.
 
 ## Contributing
 
