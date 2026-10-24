@@ -3,6 +3,7 @@ import { useStore } from '../app/store';
 import { cn } from '@/lib';
 import { DataPanel } from '../components/DataPanel';
 import { SyncPanel } from '../components/SyncPanel';
+import { setTheme, setDensity, cacheAppearance } from '@/lib/appearance';
 import type { Settings } from '@/models';
 
 type SectionId =
@@ -39,16 +40,13 @@ export function Options() {
     void loadSettings();
   }, [loadSettings]);
 
-  // Applying the theme to the document is the only global side effect.
+  // Keep the document and the cached appearance in step. The cache is what
+  // lets other surfaces apply the theme before the service worker answers.
   useEffect(() => {
-    const root = document.documentElement;
-    if (settings.theme === 'dark') root.classList.add('dark');
-    else if (settings.theme === 'light') root.classList.remove('dark');
-    else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', prefersDark);
-    }
-  }, [settings.theme]);
+    setTheme(settings.theme);
+    setDensity(settings.density);
+    void cacheAppearance(settings.theme, settings.density);
+  }, [settings.theme, settings.density]);
 
   const save = async (patch: Partial<Settings>) => {
     await saveSettings(patch);

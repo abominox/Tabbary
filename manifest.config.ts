@@ -4,7 +4,7 @@ export default defineManifest({
   manifest_version: 3,
   minimum_chrome_version: '116',
   name: '__MSG_extName__',
-  version: '0.5.0',
+  version: '0.6.0',
   description: '__MSG_extDescription__',
   default_locale: 'en',
   permissions: [
@@ -19,7 +19,8 @@ export default defineManifest({
     'favicon',
     'offscreen',
   ],
-  optional_permissions: ['history', 'clipboardWrite', 'downloads'],
+  // bookmarks is optional: only requested when the user imports Chrome bookmarks.
+  optional_permissions: ['history', 'bookmarks', 'clipboardWrite', 'downloads'],
   // Sync is opt-in: no host access is requested at install. The origin is
   // granted through permissions.request() when the user configures a server.
   host_permissions: [],
@@ -62,6 +63,12 @@ export default defineManifest({
         default: 'Alt+T',
       },
       description: '__MSG_commandOpenTags__',
+    },
+    'open-bookmarks': {
+      suggested_key: {
+        default: 'Alt+B',
+      },
+      description: '__MSG_commandOpenBookmarks__',
     },
   },
   icons: {

@@ -8,7 +8,7 @@ interface AppProps {
 
 export function App({ surface }: AppProps) {
   const validSurface = useMemo<Surface>(() => {
-    const valid: Surface[] = ['popup', 'full-tab', 'dedicated-window', 'side-panel', 'options', 'onboarding', 'tags'];
+    const valid: Surface[] = ['popup', 'full-tab', 'dedicated-window', 'side-panel', 'options', 'onboarding', 'tags', 'bookmarks'];
     return valid.includes(surface as Surface) ? (surface as Surface) : 'side-panel';
   }, [surface]);
 

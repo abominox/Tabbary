@@ -51,3 +51,29 @@ body,
   margin: 0;
   padding: 0;
 }
+/* ── Density ──────────────────────────────────────────────
+   Compact trims vertical rhythm without changing font sizes, so rows stay
+   legible while more fit on screen. */
+:root[data-density='compact'] {
+  --density-row: 1.5rem;
+}
+:root[data-density='comfortable'] {
+  --density-row: 2rem;
+}
+
+:root[data-density='compact'] .group {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+/* ── Reduced motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

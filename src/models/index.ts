@@ -59,6 +59,9 @@ export interface Tag {
 export interface Bookmark {
   id: string;
   type: 'session' | 'tag' | 'browser';
+  /** Owning session id, tag name, or null for browser imports. */
+  ownerId: string | null;
+  /** Containing folder, or null at the root. */
   parentId: string | null;
   title: string;
   url?: string;

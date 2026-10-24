@@ -169,6 +169,20 @@ export function FullTab() {
           </span>
           <button
             type="button"
+            onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL('bookmarks.html') })}
+            className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
+          >
+            Bookmarks
+          </button>
+          <button
+            type="button"
+            onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL('tags.html') })}
+            className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
+          >
+            Tags
+          </button>
+          <button
+            type="button"
             onClick={() => chrome.runtime.openOptionsPage()}
             className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
           >

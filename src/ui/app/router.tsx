@@ -6,6 +6,7 @@ import { DedicatedWindow } from '../surfaces/DedicatedWindow';
 import { Options } from '../surfaces/Options';
 import { Onboarding } from '../surfaces/Onboarding';
 import { Tags } from '../surfaces/Tags';
+import { Bookmarks } from '../surfaces/Bookmarks';
 
 export type Surface =
   | 'popup'
@@ -14,7 +15,8 @@ export type Surface =
   | 'side-panel'
   | 'options'
   | 'onboarding'
-  | 'tags';
+  | 'tags'
+  | 'bookmarks';
 
 const surfaceMap: Record<Surface, ComponentType> = {
   popup: Popup,
@@ -24,6 +26,7 @@ const surfaceMap: Record<Surface, ComponentType> = {
   options: Options,
   onboarding: Onboarding,
   tags: Tags,
+  bookmarks: Bookmarks,
 };
 
 interface SurfaceRouterProps {

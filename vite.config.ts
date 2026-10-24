@@ -24,6 +24,7 @@ export default defineConfig({
         'options.html',
         'offscreen.html',
         'tags.html',
+        'bookmarks.html',
       ],
     },
   },

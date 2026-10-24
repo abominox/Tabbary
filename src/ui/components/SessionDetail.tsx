@@ -4,6 +4,7 @@ import { formatRelativeTime } from '@/lib';
 import { TabMarkStrip } from './TabMarkStrip';
 import { TabGroupSection } from './TabGroupSection';
 import { EmptyState } from './EmptyState';
+import { sendMessage } from '@/messaging/bus';
 import { cn } from '@/lib';
 
 interface SessionDetailProps {
@@ -29,6 +30,7 @@ export function SessionDetail({
 }: SessionDetailProps) {
   const [tagDraft, setTagDraft] = useState(session.tags?.join(', ') ?? '');
   const [mergeOpen, setMergeOpen] = useState(false);
+  const [suspendNote, setSuspendNote] = useState<string | null>(null);
 
   const pinned = useMemo(
     () => tabs.filter((t) => t.pinned).sort((a, b) => a.position - b.position),
@@ -99,6 +101,28 @@ export function SessionDetail({
             >
               History
             </button>
+            {isActive && session.windowId != null && (
+              <button
+                type="button"
+                onClick={async () => {
+                  const r = await sendMessage({
+                    type: 'suspendWindow',
+                    windowId: session.windowId!,
+                    minIdleMinutes: 30,
+                  });
+                  setSuspendNote(
+                    r
+                      ? `Suspended ${r.discarded} tab${r.discarded === 1 ? '' : 's'}` +
+                          (r.skipped.length ? ` · ${r.skipped.length} left alone` : '')
+                      : 'Could not suspend',
+                  );
+                }}
+                title="Discard idle tabs in this window (native Chrome discard)"
+                className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
+              >
+                Suspend idle
+              </button>
+            )}
             <div className="relative">
               <button
                 type="button"
@@ -143,6 +167,12 @@ export function SessionDetail({
             </button>
           </div>
         </div>
+
+        {suspendNote && (
+          <p role="status" className="mt-2 text-[10px] text-text-muted">
+            {suspendNote}
+          </p>
+        )}
 
         {/* Tags */}
         <div className="mt-3 flex items-center gap-2">

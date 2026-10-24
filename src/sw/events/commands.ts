@@ -15,6 +15,10 @@ export function registerCommandListeners(): void {
         chrome.tabs.create({ url: chrome.runtime.getURL('tags.html') });
         break;
 
+      case 'open-bookmarks':
+        chrome.tabs.create({ url: chrome.runtime.getURL('bookmarks.html') });
+        break;
+
       case 'open-side-panel':
         // Commands cannot open a panel from every context, so fall back to the
         // full-tab manager if there is no focused window to dock beside.

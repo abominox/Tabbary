@@ -16,7 +16,7 @@ export class WindrowDB extends Dexie {
       tabs: 'id, sessionId, chromeTabId, deleted, [sessionId+position]',
       tabGroups: 'id, sessionId, chromeGroupId, deleted, [sessionId+position]',
       tags: 'id, name, deleted',
-      bookmarks: 'id, type, parentId, deleted, [type+parentId]',
+      bookmarks: 'id, type, ownerId, parentId, deleted, [type+ownerId]',
       sessionVersions: 'id, sessionId, version, [sessionId+version]',
       settings: 'id',
     });

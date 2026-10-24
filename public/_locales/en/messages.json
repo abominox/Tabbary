@@ -13,5 +13,8 @@
   },
   "commandOpenTags": {
     "message": "Open Windrow tags"
+  },
+  "commandOpenBookmarks": {
+    "message": "Open Windrow bookmarks"
   }
 }

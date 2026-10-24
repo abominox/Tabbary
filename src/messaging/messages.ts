@@ -2,6 +2,12 @@
 
 import type { Session, Tab, TabGroup, SessionVersion, Settings } from '@/models';
 import type { SyncMessage, SyncSetupResult, SyncStatus, SyncRunResult } from './sync';
+import type { BookmarkMessage } from './bookmarks';
+import type { SuspendMessage } from './suspend';
+
+export type * from './suspend';
+
+export type * from './bookmarks';
 
 export type * from './sync';
 
@@ -81,6 +87,10 @@ export interface UpdateSettingsMessage {
 export interface ResetSettingsMessage {
   type: 'resetSettings';
 }
+export interface FinishOnboardingMessage {
+  type: 'finishOnboarding';
+  restoreOnStartup: 'yes' | 'ask' | 'no';
+}
 export interface TagSessionMessage {
   type: 'tagSession';
   sessionId: string;
@@ -152,6 +162,7 @@ export type Message =
   | UpdateSettingsMessage
   | ResetSettingsMessage
   | TagSessionMessage
+  | FinishOnboardingMessage
   | DuplicateSessionMessage
   | ExportDataMessage
   | ImportDataMessage
@@ -162,6 +173,8 @@ export type Message =
   | RenameTagMessage
   | DeleteTagMessage
   | SyncMessage
+  | BookmarkMessage
+  | SuspendMessage
   | SessionsChangedEvent
   | TabsChangedEvent
   | SyncStatusChangedEvent;
@@ -226,4 +239,22 @@ export type MessageResponse<T> = T extends { type: 'getSessions' }
                                               ? { ok: boolean; error?: string; revision?: number; device?: string }
                                               : T extends { type: 'syncDisable' } | { type: 'syncForget' }
                                                 ? SyncStatus
-                                                : void;
+                                                : T extends { type: 'bookmarksList' }
+                                                  ? import('@/models').Bookmark[]
+                                                  : T extends { type: 'bookmarkAdd' }
+                                                    ? import('@/models').Bookmark | null
+                                                    : T extends { type: 'bookmarkUpdate' }
+                                                      ? boolean
+                                                      : T extends { type: 'bookmarkDelete' }
+                                                        ? number
+                                                        : T extends { type: 'bookmarksImport' }
+                                                          ? { imported: number; skipped: number }
+                                                          : T extends { type: 'bookmarksOpen' }
+                                                            ? { sessionId: string; tabCount: number } | null
+                                                            : T extends { type: 'bookmarksSeed' }
+                                                              ? number
+                                                              : T extends { type: 'finishOnboarding' }
+                                                                ? boolean
+                                                                : T extends { type: 'suspendWindow' } | { type: 'suspendPreview' }
+                                                                  ? import('@/messaging/suspend').SuspendResult
+                                                                  : void;

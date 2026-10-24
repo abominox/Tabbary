@@ -4,6 +4,16 @@
 import { sessionsRepo, tabsRepo, tagsRepo, settingsRepo, sessionVersionsRepo, sessionOps, tabGroupsRepo } from '@/db';
 import { exportAll, importText } from '@/db/io';
 import { getRestoreReport } from './events/startup';
+import { suspendWindow, previewSuspension } from './suspend-service';
+import {
+  listBookmarks,
+  addBookmark,
+  updateBookmark,
+  deleteBookmark,
+  importBrowserBookmarks,
+  openBookmarksAsSession,
+  seedSessionBookmarks,
+} from './bookmarks-service';
 import { applyAllMatches, matchCandidates } from './restore-service';
 import { onMessageTyped } from '@/messaging';
 import { swCache } from './cache';
@@ -247,6 +257,69 @@ export function registerBusHandlers(): void {
     async matchWindows() {
       const { matches } = await matchCandidates();
       return matches;
+    },
+
+    async finishOnboarding(msg) {
+      await settingsRepo.update({ restoreOnStartup: msg.restoreOnStartup });
+      // Seed a couple of session bookmarks from the live window so the
+      // bookmarks surface is not empty on first visit.
+      const active = await sessionsRepo.listActive();
+      if (active[0]) await seedSessionBookmarks(active[0].id).catch(() => 0);
+      broadcast({ type: 'sessionsChanged' });
+      return true;
+    },
+
+    // ── Bookmarks ──
+    async bookmarksList(msg) {
+      return listBookmarks(msg.scope, msg.ownerId ?? null);
+    },
+
+    async bookmarkAdd(msg) {
+      const bm = await addBookmark(msg);
+      if (bm) broadcast({ type: 'sessionsChanged' });
+      return bm;
+    },
+
+    async bookmarkUpdate(msg) {
+      const ok = await updateBookmark(msg.id, { title: msg.title, url: msg.url });
+      if (ok) broadcast({ type: 'sessionsChanged' });
+      return ok;
+    },
+
+    async bookmarkDelete(msg) {
+      const n = await deleteBookmark(msg.id);
+      broadcast({ type: 'sessionsChanged' });
+      return n;
+    },
+
+    async bookmarksImport() {
+      const result = await importBrowserBookmarks();
+      broadcast({ type: 'sessionsChanged' });
+      return result;
+    },
+
+    async bookmarksOpen(msg) {
+      const result = await openBookmarksAsSession({
+        scope: msg.scope,
+        ownerId: msg.ownerId,
+        folderId: msg.folderId ?? null,
+        name: msg.name,
+      });
+      if (result) broadcast({ type: 'sessionsChanged' });
+      return result;
+    },
+
+    async bookmarksSeed(msg) {
+      return seedSessionBookmarks(msg.sessionId);
+    },
+
+    // ── Suspension ──
+    async suspendPreview(msg) {
+      return previewSuspension(msg.windowId, msg.minIdleMinutes);
+    },
+
+    async suspendWindow(msg) {
+      return suspendWindow(msg.windowId, msg.minIdleMinutes);
     },
 
     // ── Sync ──
