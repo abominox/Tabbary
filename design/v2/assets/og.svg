@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F5F2EA"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#101828"/>
+
+  <g transform="translate(80,72)">
+    <rect width="44" height="44" rx="11" fill="#101828"/>
+    <g fill="none" stroke="#E8E4DA" stroke-width="2.6" stroke-linecap="round">
+      <path d="M10 15h24"/><path d="M10 22h24"/><path d="M10 29h15"/>
+    </g>
+    <circle cx="33" cy="29" r="4" fill="#39C6A0"/>
+  </g>
+  <text x="140" y="103" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#101828" letter-spacing="-0.4">Windrow</text>
+
+  <text x="80" y="228" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700" fill="#101828" letter-spacing="-2.2">Rows of tabs,</text>
+  <text x="80" y="294" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700" fill="#101828" letter-spacing="-2.2">quietly kept.</text>
+
+  <text x="80" y="352" font-family="Helvetica, Arial, sans-serif" font-size="25" fill="#38445A">A local-first tab and session manager for Chrome.</text>
+  <text x="80" y="388" font-family="Helvetica, Arial, sans-serif" font-size="25" fill="#38445A">Auto-saved sessions, tab groups, version history.</text>
+
+  <g transform="translate(80,452)">
+    <rect width="184" height="46" rx="9" fill="#1F4FD8"/>
+    <text x="92" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">Free &amp; MIT</text>
+  </g>
+  <g transform="translate(280,452)">
+    <rect width="228" height="46" rx="9" fill="none" stroke="#D9D3C6" stroke-width="1.5"/>
+    <text x="114" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" fill="#101828">No account</text>
+  </g>
+  <g transform="translate(524,452)">
+    <rect width="268" height="46" rx="9" fill="none" stroke="#D9D3C6" stroke-width="1.5"/>
+    <text x="134" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" fill="#101828">Nothing leaves Chrome</text>
+  </g>
+
+  <text x="80" y="556" font-family="'SF Mono', Menlo, monospace" font-size="15" fill="#6B7688" letter-spacing="1.4">GITHUB.COM/ABOMINOX/WINDROW</text>
+
+  <!-- session rows motif -->
+  <g transform="translate(742,150)">
+    <rect width="378" height="330" rx="14" fill="#FBFAF6" stroke="#D9D3C6"/>
+    <text x="24" y="38" font-family="'SF Mono', Menlo, monospace" font-size="11" fill="#6B7688" letter-spacing="1.2">ACTIVE SESSIONS · 3</text>
+
+    <g>
+      <rect x="18" y="54" width="342" height="78" rx="9" fill="#F5F2EA"/>
+      <circle cx="34" cy="76" r="3.4" fill="#39C6A0"/>
+      <text x="46" y="80" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#101828">Window 1 · Today</text>
+      <text x="342" y="80" text-anchor="end" font-family="'SF Mono', Menlo, monospace" font-size="12" fill="#6B7688">12</text>
+      <g font-family="'SF Mono', Menlo, monospace" font-size="11" font-weight="700" text-anchor="middle">
+        <rect x="28" y="96" width="22" height="22" rx="5" fill="#DCE6FF"/><text x="39" y="111" fill="#1F4FD8">D</text>
+        <rect x="55" y="96" width="22" height="22" rx="5" fill="#DFF3EC"/><text x="66" y="111" fill="#0F7A5F">O</text>
+        <rect x="82" y="96" width="22" height="22" rx="5" fill="#F3E7D8"/><text x="93" y="111" fill="#9A5B12">G</text>
+        <rect x="109" y="96" width="22" height="22" rx="5" fill="#E6E2F5"/><text x="120" y="111" fill="#5B45A8">W</text>
+      </g>
+      <text x="144" y="111" font-family="'SF Mono', Menlo, monospace" font-size="11" fill="#6B7688">+8</text>
+    </g>
+
+    <g>
+      <rect x="18" y="142" width="342" height="78" rx="9" fill="#F5F2EA"/>
+      <circle cx="34" cy="164" r="3.4" fill="#39C6A0"/>
+      <text x="46" y="168" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#101828">Auth rewrite — OIDC</text>
+      <text x="342" y="168" text-anchor="end" font-family="'SF Mono', Menlo, monospace" font-size="12" fill="#6B7688">13</text>
+      <g font-family="'SF Mono', Menlo, monospace" font-size="11" font-weight="700" text-anchor="middle">
+        <rect x="28" y="184" width="22" height="22" rx="5" fill="#DCE6FF"/><text x="39" y="199" fill="#1F4FD8">D</text>
+        <rect x="55" y="184" width="22" height="22" rx="5" fill="#DFF3EC"/><text x="66" y="199" fill="#0F7A5F">O</text>
+        <rect x="82" y="184" width="22" height="22" rx="5" fill="#F3E7D8"/><text x="93" y="199" fill="#9A5B12">G</text>
+        <rect x="109" y="184" width="22" height="22" rx="5" fill="#E6E2F5"/><text x="120" y="199" fill="#5B45A8">W</text>
+      </g>
+      <text x="144" y="199" font-family="'SF Mono', Menlo, monospace" font-size="11" fill="#6B7688">+9</text>
+    </g>
+
+    <g opacity=".55">
+      <rect x="18" y="230" width="342" height="76" rx="9" fill="#F5F2EA"/>
+      <text x="34" y="256" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#38445A">Kitchen renovation</text>
+      <text x="342" y="256" text-anchor="end" font-family="'SF Mono', Menlo, monospace" font-size="12" fill="#6B7688">8</text>
+      <g font-family="'SF Mono', Menlo, monospace" font-size="10" font-weight="700" text-anchor="middle" opacity=".45">
+        <rect x="28" y="270" width="19" height="19" rx="4.5" fill="#DCE6FF"/><text x="38" y="283" fill="#1F4FD8">D</text>
+        <rect x="51" y="270" width="19" height="19" rx="4.5" fill="#DFF3EC"/><text x="61" y="283" fill="#0F7A5F">O</text>
+        <rect x="74" y="270" width="19" height="19" rx="4.5" fill="#F3E7D8"/><text x="84" y="283" fill="#9A5B12">G</text>
+      </g>
+    </g>
+  </g>
+</svg>

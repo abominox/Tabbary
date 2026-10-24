@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windrow — website redesign, for approval</title>
+<style>
+  :root {
+    --paper: #f4f1e8; --paper-2: #eeeade; --ink: #14181f; --ink-2: #3b414d;
+    --ink-3: #6a7180; --rule: #d5cfc0; --vermillion: #c8402a; --moss: #3f6b4f;
+    --serif: "Iowan Old Style", Palatino, Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: #0d0f14; color: var(--ink); font-family: var(--sans);
+    display: grid; place-items: center; overflow: hidden;
+  }
+  .stage { width: 100vw; height: 100vh; display: grid; place-items: center; }
+  .slide {
+    display: none; width: min(1180px, 94vw); height: min(680px, 92vh);
+    background: var(--paper); padding: clamp(1.6rem, 3.4vw, 3.2rem);
+    overflow: hidden; position: relative;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,.7);
+  }
+  .slide.active { display: flex; flex-direction: column; }
+  .slide::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+    background: var(--vermillion);
+  }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: .62rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--vermillion); margin: 0 0 .7rem;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+    line-height: 1.05; letter-spacing: -.028em; margin: 0 0 .7rem; text-wrap: balance;
+  }
+  h1 em { color: var(--vermillion); font-style: italic; }
+  .sub { color: var(--ink-2); font-size: .95rem; max-width: 62ch; margin: 0 0 1.4rem; }
+  .body { flex: 1; min-height: 0; overflow: auto; }
+
+  .cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1.6rem; }
+  .cols-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+
+  .card { border: 1px solid var(--rule); padding: .9rem 1rem; background: var(--paper-2); }
+  .card h3 { margin: 0 0 .35rem; font-size: .82rem; font-weight: 650; }
+  .card p { margin: 0; font-size: .78rem; color: var(--ink-2); line-height: 1.5; }
+  .card .k { font-family: var(--mono); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--vermillion); display: block; margin-bottom: .3rem; }
+
+  ul.pts { margin: 0; padding-left: 1.05rem; }
+  ul.pts li { font-size: .84rem; color: var(--ink-2); margin-bottom: .42rem; }
+  ul.pts li b { color: var(--ink); }
+
+  .swatches { display: flex; gap: .45rem; margin-top: .6rem; }
+  .sw { width: 46px; height: 46px; border: 1px solid var(--rule); position: relative; }
+  .sw span {
+    position: absolute; left: 0; bottom: -1.15rem; font-family: var(--mono);
+    font-size: .5rem; color: var(--ink-3); white-space: nowrap;
+  }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .shot { border: 1px solid var(--rule); background: #fff; overflow: hidden; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot .cap {
+    font-family: var(--mono); font-size: .55rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3);
+    padding: .35rem .5rem; border-top: 1px solid var(--rule); background: var(--paper-2);
+  }
+  .shot .cap b { color: var(--ink); }
+
+  .note {
+    border-left: 3px solid var(--vermillion); padding: .15rem 0 .15rem 1rem;
+    font-size: .82rem; color: var(--ink-2); margin-top: 1rem;
+  }
+  .note b { color: var(--ink); }
+
+  .q { border-top: 1px solid var(--rule); padding: .7rem 0; display: grid; grid-template-columns: 1.4rem 1fr; gap: .8rem; }
+  .q:last-child { border-bottom: 1px solid var(--rule); }
+  .q .n { font-family: var(--mono); font-size: .7rem; color: var(--vermillion); }
+  .q strong { display: block; font-size: .84rem; }
+  .q span { font-size: .76rem; color: var(--ink-3); }
+
+  .meta {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: .58rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3); padding-top: .7rem;
+    border-top: 1px solid var(--rule); margin-top: .9rem;
+  }
+  .hint { color: var(--ink-3); }
+  .hint kbd {
+    font-family: var(--mono); font-size: .6rem; border: 1px solid var(--rule);
+    padding: .05rem .3rem; border-radius: 2px; background: var(--paper-2);
+  }
+
+  .nav {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: .35rem; z-index: 10;
+  }
+  .nav button {
+    font-family: var(--mono); font-size: .6rem; letter-spacing: .06em;
+    background: rgba(255,255,255,.1); color: #cfd3dc; border: 1px solid rgba(255,255,255,.16);
+    padding: .3rem .55rem; cursor: pointer;
+  }
+  .nav button:hover { background: rgba(255,255,255,.2); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.25); align-self: center; margin: 0 2px; }
+  .dot.on { background: var(--vermillion); }
+
+  @media print {
+    body { background: #fff; display: block; overflow: visible; }
+    .nav { display: none; }
+    .slide { display: flex !important; width: 100%; height: auto; box-shadow: none; page-break-after: always; }
+  }
+  @media (max-width: 820px) {
+    .cols, .cols-3, .compare { grid-template-columns: 1fr; }
+    .slide { height: 92vh; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- 1 -->
+  <section class="slide active">
+    <p class="eyebrow">For approval · not deployed</p>
+    <h1>Website redesign:<br><em>the ledger</em></h1>
+    <p class="sub">
+      A second direction for windrow.dev, plus a status pack for a store submission.
+      Nothing is live — the current site is untouched until you sign off.
+    </p>
+    <div class="body">
+      <div class="cols-3">
+        <div class="card">
+          <span class="k">What changed</span>
+          <h3>Editorial instead of soft</h3>
+          <p>The v1 site leaned warm and friendly. This one is ruled, high-contrast, and
+             serif-led — closer to a technical journal than a SaaS landing page.</p>
+        </div>
+        <div class="card">
+          <span class="k">Why</span>
+          <h3>The claims are now specific</h3>
+          <p>Every feature is listed as implemented, with the one unfinished item (store
+             listing) called out. The layout has to carry evidence, not vibes.</p>
+        </div>
+        <div class="card">
+          <span class="k">Where</span>
+          <h3>design/v2, unmerged</h3>
+          <p>Lives in the repo, excluded from the Pages workflow. Promoting it is a
+             one-line change once approved.</p>
+        </div>
+      </div>
+      <p class="note">
+        <b>Read this deck as a proposal.</b> Three decisions at the end need your input;
+        everything else is ready to ship as-is.
+      </p>
+    </div>
+    <div class="meta"><span>1 / 9</span><span class="hint"><kbd>←</kbd> <kbd>→</kbd> to move · <kbd>P</kbd> print</span></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <p class="eyebrow">Before / after</p>
+    <h1>Same content, different argument</h1>
+    <p class="sub">Left is live today. Right is the proposal. The information is identical; the posture is not.</p>
+    <div class="body">
+      <div class="compare">
+        <div class="shot">
+          <img src="assets/before.png" alt="Current site: warm off-white, sans-serif, rounded cards.">
+          <div class="cap"><b>Live</b> — warm, soft, card-based</div>
+        </div>
+        <div class="shot">
+          <img src="assets/after.png" alt="Proposal: cream paper, serif display, ruled ledger rows.">
+          <div class="cap"><b>Proposal</b> — ruled, serif, ledger</div>
+        </div>
+      </div>
+      <p class="note">
+        The v1 page is pleasant but reads as generic. The proposal borrows the structure of
+        a technical ledger: numbered sections, hairline rules, a status column.
+      </p>
+    </div>
+    <div class="meta"><span>2 / 9</span><span class="hint">before · after</span></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <p class="eyebrow">Direction</p>
+    <h1>Paper, ink, one red mark</h1>
+    <p class="sub">A restrained palette where colour is a signal, not decoration. Vermillion marks the thing to look at; moss marks "done".</p>
+    <div class="body">
+      <div class="cols">
+        <div>
+          <div class="card" style="margin-bottom:.8rem">
+            <span class="k">Palette</span>
+            <h3>Warm stock, near-black ink</h3>
+            <p>Cream paper rather than white; ink rather than pure black. Vermillion only for
+               the eyebrow, the active mark, and the rule under each slide.</p>
+            <div class="swatches">
+              <div class="sw" style="background:#f4f1e8"><span>#F4F1E8</span></div>
+              <div class="sw" style="background:#14181f"><span>#14181F</span></div>
+              <div class="sw" style="background:#c8402a"><span>#C8402A</span></div>
+              <div class="sw" style="background:#3f6b4f"><span>#3F6B4F</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <span class="k">Type</span>
+            <h3>Serif display, sans body, mono labels</h3>
+            <p>Iowan/Palatino for headings, system sans for reading, mono for metadata and
+               keycaps. All system fonts — no webfont requests, no layout shift.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:.8rem">
+            <span class="k">Structure</span>
+            <h3>Numbered sections and rules</h3>
+            <p>Four sections, each with a number and a one-line claim. Rules do the grouping
+               work instead of cards and shadows.</p>
+          </div>
+          <div class="card">
+            <span class="k">Motion</span>
+            <h3>Almost none</h3>
+            <p>Colour transitions on hover only; everything else respects
+               <code>prefers-reduced-motion</code>. Nothing moves on scroll.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meta"><span>3 / 9</span><span class="hint">design tokens</span></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <p class="eyebrow">Section 1</p>
+    <h1>The hero carries the status</h1>
+    <p class="sub">Instead of a floating badge, the right column is a small ledger of facts: version, licence, host access, telemetry, sync.</p>
+    <div class="body">
+      <ul class="pts">
+        <li><b>Headline:</b> "Your windows, kept the way you left them." — the same promise, set in serif with one italic word.</li>
+        <li><b>Status card:</b> six facts a technical reader actually wants before installing. It replaces a vague "early development" pill.</li>
+        <li><b>One primary action:</b> install from source. The secondary links to the repo, because there is no store listing yet.</li>
+        <li><b>Honesty:</b> the card says "not on the Chrome Web Store yet" rather than implying availability.</li>
+      </ul>
+      <p class="note">
+        This is the slide I expect you to have an opinion about: the status card makes the
+        page read as unfinished by design. That is deliberate — the alternative is overclaiming.
+      </p>
+    </div>
+    <div class="meta"><span>4 / 9</span><span class="hint">hero</span></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <p class="eyebrow">Section 2</p>
+    <h1>The feature list becomes a ledger</h1>
+    <p class="sub">Eleven rows, each a capability, a one-line description, and a status tag. Ten read "done"; one reads "next".</p>
+    <div class="body">
+      <div class="cols">
+        <div>
+          <div class="card">
+            <span class="k">Why a table</span>
+            <h3>Scannable, and hard to inflate</h3>
+            <p>A card grid invites vague claims. A ledger with a status column forces each row
+               to state whether it exists. The single "next" row is the store listing, which
+               is honest and also creates a reason to come back.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <span class="k">Content source</span>
+            <h3>Generated from the actual repo</h3>
+            <p>Version, test counts, and features come from the working tree: 0.6.0, 195 unit
+               tests, 14 server tests, seven E2E suites. The numbers are verifiable by cloning.</p>
+          </div>
+        </div>
+      </div>
+      <p class="note">
+        <b>Maintenance cost:</b> this section has to be updated with each release. If that
+        feels like a burden, we can reduce it to five rows and let the changelog carry detail.
+      </p>
+    </div>
+    <div class="meta"><span>5 / 9</span><span class="hint">ledger</span></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <p class="eyebrow">Section 3</p>
+    <h1>Four surfaces, drawn once</h1>
+    <p class="sub">A single diagram shows the same session list as a popup, a side panel, and a full tab — the clearest argument for the product in one image.</p>
+    <div class="body">
+      <ul class="pts">
+        <li><b>Inline SVG, not screenshots.</b> Stays sharp, themes with the page, and weighs about 4 KB.</li>
+        <li><b>One caption.</b> "One library. The same sessions, rendered for the space you have."</li>
+        <li><b>Keyboard hints</b> sit next to each surface, because that is how people actually reach them.</li>
+      </ul>
+      <p class="note">
+        The v1 site had a single large screenshot. This version shows the relationship
+        between surfaces instead of one surface in isolation.
+      </p>
+    </div>
+    <div class="meta"><span>6 / 9</span><span class="hint">surfaces</span></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <p class="eyebrow">Section 4</p>
+    <h1>Privacy, stated as properties</h1>
+    <p class="sub">Four claims, each one checkable in the manifest or the source. Then four numbers, because abstract promises are forgettable.</p>
+    <div class="body">
+      <div class="cols">
+        <div>
+          <ul class="pts">
+            <li><b>No host permissions at install.</b> The extension cannot read pages.</li>
+            <li><b>History and bookmarks optional.</b> Requested only when used.</li>
+            <li><b>Sync is ciphertext-only.</b> Key never leaves the device.</li>
+            <li><b>Export is plain JSON.</b> Readable backup, no lock-in.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="cols-3">
+            <div class="card" style="text-align:center"><h3 style="font-size:1.5rem">0</h3><p>host<br>permissions</p></div>
+            <div class="card" style="text-align:center"><h3 style="font-size:1.5rem">0</h3><p>default<br>requests</p></div>
+            <div class="card" style="text-align:center"><h3 style="font-size:1.5rem">MIT</h3><p>whole<br>codebase</p></div>
+          </div>
+        </div>
+      </div>
+      <p class="note">
+        "No default requests" is the claim most worth checking: with sync off, the extension
+        makes no network calls at all. That is asserted in the sync E2E.
+      </p>
+    </div>
+    <div class="meta"><span>7 / 9</span><span class="hint">privacy</span></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <p class="eyebrow">Store pack</p>
+    <h1>What a submission still needs</h1>
+    <p class="sub">The code is feature-complete for 1.0. What remains is packaging, and three items need decisions only you can make.</p>
+    <div class="body">
+      <div class="cols">
+        <div>
+          <ul class="pts">
+            <li><b>Real icon set.</b> Current PNGs are placeholders; need 16/32/48/128 + a 1280×800 promo tile.</li>
+            <li><b>Screenshots.</b> Five, at 1280×800: popup, side panel, full tab, bookmarks, sync settings.</li>
+            <li><b>Privacy policy page.</b> Short; the manifest makes the claims easy to substantiate.</li>
+            <li><b>Permission justifications.</b> One sentence per permission, written for a reviewer.</li>
+            <li><b>Single purpose statement.</b> "Save and restore browser windows as sessions."</li>
+          </ul>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:.7rem">
+            <span class="k">Ready</span>
+            <h3>Everything below the listing</h3>
+            <p>Build, tests, icons at correct dimensions (art needed), onboarding, licence,
+               privacy posture, and a working unpacked install path.</p>
+          </div>
+          <div class="card">
+            <span class="k">Not ready</span>
+            <h3>Anything requiring a decision</h3>
+            <p>Name clearance, a support address, and whether sync ships as part of the
+               listing or as a separate self-hosted add-on.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meta"><span>8 / 9</span><span class="hint">store</span></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <p class="eyebrow">Decision needed</p>
+    <h1>Three questions before this goes live</h1>
+    <p class="sub">Answer these and I can promote the design, generate the store assets, and ship the listing.</p>
+    <div class="body">
+      <div class="q">
+        <span class="n">01</span>
+        <span><strong>Direction: adopt "ledger", keep v1, or blend?</strong>
+          <span>Ledger is bolder and more honest; v1 is friendlier and already live. Blending usually produces neither.</span></span>
+      </div>
+      <div class="q">
+        <span class="n">02</span>
+        <span><strong>Does the hero keep the status card?</strong>
+          <span>It reads as "unfinished by design". Removing it makes the page look more shipped but less specific.</span></span>
+      </div>
+      <div class="q">
+        <span class="n">03</span>
+        <span><strong>Ship sync in the store listing, or document it as an optional add-on?</strong>
+          <span>Including it means a reviewer will ask about the server. Excluding it keeps review simple but hides a feature.</span></span>
+      </div>
+      <p class="note">
+        Nothing is deployed. When you answer, promoting the site is moving <code>design/v2</code>
+        over <code>site/</code> and pushing; the Pages workflow does the rest.
+      </p>
+    </div>
+    <div class="meta"><span>9 / 9</span><span class="hint">awaiting approval</span></div>
+  </section>
+
+</div>
+
+<nav class="nav" aria-label="Slides">
+  <button type="button" id="prev" aria-label="Previous slide">←</button>
+  <span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+  <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  <button type="button" id="next" aria-label="Next slide">→</button>
+</nav>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const dots = [...document.querySelectorAll('.dot')];
+  let i = 0;
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+
+  addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+    if (e.key === 'p' || e.key === 'P') print();
+  });
+
+  if (location.hash) show(Number(location.hash.slice(1)) - 1 || 0);
+</script>
+</body>
+</html>
