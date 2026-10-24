@@ -1,6 +1,7 @@
 // Sync scheduling: periodic pull, and a debounced push after local changes.
 
 import { readSyncState } from './state';
+import { settingsRepo } from '@/db';
 import { handleSyncNow } from '@/sw/sync-handlers';
 import { broadcast } from '@/messaging';
 
@@ -16,9 +17,15 @@ export async function scheduleSyncAlarm(): Promise<void> {
 
   if (!state.enabled || !state.dataKey) return;
 
+  // Prefer the explicit Settings value; fall back to the state default.
+  const secs = await settingsRepo
+    .get()
+    .then((s) => s.syncPollIntervalSec || state.pollIntervalSec || 60)
+    .catch(() => state.pollIntervalSec || 60);
+
   // Chrome 120+ allows a 30s minimum; 1 minute is the practical floor for a
   // personal sync server and avoids hammering it.
-  const minutes = Math.max(1, Math.round((state.pollIntervalSec || 60) / 60));
+  const minutes = Math.max(1, Math.round(secs / 60));
   chrome.alarms.create(SYNC_POLL_ALARM, {
     periodInMinutes: minutes,
     delayInMinutes: minutes,

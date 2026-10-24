@@ -10,6 +10,7 @@ import { registerCommandListeners } from './events/commands';
 import { registerBusHandlers } from './handlers';
 import { cancelPendingSaves } from './autosave';
 import { scheduleSyncAlarm, SYNC_POLL_ALARM, cancelSyncTimers } from '@/sync/scheduler';
+import { BACKUP_ALARM, runBackup, scheduleBackupAlarm } from './backup-service';
 import { handleSyncNow } from './sync-handlers';
 import { broadcast } from '@/messaging';
 
@@ -43,13 +44,30 @@ registerBusHandlers();
 // Do NOT call setPanelBehavior({openPanelOnActionClick:true}) while a
 // default_popup is set: Chrome ignores the popup and the button appears dead.
 chrome.action.onClicked.addListener(async (tab) => {
-  // Only reached if the popup is removed from the manifest (e.g. a future mode).
-  console.log('[Windrow SW] action clicked: opening side panel');
-  try {
-    await chrome.sidePanel.open({ windowId: tab.windowId });
-  } catch {
-    chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
+  // Only reached if the popup is removed from the manifest. Respect the
+  // user's preferred surface rather than always assuming the side panel.
+  const settings = await settingsRepo.get().catch(() => null);
+  const surface = settings?.preferredSurface ?? 'sidepanel';
+  console.log('[Windrow SW] action clicked →', surface);
+
+  if (surface === 'sidepanel') {
+    try {
+      await chrome.sidePanel.open({ windowId: tab.windowId });
+      return;
+    } catch {
+      /* fall through to a tab */
+    }
   }
+  if (surface === 'window') {
+    await chrome.windows.create({
+      url: chrome.runtime.getURL('window.html'),
+      type: 'popup',
+      width: 560,
+      height: 760,
+    });
+    return;
+  }
+  chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
 });
 
 // ── Alarms ──
@@ -57,6 +75,11 @@ chrome.alarms.create('windrow-health', { periodInMinutes: 5 });
 
 // Recreate the sync poll alarm from stored state on every SW start.
 scheduleSyncAlarm().catch(() => {});
+
+// Local backups: on by default, checked twice a day.
+scheduleBackupAlarm()
+  .then(() => runBackup())
+  .catch((e) => console.warn('[Windrow SW] backup failed:', e));
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'windrow-health') {
@@ -67,6 +90,16 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     sessionVersionsRepo.pruneGlobal().catch((e: unknown) =>
       console.warn('[Windrow SW] pruneGlobal failed:', e),
     );
+  }
+
+  if (alarm.name === BACKUP_ALARM) {
+    runBackup()
+      .then((r) => {
+        if (r.written.length > 0) {
+          console.log(`[Windrow SW] backup written (${r.written.map((w) => w.tier).join(', ')})`);
+        }
+      })
+      .catch((e) => console.warn('[Windrow SW] backup failed:', e));
   }
 
   if (alarm.name === SYNC_POLL_ALARM) {

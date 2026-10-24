@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windrow — Privacy Policy</title>
+<style>
+  :root {
+    --paper:#f4f1e8; --ink:#14181f; --ink-2:#3b414d; --ink-3:#6a7180;
+    --rule:#d5cfc0; --vermillion:#c8402a;
+    --serif:"Iowan Old Style",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --paper:#11131a; --ink:#ecebe5; --ink-2:#b9bcc6; --ink-3:#858b99;
+            --rule:#2a2f3a; --vermillion:#e2664d; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font-family:var(--sans); font-size:16.5px; line-height:1.65; }
+  .wrap { width:min(100% - 2.5rem, 760px); margin-inline:auto; padding:3.5rem 0 5rem; }
+  header { border-bottom:2px solid var(--ink); padding-bottom:1.4rem; margin-bottom:2.2rem; }
+  .mark { display:flex; align-items:center; gap:.6rem; text-decoration:none; color:var(--ink);
+          font-family:var(--serif); font-size:1.2rem; font-weight:600; }
+  .mark svg { width:22px; height:22px; }
+  h1 { font-family:var(--serif); font-weight:500; font-size:clamp(2rem,5vw,2.8rem);
+       line-height:1.05; letter-spacing:-.03em; margin:1.4rem 0 .4rem; }
+  .meta { font-family:var(--mono); font-size:.68rem; letter-spacing:.1em;
+          text-transform:uppercase; color:var(--ink-3); }
+  h2 { font-family:var(--serif); font-weight:500; font-size:1.35rem; letter-spacing:-.02em;
+       margin:2.4rem 0 .6rem; }
+  p, li { color:var(--ink-2); }
+  strong { color:var(--ink); }
+  ul { padding-left:1.2rem; }
+  li { margin-bottom:.4rem; }
+  table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.9rem; }
+  th, td { text-align:left; padding:.6rem .5rem; border-bottom:1px solid var(--rule);
+           vertical-align:top; }
+  th { font-family:var(--mono); font-size:.62rem; letter-spacing:.1em;
+       text-transform:uppercase; color:var(--ink-3); font-weight:500; }
+  code { font-family:var(--mono); font-size:.86em;
+         background:color-mix(in srgb, var(--rule) 45%, transparent);
+         padding:.08rem .3rem; border-radius:2px; }
+  .lede { font-size:1.05rem; }
+  .note { border-left:3px solid var(--vermillion); padding-left:1rem; margin:1.6rem 0; }
+  footer { border-top:1px solid var(--rule); margin-top:3rem; padding-top:1.2rem;
+           font-family:var(--mono); font-size:.66rem; letter-spacing:.06em;
+           text-transform:uppercase; color:var(--ink-3); }
+  a { color:inherit; text-decoration-color:var(--vermillion); text-underline-offset:3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <a class="mark" href="./">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect width="24" height="24" rx="5" fill="#14181F"/>
+        <g fill="none" stroke="#F4F1E8" stroke-width="1.7" stroke-linecap="round">
+          <path d="M5 8h14"/><path d="M5 12h14"/><path d="M5 16h8"/>
+        </g>
+        <circle cx="18" cy="16" r="2.2" fill="#C8402A"/>
+      </svg>
+      Windrow
+    </a>
+    <h1>Privacy Policy</h1>
+    <p class="meta">Last updated 24 October 2026 · applies to Windrow 0.6.0 and later</p>
+  </header>
+
+  <p class="lede">
+    Windrow is a tab manager for Chrome. This policy describes exactly what the
+    extension can access, what it stores, and what — if anything — leaves your device.
+    It is written to be checked against the source, which is public and MIT-licensed.
+  </p>
+
+  <div class="note">
+    <strong>The short version.</strong> Windrow stores your tabs in your own browser
+    profile. It makes no network request unless you turn sync on and configure a server.
+    There is no account, no analytics, and no third-party service of any kind.
+  </div>
+
+  <h2>What Windrow can access</h2>
+
+  <table>
+    <thead>
+      <tr><th>Permission</th><th>Why it is needed</th><th>When</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>tabs</code></td>
+        <td>Read tab titles and URLs so a session can be saved and restored.</td>
+        <td>Required</td>
+      </tr>
+      <tr>
+        <td><code>tabGroups</code></td>
+        <td>Capture and recreate Chrome tab groups.</td>
+        <td>Required</td>
+      </tr>
+      <tr>
+        <td><code>storage</code>, <code>unlimitedStorage</code></td>
+        <td>Keep sessions, revisions, and local backups in this profile.</td>
+        <td>Required</td>
+      </tr>
+      <tr>
+        <td><code>sidePanel</code></td>
+        <td>Provide the side-panel view.</td>
+        <td>Required</td>
+      </tr>
+      <tr>
+        <td><code>alarms</code></td>
+        <td>Schedule autosave coalescing, local backups and (if enabled) sync polling.</td>
+        <td>Required</td>
+      </tr>
+      <tr>
+        <td><code>favicon</code></td>
+        <td>Show a tab's own icon in lists, using Chrome's local favicon cache.</td>
+        <td>Required</td>
+      </tr>
+      <tr>
+        <td><code>history</code></td>
+        <td>Optional history features.</td>
+        <td>Only if you enable them. Revocable.</td>
+      </tr>
+      <tr>
+        <td><code>bookmarks</code></td>
+        <td>Import Chrome's bookmark tree into Windrow.</td>
+        <td>Only when you press “Import from Chrome”.</td>
+      </tr>
+      <tr>
+        <td>Host access</td>
+        <td>Reach the sync server you configure.</td>
+        <td>Only the origin you enter. No access at install.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Windrow cannot read page content.</strong> It does not request access to the
+    sites you visit, and it does not inject scripts into them.
+  </p>
+
+  <h2>What is stored, and where</h2>
+
+  <p>
+    Everything is stored locally in Chrome's extension storage and IndexedDB, inside your
+    browser profile:
+  </p>
+
+  <ul>
+    <li><strong>Sessions</strong> — tab titles, URLs, ordering, pinned state, tab groups.</li>
+    <li><strong>Revisions</strong> — short history of each session, capped by your setting.</li>
+    <li><strong>Tags and bookmarks</strong> you create in Windrow.</li>
+    <li><strong>Backups</strong> — automatic snapshots, capped at 17 slots.</li>
+    <li><strong>Settings</strong> — your preferences.</li>
+  </ul>
+
+  <p>
+    If sync is enabled, the extension also stores a device token and an encrypted copy of
+    your sync key. Uninstalling the extension removes all of it from your profile.
+  </p>
+
+  <h2>Network activity</h2>
+
+  <p>
+    <strong>With sync off (the default), Windrow makes no network requests.</strong>
+    Everything — capture, restore, backup, export — happens locally.
+  </p>
+
+  <p>If you enable sync, the extension talks only to the server URL you provide:</p>
+
+  <ul>
+    <li>It sends <strong>encrypted blobs</strong>: ciphertext, an IV, a timestamp, and a blob id.</li>
+    <li>It receives the same. The server cannot decrypt them.</li>
+    <li>It sends a device name you chose, used only to list paired devices.</li>
+  </ul>
+
+  <p>
+    There is no hosted service operated by this project that collects data. You may point
+    Windrow at a server you run, or at one hosted for you; in both cases the operator holds
+    ciphertext only. Because the key never leaves your device, the operator cannot read your
+    tabs, and cannot reset your passphrase.
+  </p>
+
+  <h2>What is never collected</h2>
+
+  <ul>
+    <li>No account, email address, or identity of any kind.</li>
+    <li>No analytics, telemetry, crash reporting, or usage statistics.</li>
+    <li>No advertising identifiers, and no ad network.</li>
+    <li>No page content, form data, passwords, or cookies.</li>
+    <li>No data sold, rented, or shared with third parties.</li>
+  </ul>
+
+  <h2>Third parties</h2>
+
+  <p>
+    None. Windrow loads no remote scripts, fonts, or images. The only hosts it contacts are
+    the sync server you configure yourself.
+  </p>
+
+  <h2>Your control over the data</h2>
+
+  <ul>
+    <li><strong>Export</strong> — Settings → Import &amp; export writes plain JSON, or an
+        encrypted file with a passphrase you choose.</li>
+    <li><strong>Delete</strong> — remove individual sessions, tags, bookmarks, or backups at
+        any time.</li>
+    <li><strong>Disconnect sync</strong> — Settings → Sync &amp; backup → Forget this server
+        removes the token, the keys, and the host permission.</li>
+    <li><strong>Uninstall</strong> — removes all locally stored data with the extension.</li>
+  </ul>
+
+  <h2>Children</h2>
+
+  <p>Windrow is a general-purpose developer tool and is not directed at children under 13.</p>
+
+  <h2>Changes</h2>
+
+  <p>
+    Material changes to this policy will be recorded in the project's changelog and the
+    “last updated” date above will change. Because there is no account, there is no mailing
+    list to notify; the repository is the source of truth.
+  </p>
+
+  <h2>Contact</h2>
+
+  <p>
+    Questions or corrections:
+    <a href="https://github.com/abominox/Windrow/issues">github.com/abominox/Windrow/issues</a>.
+  </p>
+
+  <footer>
+    Windrow · MIT licensed · source at github.com/abominox/Windrow
+  </footer>
+</div>
+</body>
+</html>

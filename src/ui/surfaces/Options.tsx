@@ -3,6 +3,7 @@ import { useStore } from '../app/store';
 import { cn } from '@/lib';
 import { DataPanel } from '../components/DataPanel';
 import { SyncPanel } from '../components/SyncPanel';
+import { BackupPanel } from '../components/BackupPanel';
 import { setTheme, setDensity, cacheAppearance } from '@/lib/appearance';
 import type { Settings } from '@/models';
 
@@ -87,7 +88,7 @@ export function Options() {
       {/* FOSS strip */}
       <div className="grid gap-2 sm:grid-cols-3">
         {[
-          { title: 'Local backups', detail: 'Free and on by default' },
+          { title: 'Local backups', detail: 'Automatic, on this device' },
           { title: 'Encrypted sync', detail: 'Optional, you hold the key' },
           { title: 'No ads, no account', detail: 'Nothing to sign up for' },
         ].map((item) => (
@@ -138,16 +139,14 @@ export function Options() {
                 ]}
                 onChange={(v) => save({ restoreOnStartup: v as Settings['restoreOnStartup'] })}
               />
-              <SelectRow
-                label="Default session mode"
-                hint="Single-window treats one window as one session; multi-window tracks each separately."
-                value={settings.defaultOpenMode}
-                options={[
-                  ['multi-window', 'Multi-window'],
-                  ['single-window', 'Single-window'],
-                ]}
-                onChange={(v) => save({ defaultOpenMode: v as Settings['defaultOpenMode'] })}
-              />
+              <div className="px-3 py-3">
+                <p className="text-[12px] font-medium text-text-primary">Session mode</p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-text-muted">
+                  Windrow currently tracks one session per browser window. A combined
+                  &ldquo;single window&rdquo; mode is not implemented, so the option is not shown
+                  rather than pretending to work.
+                </p>
+              </div>
               <ToggleRow
                 label="Auto-save sessions"
                 hint="Persist tabs as they change. Turning this off freezes session state until you save manually."
@@ -259,6 +258,10 @@ export function Options() {
                   Sessions, groups, tags, and revisions live in IndexedDB inside this browser
                   profile. Nothing is uploaded, and removing the extension removes the data.
                 </p>
+              </div>
+              <div className="px-3 py-3">
+                <p className="mb-2 text-[12px] font-medium text-text-primary">Local backups</p>
+                <BackupPanel />
               </div>
               <button
                 type="button"

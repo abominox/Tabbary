@@ -61,7 +61,7 @@ export function onMessageTyped(
 }
 
 /** Fire-and-forget broadcast from SW to all UI contexts (or vice versa). */
-export function broadcast(event: Extract<Message, { type: 'sessionsChanged' | 'tabsChanged' | 'syncStatusChanged' }>): void {
+export function broadcast(event: Extract<Message, { type: 'sessionsChanged' | 'tabsChanged' | 'syncStatusChanged' | 'restored' }>): void {
   chrome.runtime.sendMessage(event).catch(() => {
     // Ignore — no connected UI surfaces is normal
   });

@@ -5,6 +5,17 @@ import { sessionsRepo, tabsRepo, tagsRepo, settingsRepo, sessionVersionsRepo, se
 import { exportAll, importText } from '@/db/io';
 import { getRestoreReport } from './events/startup';
 import { suspendWindow, previewSuspension } from './suspend-service';
+import { planRestore, restoreIntoTabWindow } from './restore-tabs';
+import {
+  runBackup,
+  readBackup,
+  readBackupIndex,
+  backupUsage,
+  deleteBackup,
+  setBackupsEnabled,
+  scheduleBackupAlarm,
+  type BackupIndex,
+} from './backup-service';
 import {
   listBookmarks,
   addBookmark,
@@ -99,15 +110,32 @@ export function registerBusHandlers(): void {
       const session = await sessionsRepo.get(msg.sessionId);
       if (!session) return;
 
-      const tabs = await tabsRepo.listBySession(msg.sessionId);
-      const urls = tabs.map(t => t.url).filter(Boolean);
-      if (urls.length === 0) return;
+      const [tabs, groups] = await Promise.all([
+        tabsRepo.listBySession(msg.sessionId),
+        tabGroupsRepo.listBySession(msg.sessionId),
+      ]);
 
-      const newWindow = await chrome.windows.create({ url: urls });
-      if (newWindow.id !== undefined) {
-        await sessionsRepo.markActive(msg.sessionId, newWindow.id);
-        swCache.bindWindow(newWindow.id, msg.sessionId);
-        broadcast({ type: 'sessionsChanged' });
+      // Rebuild tab groups, not just the URL list. Without this the session
+      // restores as a flat window, which is the main thing a session manager
+      // is supposed to preserve.
+      const plan = planRestore(tabs, groups);
+      if (plan.urls.length === 0) return;
+
+      const { settingsRepo } = await import('@/db');
+      const settings = await settingsRepo.get().catch(() => null);
+
+      const restored = await restoreIntoTabWindow(plan, {
+        suspend: settings?.openSuspended ?? false,
+      });
+      if (restored.windowId == null) return;
+
+      await sessionsRepo.markActive(msg.sessionId, restored.windowId);
+      swCache.bindWindow(restored.windowId, msg.sessionId);
+      broadcast({ type: 'sessionsChanged' });
+      broadcast({ type: 'restored', sessionId: msg.sessionId, groups: restored.groupsCreated });
+
+      if (restored.errors.length > 0) {
+        console.warn('[Windrow SW] restore completed with issues:', restored.errors);
       }
     },
 
@@ -313,6 +341,67 @@ export function registerBusHandlers(): void {
       return seedSessionBookmarks(msg.sessionId);
     },
 
+    // ── Backups ──
+    async backupList() {
+      const [index, usage] = await Promise.all([readBackupIndex(), backupUsage()]);
+      return {
+        enabled: index.enabled,
+        lastRunAt: index.lastRunAt,
+        bytes: usage.bytes,
+        slots: index.slots
+          .slice()
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .map((s) => ({
+            id: s.id,
+            tier: s.tier,
+            createdAt: s.createdAt,
+            sessions: s.sessions,
+            tabs: s.tabs,
+            bytes: s.bytes,
+          })),
+      };
+    },
+
+    async backupRun(msg) {
+      const result = await runBackup({ force: msg.force });
+      await scheduleBackupAlarm();
+      return { written: result.written.length, skipped: result.skipped };
+    },
+
+    async backupRestore(msg) {
+      const json = await readBackup(msg.id);
+      if (!json) return null;
+      // Backups are just exported bundles, so the same importer applies. It is
+      // additive by design: restoring never deletes what you already have.
+      const result = await importText(json);
+      if (result.sessions > 0) broadcast({ type: 'sessionsChanged' });
+      return { sessions: result.sessions, tabs: result.tabs };
+    },
+
+    async backupDelete(msg) {
+      await deleteBackup(msg.id);
+      return true;
+    },
+
+    async backupToggle(msg) {
+      const index: BackupIndex = await setBackupsEnabled(msg.enabled);
+      await scheduleBackupAlarm();
+      const usage = await backupUsage();
+      return {
+        enabled: index.enabled,
+        lastRunAt: index.lastRunAt,
+        bytes: usage.bytes,
+        slots: index.slots.map((s) => ({
+          id: s.id,
+          tier: s.tier,
+          createdAt: s.createdAt,
+          sessions: s.sessions,
+          tabs: s.tabs,
+          bytes: s.bytes,
+        })),
+      };
+    },
+
     // ── Suspension ──
     async suspendPreview(msg) {
       return previewSuspension(msg.windowId, msg.minIdleMinutes);
@@ -371,10 +460,11 @@ export function registerBusHandlers(): void {
       const urls = tabs.map((t) => t.url).filter(Boolean);
       if (urls.length === 0) return;
 
-      const win = await chrome.windows.create({ url: urls });
-      if (win.id !== undefined) {
-        await sessionsRepo.markActive(session.id, win.id);
-        swCache.bindWindow(win.id, session.id);
+      const groups = await tabGroupsRepo.listBySession(session.id);
+      const restored = await restoreIntoTabWindow(planRestore(tabs, groups));
+      if (restored.windowId != null) {
+        await sessionsRepo.markActive(session.id, restored.windowId);
+        swCache.bindWindow(restored.windowId, session.id);
         broadcast({ type: 'sessionsChanged' });
       }
     },

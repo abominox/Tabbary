@@ -137,6 +137,45 @@ export interface TabsChangedEvent {
   type: 'tabsChanged';
   sessionId: string;
 }
+export interface BackupListMessage {
+  type: 'backupList';
+}
+export interface BackupRunMessage {
+  type: 'backupRun';
+  force?: boolean;
+}
+export interface BackupRestoreMessage {
+  type: 'backupRestore';
+  id: string;
+}
+export interface BackupDeleteMessage {
+  type: 'backupDelete';
+  id: string;
+}
+export interface BackupToggleMessage {
+  type: 'backupToggle';
+  enabled: boolean;
+}
+
+export interface BackupView {
+  enabled: boolean;
+  lastRunAt: number | null;
+  bytes: number;
+  slots: {
+    id: string;
+    tier: string;
+    createdAt: number;
+    sessions: number;
+    tabs: number;
+    bytes: number;
+  }[];
+}
+
+export interface RestoredEvent {
+  type: 'restored';
+  sessionId: string;
+  groups: number;
+}
 export interface SyncStatusChangedEvent {
   type: 'syncStatusChanged';
   status: 'synced' | 'syncing' | 'paused' | 'error';
@@ -177,6 +216,12 @@ export type Message =
   | SuspendMessage
   | SessionsChangedEvent
   | TabsChangedEvent
+  | BackupListMessage
+  | BackupRunMessage
+  | BackupRestoreMessage
+  | BackupDeleteMessage
+  | BackupToggleMessage
+  | RestoredEvent
   | SyncStatusChangedEvent;
 
 /** Result of a merge: how many tabs moved, how many were duplicates. */
@@ -257,4 +302,14 @@ export type MessageResponse<T> = T extends { type: 'getSessions' }
                                                                 ? boolean
                                                                 : T extends { type: 'suspendWindow' } | { type: 'suspendPreview' }
                                                                   ? import('@/messaging/suspend').SuspendResult
-                                                                  : void;
+                                                                  : T extends { type: 'backupList' }
+                                                                    ? BackupView
+                                                                    : T extends { type: 'backupRun' }
+                                                                      ? { written: number; skipped: string | null }
+                                                                      : T extends { type: 'backupRestore' }
+                                                                        ? { sessions: number; tabs: number } | null
+                                                                        : T extends { type: 'backupDelete' }
+                                                                          ? boolean
+                                                                          : T extends { type: 'backupToggle' }
+                                                                            ? BackupView
+                                                                            : void;

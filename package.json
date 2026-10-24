@@ -1,6 +1,6 @@
 {
   "name": "windrow",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,8 @@
     "test:e2e:io": "tsx e2e/io.ts",
     "test:e2e:sync": "tsx e2e/sync.ts",
     "test:e2e:bookmarks": "tsx e2e/bookmarks.ts",
-    "test:e2e:all": "tsx e2e/m1.ts && tsx e2e/m2.ts && tsx e2e/io.ts && tsx e2e/m3.ts && tsx e2e/sync.ts && tsx e2e/bookmarks.ts && tsx e2e/m6.ts",
+    "test:e2e:store": "tsx e2e/store.ts",
+    "test:e2e:all": "tsx e2e/m1.ts && tsx e2e/m2.ts && tsx e2e/io.ts && tsx e2e/m3.ts && tsx e2e/sync.ts && tsx e2e/bookmarks.ts && tsx e2e/m6.ts && tsx e2e/store.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit"
   },
   "dependencies": {
