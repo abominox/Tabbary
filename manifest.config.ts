@@ -4,7 +4,7 @@ export default defineManifest({
   manifest_version: 3,
   minimum_chrome_version: '116',
   name: '__MSG_extName__',
-  version: '0.4.0',
+  version: '0.5.0',
   description: '__MSG_extDescription__',
   default_locale: 'en',
   permissions: [
@@ -20,7 +20,10 @@ export default defineManifest({
     'offscreen',
   ],
   optional_permissions: ['history', 'clipboardWrite', 'downloads'],
+  // Sync is opt-in: no host access is requested at install. The origin is
+  // granted through permissions.request() when the user configures a server.
   host_permissions: [],
+  optional_host_permissions: ['https://*/*', 'http://localhost/*', 'http://127.0.0.1/*'],
   background: {
     service_worker: 'src/sw/index.ts',
     type: 'module',

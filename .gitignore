@@ -12,3 +12,8 @@ dist-e2e/
 windrow-e2e-*_/
 # Playwright browser downloads (local dev)
 ms-playwright/
+
+# Sync server runtime data (SQLite + WAL)
+server/data/
+data/
+.env

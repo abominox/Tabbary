@@ -1,0 +1,26 @@
+services:
+  sync:
+    build: .
+    restart: unless-stopped
+    ports:
+      - '8787:8787'
+    environment:
+      # Required. Generate with: openssl rand -base64 32
+      WINDROW_PAIRING_SECRET: ${WINDROW_PAIRING_SECRET:?set WINDROW_PAIRING_SECRET in .env}
+      WINDROW_DB: /data/windrow.db
+      # Pairing attempts per IP per minute.
+      WINDROW_PAIR_LIMIT: '5'
+    volumes:
+      - windrow-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8787/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  windrow-data:

@@ -29,6 +29,9 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Sync server tests
+        run: npm run test:server
+
       - name: Build
         run: npm run build
 
@@ -38,6 +41,33 @@ jobs:
           name: windrow-unpacked
           path: dist/
           retention-days: 14
+
+  # The sync server is dependency-free (node:sqlite), so it can be linted by
+  # simply starting it and asking for /health.
+  server-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Start the server and probe /health
+        env:
+          WINDROW_PAIRING_SECRET: ci-smoke-test-secret-123456
+          PORT: '8899'
+        run: |
+          node server/index.mjs &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8899/health > /dev/null; then
+              echo "healthy"
+              exit 0
+            fi
+            sleep 0.5
+          done
+          echo "server did not become healthy" >&2
+          exit 1
 
   e2e:
     runs-on: ubuntu-latest
@@ -62,7 +92,7 @@ jobs:
 
       - name: E2E (headless, no display required)
         run: npm run test:e2e:all
-        timeout-minutes: 10
+        timeout-minutes: 15
 
       - name: Upload traces on failure
         if: failure()

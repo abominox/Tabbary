@@ -1,0 +1,15 @@
+{
+  "name": "windrow-sync",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted, ciphertext-only sync server for Windrow",
+  "type": "module",
+  "main": "index.mjs",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node index.mjs",
+    "test": "node --test server.test.mjs"
+  }
+}

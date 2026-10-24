@@ -7,10 +7,10 @@ survives crashes and restarts, and can be restored later with its tab groups int
 Everything lives in your own browser profile. There is no account, no telemetry, and no
 paid tier.
 
-> **Status: early (M3).** The service worker, data layer, side panel, full-tab manager,
+> **Status: early (M4).** The service worker, data layer, side panel, full-tab manager,
 > drag-and-drop, revision history, settings, import/export, popup, dedicated window, restore
-> matching, and tag management are working. Cloud sync and the browser-bookmark UI are not
-> implemented yet. See [Roadmap](#roadmap).
+> matching, tag management, and optional self-hosted sync are working. The browser-bookmark
+> UI is not implemented yet. See [Roadmap](#roadmap).
 
 ## Why
 
@@ -37,6 +37,9 @@ client-side encryption and a sync server you can run yourself.
 - **Restore matching** — on startup, windows Chrome reopens are matched back to their recorded
   sessions by URL overlap, so history survives a restart instead of fragmenting.
 - **Tags** — real tag management: counts, bulk rename, and bulk delete across sessions.
+- **Optional self-hosted sync** — one blob per session, encrypted on your device
+  (AES-GCM), pushed to a small server you run. Compare-and-swap writes, a monotonic
+  server revision cursor, and a 24-word recovery phrase. The server stores ciphertext only.
 - **Settings** — startup, capture, theme, density, revision limit, and sync placeholders,
   persisted in IndexedDB.
 - **Side panel UI** — live active session, session rows with tab-icon strips, search, tags.
@@ -70,6 +73,8 @@ npm run test:e2e   # M1 E2E (Playwright)
 npm run test:e2e:m2 # M2 E2E (full-tab, DnD, revisions, settings)
 npm run test:e2e:m3 # M3 E2E (popup, window, restore matching, tags)
 npm run test:e2e:io # import/export E2E (real download + file import)
+npm run test:e2e:sync # two profiles syncing through a real server
+npm run test:server   # sync server tests (node --test, no deps)
 npm run test:e2e:all
 npm run typecheck  # TypeScript only
 ```
@@ -99,7 +104,8 @@ docker compose -f docker-compose.e2e.yml run --rm e2e
 | `src/db/` | Dexie/IndexedDB schema and repositories (sessions, tabs, groups, tags, bookmarks, versions, import/export) |
 | `src/ui/` | React app; one bundle mounted as side panel, full tab, popup, window, options, onboarding, tags |
 | `src/messaging/` | Typed service-worker ↔ UI message bus |
-| `src/sync/` | Sync connector abstraction (not implemented) |
+| `src/sync/` | Sync engine: crypto, connector, state, scheduler |
+| `server/` | Self-hosted ciphertext-only sync server (Node 22, no deps) |
 | `src/lib/` | Favicon, discard, permission helpers |
 | `public/` | Icons, locales |
 
@@ -128,13 +134,14 @@ No host permissions are requested at install.
 | M1 | Skeleton, service worker, data layer, side panel | ✅ done |
 | M2 | Full-tab manager, drag-and-drop, revision history, settings | ✅ done |
 | M3 | Popup, dedicated window, restore matching, tags UI | ✅ done |
-| M4 | Self-hosted sync server + client-side encryption, recovery key | ⬜ next |
+| M4 | Self-hosted sync server + client-side encryption, recovery key | ✅ done |
 | M5a | Export/import (JSON + encrypted), OneTab and URL-list importers | ✅ done |
-| M5b | Browser-bookmark type, session/tag bookmark UI, more importers | ⬜ |
+| M5b | Browser-bookmark type, session/tag bookmark UI, more importers | ⬜ next |
 | M6 | Tab suspender polish, onboarding, themes, store release | ⬜ |
 
-Known gaps: cloud sync (`src/sync/` throws `not implemented`) and the settings fields that
-configure it are inert until M4; bookmarks exist in the schema but have no UI yet.
+Known gaps: bookmarks exist in the schema but have no UI yet. Sync covers sessions only
+(tags ride along inside each session blob); there is no bookmark sync or Web Push — the
+client polls.
 
 ### Restore on startup
 
@@ -150,6 +157,53 @@ configure it are inert until M4; bookmarks exist in the schema but have no UI ye
 candidates and their match confidence. Matching only runs for windows Chrome creates within
 20 seconds of startup — outside that window, a new window is treated as new. The decision is
 recorded and exposed through `getRestoreReport`.
+
+## Sync (optional)
+
+Sync is off by default and requires **your own server**. There is no vendor, no
+account, and no hosted option.
+
+### What the server can and cannot see
+
+| Stored on the server | Never sent to the server |
+|---|---|
+| Blob ids, type, revision | Tab URLs and titles |
+| AES-GCM ciphertext + IV | Session names and tags |
+| SHA-256 hashes of device tokens | The data key and the passphrase |
+| Timestamps | The recovery phrase |
+
+### Key model
+
+Setup creates a random 32-byte **data key** and stores two wrapped copies:
+
+```
+passphrase  ──PBKDF2-SHA256 (600k)──┐
+                                    ├──> AES-GCM(data key)
+24-word phrase ──HKDF-SHA256───────┘
+```
+
+The data key encrypts session blobs. The wrapped copies are stored locally *and*
+uploaded, so a second device can unlock the same key with the passphrase. The
+recovery phrase is shown once at setup and never stored.
+
+### Conflict handling
+
+Each session is one blob. Writes carry the revision they were based on:
+
+- another device wrote first → server returns `409` → the client records the
+  winning revision and reconciles on the next pull
+- a remote copy is applied only if it is newer than the local one, and never over
+  a session that is live in a window (`protectLocal`)
+
+### Running the server
+
+```bash
+export WINDROW_PAIRING_SECRET="$(openssl rand -base64 32)"
+node server/index.mjs            # or: docker compose -f server/compose.yaml up -d
+```
+
+See [server/README.md](server/README.md) for the API, configuration, TLS, and
+backup notes.
 
 ## Import / export
 

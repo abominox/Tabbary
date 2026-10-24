@@ -9,6 +9,16 @@ import { onMessageTyped } from '@/messaging';
 import { swCache } from './cache';
 import { broadcast } from '@/messaging';
 import { requestSaveSession } from './autosave';
+import {
+  handleSyncSetup,
+  handleSyncPair,
+  handleSyncUnlock,
+  handleSyncNow,
+  handleSyncState,
+  handleSyncVerify,
+  handleSyncDisable,
+  handleSyncForget,
+} from './sync-handlers';
 import type { Settings, Tab } from '@/models';
 
 /** Register all bus handlers. Called synchronously from index.ts on SW load. */
@@ -237,6 +247,39 @@ export function registerBusHandlers(): void {
     async matchWindows() {
       const { matches } = await matchCandidates();
       return matches;
+    },
+
+    // ── Sync ──
+    async syncState() {
+      return handleSyncState();
+    },
+
+    async syncSetup(msg) {
+      return handleSyncSetup(msg);
+    },
+
+    async syncPair(msg) {
+      return handleSyncPair(msg);
+    },
+
+    async syncUnlock(msg) {
+      return handleSyncUnlock(msg);
+    },
+
+    async syncNow() {
+      return handleSyncNow();
+    },
+
+    async syncVerify() {
+      return handleSyncVerify();
+    },
+
+    async syncDisable(msg) {
+      return handleSyncDisable(msg);
+    },
+
+    async syncForget() {
+      return handleSyncForget();
     },
 
     async restoreLastSession() {

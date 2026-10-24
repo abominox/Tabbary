@@ -29,14 +29,17 @@ export function cleanUserDataDir(dir: string): void {
  *
  * Set WINDROW_HEADED=1 to watch the run in a real window (useful when debugging).
  */
-export async function launchContext(userDataDir: string): Promise<BrowserContext> {
+export async function launchContext(
+  userDataDir: string,
+  extensionPath: string = EXTENSION_PATH,
+): Promise<BrowserContext> {
   const headed = process.env.WINDROW_HEADED === '1';
 
   return chromium.launchPersistentContext(userDataDir, {
     ...(headed ? { headless: false } : { headless: true, channel: 'chromium' }),
     args: [
-      `--disable-extensions-except=${EXTENSION_PATH}`,
-      `--load-extension=${EXTENSION_PATH}`,
+      `--disable-extensions-except=${extensionPath}`,
+      `--load-extension=${extensionPath}`,
       '--no-first-run',
       '--no-default-browser-check',
     ],
@@ -199,4 +202,13 @@ export async function closeOnboardingTab(context: BrowserContext, extId: string)
       await p.close();
     }
   }
+}
+
+/** Collect console output from the service worker (for debugging E2E runs). */
+export function swLogs(context: BrowserContext): string[] {
+  const lines: string[] = [];
+  const worker = context.serviceWorkers()[0];
+  if (!worker) return lines;
+  worker.on('console', (msg) => lines.push(`[${msg.type()}] ${msg.text()}`));
+  return lines;
 }

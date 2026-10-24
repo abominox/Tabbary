@@ -56,7 +56,7 @@
       </div>
       <p class="hero-meta">
         <span><i class="dot"></i> No account required</span>
-        <span>Data never leaves your browser</span>
+        <span>Data leaves only if you run a sync server</span>
         <span>Early development</span>
       </p>
     </section>
@@ -214,7 +214,7 @@
     <section id="features" aria-labelledby="features-title">
       <h2 id="features-title">What it does today</h2>
       <p class="section-lede">
-        Windrow runs as a Chrome MV3 extension. This is the M4-era build — a working core, not a
+        Windrow runs as a Chrome MV3 extension. This is the M5-era build — a working core, not a
         mockup — so the list is deliberately short.
       </p>
       <div class="grid">
@@ -253,6 +253,12 @@
           <h3>Windows are recognised, not duplicated</h3>
           <p>When Chrome reopens your windows, Windrow matches them back to their sessions by
              URL overlap — so history survives a restart instead of fragmenting.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Sync</span>
+          <h3>Your server, your ciphertext</h3>
+          <p>Optional sync to a server you run. Sessions are encrypted on this device first,
+             so the server stores blobs it cannot read. No account, no vendor.</p>
         </article>
         <article class="card">
           <span class="tag">Portability</span>
@@ -317,9 +323,9 @@
           <tr><td>M1</td><td>Service worker, data layer, side panel</td><td><span class="pill">done</span></td></tr>
           <tr><td>M2</td><td>Full-tab manager, drag-and-drop, history UI, settings</td><td><span class="pill">done</span></td></tr>
           <tr><td>M3</td><td>Popup, dedicated window, restore matching, tags UI</td><td><span class="pill">done</span></td></tr>
-          <tr><td>M4</td><td>Self-hosted sync, client-side encryption</td><td><span class="pill next">next</span></td></tr>
+          <tr><td>M4</td><td>Self-hosted sync, client-side encryption</td><td><span class="pill">done</span></td></tr>
           <tr><td>M5a</td><td>Export/import (JSON + encrypted), OneTab import</td><td><span class="pill">done</span></td></tr>
-          <tr><td>M5b</td><td>Browser bookmarks, bookmark UI, more importers</td><td><span class="pill todo">planned</span></td></tr>
+          <tr><td>M5b</td><td>Browser bookmarks, bookmark UI, more importers</td><td><span class="pill next">next</span></td></tr>
           <tr><td>M6</td><td>Suspender polish, onboarding, store release</td><td><span class="pill todo">planned</span></td></tr>
         </tbody>
       </table>

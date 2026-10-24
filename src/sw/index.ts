@@ -9,6 +9,9 @@ import { registerStartupListeners } from './events/startup';
 import { registerCommandListeners } from './events/commands';
 import { registerBusHandlers } from './handlers';
 import { cancelPendingSaves } from './autosave';
+import { scheduleSyncAlarm, SYNC_POLL_ALARM, cancelSyncTimers } from '@/sync/scheduler';
+import { handleSyncNow } from './sync-handlers';
+import { broadcast } from '@/messaging';
 
 // ──────────────────────────────────────────────
 // All listeners MUST be registered synchronously
@@ -50,19 +53,27 @@ chrome.action.onClicked.addListener(async (tab) => {
 });
 
 // ── Alarms ──
-// Sync polling and version pruning scaffold (active work in M4/M1 refinement).
 chrome.alarms.create('windrow-health', { periodInMinutes: 5 });
+
+// Recreate the sync poll alarm from stored state on every SW start.
+scheduleSyncAlarm().catch(() => {});
+
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'windrow-health') {
-    // Keep SW warm(ish); future: sync engine poll (M4)
     console.log('[Windrow SW] health alarm');
-    // Ensure settings DB is healthy
     settingsRepo.get().catch(() => {});
     // Enforce the global SessionVersion cap (500) — per-session pruning happens in
     // snapshot(); this periodic sweep is the cross-session safety net (PLAN §8).
     sessionVersionsRepo.pruneGlobal().catch((e: unknown) =>
       console.warn('[Windrow SW] pruneGlobal failed:', e),
     );
+  }
+
+  if (alarm.name === SYNC_POLL_ALARM) {
+    broadcast({ type: 'syncStatusChanged', status: 'syncing' });
+    handleSyncNow()
+      .then((r) => broadcast({ type: 'syncStatusChanged', status: r.ok ? 'synced' : 'error' }))
+      .catch(() => broadcast({ type: 'syncStatusChanged', status: 'error' }));
   }
 });
 
@@ -71,6 +82,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 chrome.runtime.onSuspend?.addListener(() => {
   console.log('[Windrow SW] onSuspend');
   cancelPendingSaves();
+  void cancelSyncTimers();
 });
 
 console.log('[Windrow SW] loaded and registered');

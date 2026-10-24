@@ -1,6 +1,9 @@
 // Typed SW↔UI message bus.
 
 import type { Session, Tab, TabGroup, SessionVersion, Settings } from '@/models';
+import type { SyncMessage, SyncSetupResult, SyncStatus, SyncRunResult } from './sync';
+
+export type * from './sync';
 
 // ── Queries ──
 export interface GetSessionsMessage {
@@ -158,6 +161,7 @@ export type Message =
   | GetTagsMessage
   | RenameTagMessage
   | DeleteTagMessage
+  | SyncMessage
   | SessionsChangedEvent
   | TabsChangedEvent
   | SyncStatusChangedEvent;
@@ -210,4 +214,16 @@ export type MessageResponse<T> = T extends { type: 'getSessions' }
                                   ? { name: string; count: number }[]
                                   : T extends { type: 'renameTag' } | { type: 'deleteTag' }
                                     ? number
-                                    : void;
+                                    : T extends { type: 'syncState' }
+                                      ? SyncStatus
+                                      : T extends { type: 'syncSetup' } | { type: 'syncPair' }
+                                        ? SyncSetupResult
+                                        : T extends { type: 'syncUnlock' }
+                                          ? { ok: boolean; error?: string; fingerprint?: string }
+                                          : T extends { type: 'syncNow' }
+                                            ? SyncRunResult
+                                            : T extends { type: 'syncVerify' }
+                                              ? { ok: boolean; error?: string; revision?: number; device?: string }
+                                              : T extends { type: 'syncDisable' } | { type: 'syncForget' }
+                                                ? SyncStatus
+                                                : void;

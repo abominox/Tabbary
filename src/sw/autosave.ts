@@ -7,6 +7,7 @@ import type { Tab, TabGroup, Session } from '@/models';
 import { uuid } from '@/lib';
 import { swCache } from './cache';
 import { broadcast } from '@/messaging';
+import { requestSyncPush } from '@/sync/scheduler';
 
 // ── Per-window debounce timers ──
 const pendingSaves = new Map<number, ReturnType<typeof setTimeout>>();
@@ -155,6 +156,9 @@ async function saveSession(windowId: number): Promise<void> {
   // ── Broadcast ──
   broadcast({ type: 'tabsChanged', sessionId });
   broadcast({ type: 'sessionsChanged' });
+
+  // Push the change to the sync server (debounced; no-op when sync is off).
+  requestSyncPush('autosave');
 }
 
 /** Resolve a chrome tab.GroupId to our TabGroup id, or create one if needed. */

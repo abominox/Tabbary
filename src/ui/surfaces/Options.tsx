@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../app/store';
 import { cn } from '@/lib';
 import { DataPanel } from '../components/DataPanel';
+import { SyncPanel } from '../components/SyncPanel';
 import type { Settings } from '@/models';
 
 type SectionId =
@@ -241,41 +242,14 @@ export function Options() {
             </Panel>
           )}
 
-          {section === 'sync' && (            <Panel
+          {section === 'sync' && (
+            <Panel
               title="Sync & backup"
-              description="Local backups are free and on by default. Sync is optional."
+              description="Optional, self-hosted, and encrypted on this device before anything is uploaded."
             >
-              <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-[11px] leading-relaxed text-amber-800 dark:text-amber-300">
-                Cloud sync is not implemented yet. Everything below is stored locally; the
-                endpoint field is a placeholder for the self-hosted sync server on the roadmap.
+              <div className="px-3 py-3">
+                <SyncPanel />
               </div>
-              <ToggleRow
-                label="Enable sync"
-                hint="When it ships, session data is encrypted on this device before upload."
-                checked={settings.syncEnabled}
-                onChange={(v) => save({ syncEnabled: v })}
-              />
-              <TextRow
-                label="Sync endpoint"
-                hint="Your own server, e.g. https://sync.example.net"
-                value={settings.syncEndpoint ?? ''}
-                placeholder="https://sync.example.net"
-                disabled={!settings.syncEnabled}
-                onCommit={(v) => save({ syncEndpoint: v.trim() || null })}
-              />
-              <SelectRow
-                label="Conflict policy"
-                hint="What to do when the same session is open on two devices."
-                value={settings.syncConflictPolicy}
-                options={[
-                  ['close-remote', 'Close the remote copy'],
-                  ['allow-simultaneous', 'Allow both'],
-                ]}
-                onChange={(v) =>
-                  save({ syncConflictPolicy: v as Settings['syncConflictPolicy'] })
-                }
-                disabled={!settings.syncEnabled}
-              />
             </Panel>
           )}
 
