@@ -74,12 +74,20 @@ async function main() {
     await addTab(page, win, 'https://example.com/two');
 
     const sessions0 = await querySW<Session[]>(page, { type: 'getSessions' });
-    const seedSession = sessions0.find((s) => s.windowId === win)!;
+
+    // The window handler waits briefly for Chrome to populate tabs before
+    // creating the session (so restore matching can run), so poll for it.
+    let seedSession = sessions0.find((s) => s.windowId === win);
+    await waitFor(async () => {
+      const list = await querySW<Session[]>(page, { type: 'getSessions' });
+      seedSession = list.find((s) => s.windowId === win);
+      return Boolean(seedSession);
+    }, 15000, 300, 'session created for the new window');
 
     await waitFor(async () => {
       const tabs = await querySW<Tab[]>(page, {
         type: 'getSessionTabs',
-        sessionId: seedSession.id,
+        sessionId: seedSession!.id,
       });
       return (
         Array.isArray(tabs) &&

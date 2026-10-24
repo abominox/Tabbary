@@ -23,6 +23,7 @@ export default defineConfig({
         'sidepanel.html',
         'options.html',
         'offscreen.html',
+        'tags.html',
       ],
     },
   },

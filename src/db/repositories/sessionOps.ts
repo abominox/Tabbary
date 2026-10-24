@@ -334,4 +334,62 @@ export const sessionOps = {
       updatedAt: now(),
     });
   },
+
+  /** Every tag in use, with how many sessions carry it. */
+  async listTags(): Promise<{ name: string; count: number }[]> {
+    const sessions = (await _sessions.toArray()).filter((s) => !s.deleted);
+    const counts = new Map<string, number>();
+    for (const s of sessions) {
+      for (const tag of s.tags ?? []) {
+        counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  },
+
+  /**
+   * Rename a tag everywhere it is used.
+   * If the new name already exists on a session, the tags collapse into one
+   * rather than producing a duplicate.
+   */
+  async renameTag(oldName: string, newName: string): Promise<number> {
+    const target = newName.trim();
+    if (!target || target === oldName) return 0;
+
+    const sessions = (await _sessions.toArray()).filter(
+      (s) => !s.deleted && (s.tags ?? []).includes(oldName),
+    );
+
+    await db.transaction('rw', _sessions, async () => {
+      const ts = now();
+      for (const s of sessions) {
+        const next = [...new Set((s.tags ?? []).map((t) => (t === oldName ? target : t)))];
+        await _sessions.update(s.id, { tags: next, version: s.version + 1, updatedAt: ts });
+      }
+    });
+
+    return sessions.length;
+  },
+
+  /** Remove a tag from every session that carries it. */
+  async deleteTag(name: string): Promise<number> {
+    const sessions = (await _sessions.toArray()).filter(
+      (s) => !s.deleted && (s.tags ?? []).includes(name),
+    );
+
+    await db.transaction('rw', _sessions, async () => {
+      const ts = now();
+      for (const s of sessions) {
+        await _sessions.update(s.id, {
+          tags: (s.tags ?? []).filter((t) => t !== name),
+          version: s.version + 1,
+          updatedAt: ts,
+        });
+      }
+    });
+
+    return sessions.length;
+  },
 };

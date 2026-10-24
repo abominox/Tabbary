@@ -227,4 +227,76 @@ describe('sessionOps', () => {
       expect(s!.tags).toEqual(['work', 'home']);
     });
   });
+
+  describe('listTags', () => {
+    it('counts sessions per tag and sorts by frequency', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work', 'research'] }));
+      await sessionsRepo.create(session({ id: 'b', tags: ['work'] }));
+      await sessionsRepo.create(session({ id: 'c', tags: [] }));
+
+      const tags = await sessionOps.listTags();
+      expect(tags[0]).toEqual({ name: 'work', count: 2 });
+      expect(tags.find((t) => t.name === 'research')!.count).toBe(1);
+    });
+
+    it('ignores deleted sessions', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work'] }));
+      await sessionsRepo.create(session({ id: 'b', tags: ['work'], deleted: true }));
+      const tags = await sessionOps.listTags();
+      expect(tags).toEqual([{ name: 'work', count: 1 }]);
+    });
+
+    it('returns an empty list when nothing is tagged', async () => {
+      await sessionsRepo.create(session({ id: 'a' }));
+      expect(await sessionOps.listTags()).toEqual([]);
+    });
+  });
+
+  describe('renameTag', () => {
+    it('renames across every session carrying the tag', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work', 'keep'] }));
+      await sessionsRepo.create(session({ id: 'b', tags: ['work'] }));
+
+      const affected = await sessionOps.renameTag('work', 'job');
+      expect(affected).toBe(2);
+      expect((await sessionsRepo.get('a'))!.tags).toEqual(['job', 'keep']);
+      expect((await sessionsRepo.get('b'))!.tags).toEqual(['job']);
+    });
+
+    it('collapses into an existing tag instead of duplicating', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work', 'job'] }));
+      await sessionOps.renameTag('work', 'job');
+      expect((await sessionsRepo.get('a'))!.tags).toEqual(['job']);
+    });
+
+    it('does nothing for unknown or unchanged names', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work'] }));
+      expect(await sessionOps.renameTag('nope', 'x')).toBe(0);
+      expect(await sessionOps.renameTag('work', 'work')).toBe(0);
+      expect(await sessionOps.renameTag('work', '   ')).toBe(0);
+    });
+
+    it('bumps the session version so the change is recoverable', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work'], version: 1 }));
+      await sessionOps.renameTag('work', 'job');
+      expect((await sessionsRepo.get('a'))!.version).toBe(2);
+    });
+  });
+
+  describe('deleteTag', () => {
+    it('removes the tag from every session and leaves others intact', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work', 'keep'] }));
+      await sessionsRepo.create(session({ id: 'b', tags: ['work'] }));
+
+      const affected = await sessionOps.deleteTag('work');
+      expect(affected).toBe(2);
+      expect((await sessionsRepo.get('a'))!.tags).toEqual(['keep']);
+      expect((await sessionsRepo.get('b'))!.tags).toEqual([]);
+    });
+
+    it('reports zero for a tag nobody uses', async () => {
+      await sessionsRepo.create(session({ id: 'a', tags: ['work'] }));
+      expect(await sessionOps.deleteTag('ghost')).toBe(0);
+    });
+  });
 });

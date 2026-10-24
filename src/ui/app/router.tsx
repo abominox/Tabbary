@@ -5,8 +5,16 @@ import { Popup } from '../surfaces/Popup';
 import { DedicatedWindow } from '../surfaces/DedicatedWindow';
 import { Options } from '../surfaces/Options';
 import { Onboarding } from '../surfaces/Onboarding';
+import { Tags } from '../surfaces/Tags';
 
-export type Surface = 'popup' | 'full-tab' | 'dedicated-window' | 'side-panel' | 'options' | 'onboarding';
+export type Surface =
+  | 'popup'
+  | 'full-tab'
+  | 'dedicated-window'
+  | 'side-panel'
+  | 'options'
+  | 'onboarding'
+  | 'tags';
 
 const surfaceMap: Record<Surface, ComponentType> = {
   popup: Popup,
@@ -15,6 +23,7 @@ const surfaceMap: Record<Surface, ComponentType> = {
   'side-panel': SidePanel,
   options: Options,
   onboarding: Onboarding,
+  tags: Tags,
 };
 
 interface SurfaceRouterProps {

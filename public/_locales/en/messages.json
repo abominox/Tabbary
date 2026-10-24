@@ -3,9 +3,15 @@
     "message": "Windrow"
   },
   "extDescription": {
-    "message": "A self-hosted tab and session manager."
+    "message": "A local-first tab and session manager."
+  },
+  "commandOpenSidePanel": {
+    "message": "Open the Windrow side panel"
   },
   "commandOpenFullTab": {
-    "message": "Open Windrow full-tab manager"
+    "message": "Open the Windrow full-tab manager"
+  },
+  "commandOpenTags": {
+    "message": "Open Windrow tags"
   }
 }

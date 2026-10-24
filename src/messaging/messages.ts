@@ -94,6 +94,27 @@ export interface ImportDataMessage {
   type: 'importData';
   text: string;
 }
+export interface GetRestoreReportMessage {
+  type: 'getRestoreReport';
+}
+export interface RestoreLastSessionMessage {
+  type: 'restoreLastSession';
+}
+export interface MatchWindowsMessage {
+  type: 'matchWindows';
+}
+export interface GetTagsMessage {
+  type: 'getTags';
+}
+export interface RenameTagMessage {
+  type: 'renameTag';
+  from: string;
+  to: string;
+}
+export interface DeleteTagMessage {
+  type: 'deleteTag';
+  name: string;
+}
 
 // ── Events (SW → UI push) ──
 export interface SessionsChangedEvent {
@@ -131,6 +152,12 @@ export type Message =
   | DuplicateSessionMessage
   | ExportDataMessage
   | ImportDataMessage
+  | GetRestoreReportMessage
+  | RestoreLastSessionMessage
+  | MatchWindowsMessage
+  | GetTagsMessage
+  | RenameTagMessage
+  | DeleteTagMessage
   | SessionsChangedEvent
   | TabsChangedEvent
   | SyncStatusChangedEvent;
@@ -175,4 +202,12 @@ export type MessageResponse<T> = T extends { type: 'getSessions' }
                           ? import('@/db/io').ExportResult
                           : T extends { type: 'importData' }
                             ? import('@/db/io').ImportTextResult
-                            : void;
+                            : T extends { type: 'getRestoreReport' }
+                              ? import('@/sw/events/startup').RestoreReport | null
+                              : T extends { type: 'matchWindows' }
+                                ? import('@/lib/restore').MatchResult[]
+                                : T extends { type: 'getTags' }
+                                  ? { name: string; count: number }[]
+                                  : T extends { type: 'renameTag' } | { type: 'deleteTag' }
+                                    ? number
+                                    : void;

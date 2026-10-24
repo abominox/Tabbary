@@ -7,10 +7,10 @@ survives crashes and restarts, and can be restored later with its tab groups int
 Everything lives in your own browser profile. There is no account, no telemetry, and no
 paid tier.
 
-> **Status: early (M5a).** The service worker, data layer, side panel, full-tab manager,
-> drag-and-drop, revision history, settings, and import/export are working. The popup,
-> dedicated window, browser-bookmark sync, and cloud sync are not implemented yet. See
-> [Roadmap](#roadmap).
+> **Status: early (M3).** The service worker, data layer, side panel, full-tab manager,
+> drag-and-drop, revision history, settings, import/export, popup, dedicated window, restore
+> matching, and tag management are working. Cloud sync and the browser-bookmark UI are not
+> implemented yet. See [Roadmap](#roadmap).
 
 ## Why
 
@@ -32,6 +32,11 @@ client-side encryption and a sync server you can run yourself.
 - **Import / export** — plain JSON (human-readable, no lock-in) or a passphrase-encrypted
   file (PBKDF2-SHA256 600k → AES-GCM-256). Imports Windrow bundles, OneTab exports, and
   plain URL lists; imports are always additive.
+- **Popup** — click the toolbar icon for the current window, recent sessions, and search.
+- **Dedicated window** — the same manager in a compact two-pane window (Alt+W via the UI).
+- **Restore matching** — on startup, windows Chrome reopens are matched back to their recorded
+  sessions by URL overlap, so history survives a restart instead of fragmenting.
+- **Tags** — real tag management: counts, bulk rename, and bulk delete across sessions.
 - **Settings** — startup, capture, theme, density, revision limit, and sync placeholders,
   persisted in IndexedDB.
 - **Side panel UI** — live active session, session rows with tab-icon strips, search, tags.
@@ -63,6 +68,7 @@ npm run build      # type-check + production build → dist/
 npm test           # unit tests (Vitest)
 npm run test:e2e   # M1 E2E (Playwright)
 npm run test:e2e:m2 # M2 E2E (full-tab, DnD, revisions, settings)
+npm run test:e2e:m3 # M3 E2E (popup, window, restore matching, tags)
 npm run test:e2e:io # import/export E2E (real download + file import)
 npm run test:e2e:all
 npm run typecheck  # TypeScript only
@@ -89,9 +95,9 @@ docker compose -f docker-compose.e2e.yml run --rm e2e
 
 | Path | Responsibility |
 |---|---|
-| `src/sw/` | MV3 service worker: event router, debounced auto-save, window↔session binding |
-| `src/db/` | Dexie/IndexedDB schema and repositories (sessions, tabs, groups, tags, bookmarks, versions) |
-| `src/ui/` | React app; one bundle mounted as side panel, full tab, popup, window, options, onboarding |
+| `src/sw/` | MV3 service worker: event router, debounced auto-save, window↔session binding, startup matching |
+| `src/db/` | Dexie/IndexedDB schema and repositories (sessions, tabs, groups, tags, bookmarks, versions, import/export) |
+| `src/ui/` | React app; one bundle mounted as side panel, full tab, popup, window, options, onboarding, tags |
 | `src/messaging/` | Typed service-worker ↔ UI message bus |
 | `src/sync/` | Sync connector abstraction (not implemented) |
 | `src/lib/` | Favicon, discard, permission helpers |
@@ -121,15 +127,29 @@ No host permissions are requested at install.
 |---|---|---|
 | M1 | Skeleton, service worker, data layer, side panel | ✅ done |
 | M2 | Full-tab manager, drag-and-drop, revision history, settings | ✅ done |
-| M3 | Popup, dedicated window, restore matching, tags UI | ⬜ next |
-| M4 | Self-hosted sync server + client-side encryption, recovery key | ⬜ |
+| M3 | Popup, dedicated window, restore matching, tags UI | ✅ done |
+| M4 | Self-hosted sync server + client-side encryption, recovery key | ⬜ next |
 | M5a | Export/import (JSON + encrypted), OneTab and URL-list importers | ✅ done |
 | M5b | Browser-bookmark type, session/tag bookmark UI, more importers | ⬜ |
 | M6 | Tab suspender polish, onboarding, themes, store release | ⬜ |
 
-Known gaps: the popup and dedicated-window surfaces are placeholders; `src/sync/` throws
-`not implemented`, and the settings page exposes sync fields that are inert until M4;
-bookmarks exist in the schema but have no UI yet.
+Known gaps: cloud sync (`src/sync/` throws `not implemented`) and the settings fields that
+configure it are inert until M4; bookmarks exist in the schema but have no UI yet.
+
+### Restore on startup
+
+`yes` (default) works in two passes:
+
+1. **Match** the windows Chrome reopened against recorded sessions by URL overlap
+   (`src/lib/restore.ts`, weighted coverage + Jaccard + size closeness, threshold 0.5).
+   A match re-binds the existing session, so history survives instead of fragmenting into
+   "new" sessions.
+2. If nothing matched and no window is open, **restore the most recently closed session**.
+
+`ask` leaves everything alone and shows a prompt in the full-tab manager listing the
+candidates and their match confidence. Matching only runs for windows Chrome creates within
+20 seconds of startup — outside that window, a new window is treated as new. The decision is
+recorded and exposed through `getRestoreReport`.
 
 ## Import / export
 

@@ -4,7 +4,7 @@ export default defineManifest({
   manifest_version: 3,
   minimum_chrome_version: '116',
   name: '__MSG_extName__',
-  version: '0.3.0',
+  version: '0.4.0',
   description: '__MSG_extDescription__',
   default_locale: 'en',
   permissions: [
@@ -27,6 +27,7 @@ export default defineManifest({
   },
   action: {
     default_title: '__MSG_extName__',
+    default_popup: 'popup.html',
     default_icon: {
       16: 'icons/icon16.png',
       48: 'icons/icon48.png',
@@ -41,17 +42,23 @@ export default defineManifest({
     open_in_tab: true,
   },
   commands: {
-    _execute_action: {
+    'open-side-panel': {
       suggested_key: {
         default: 'Alt+A',
       },
-      description: 'Open Windrow main UI',
+      description: '__MSG_commandOpenSidePanel__',
     },
     'open-full-tab': {
       suggested_key: {
         default: 'Alt+S',
       },
       description: '__MSG_commandOpenFullTab__',
+    },
+    'open-tags': {
+      suggested_key: {
+        default: 'Alt+T',
+      },
+      description: '__MSG_commandOpenTags__',
     },
   },
   icons: {

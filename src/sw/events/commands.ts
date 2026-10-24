@@ -11,6 +11,24 @@ export function registerCommandListeners(): void {
         chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
         break;
 
+      case 'open-tags':
+        chrome.tabs.create({ url: chrome.runtime.getURL('tags.html') });
+        break;
+
+      case 'open-side-panel':
+        // Commands cannot open a panel from every context, so fall back to the
+        // full-tab manager if there is no focused window to dock beside.
+        chrome.windows.getLastFocused({ populate: false }, (win) => {
+          if (win?.id !== undefined) {
+            chrome.sidePanel.open({ windowId: win.id }).catch(() => {
+              chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
+            });
+          } else {
+            chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
+          }
+        });
+        break;
+
       // v2 stubs — reserved for future binding
       // case 'close-session': ...
       // case 'activate-profile': ...

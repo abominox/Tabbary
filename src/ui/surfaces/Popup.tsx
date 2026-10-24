@@ -1,10 +1,9 @@
-// Popup — quick actions.
-// v2+: Popup surface with quick session actions.
+import { Popup as PopupView } from '../components/Popup';
 
+/**
+ * Popup surface — the toolbar action's quick view.
+ * Stays compact so it fits Chrome's popup bounds.
+ */
 export function Popup() {
-  return (
-    <div className="flex h-32 w-80 items-center justify-center">
-      <p className="text-text-muted text-xs">Windrow popup — coming in v2</p>
-    </div>
-  );
+  return <PopupView compact />;
 }

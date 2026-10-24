@@ -5,6 +5,7 @@ import { SessionList } from '../components/SessionList';
 import { ActiveSession } from '../components/ActiveSession';
 import { SessionDetail } from '../components/SessionDetail';
 import { RevisionDrawer } from '../components/RevisionDrawer';
+import { RestoreBanner } from '../components/RestoreBanner';
 import { SearchBar } from '../components/SearchBar';
 import { TagRail } from '../components/TagRail';
 import { sendMessage } from '@/messaging/bus';
@@ -184,6 +185,7 @@ export function FullTab() {
       </header>
 
       {/* ── Three panes ── */}
+      <RestoreBanner />
       <div className="flex min-h-0 flex-1">
         {/* Tags */}
         <aside className="hidden w-44 shrink-0 flex-col border-r border-surface-border bg-surface-elevated p-2 lg:flex">

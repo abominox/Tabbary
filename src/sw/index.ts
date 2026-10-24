@@ -29,24 +29,22 @@ registerCommandListeners();
 // Register bus message handlers (UI ↔ SW typed messages)
 registerBusHandlers();
 
-// ── Side panel: make the toolbar button open the side panel ──
-// setPanelBehavior({ openPanelOnActionClick: true }) means clicking the action icon
-// opens the side panel (the primary M1 surface) instead of firing onClicked. This
-// works on both Chrome and Brave and avoids relying on a browser-side side-panel
-// dropdown (Brave's UI differs from Chrome's). When this is true, chrome.action.
-// onClicked does NOT fire, so the full-tab UI is reached via the Alt+S command.
-chrome.sidePanel
-  .setPanelBehavior({ openPanelOnActionClick: true })
-  .catch((err) => console.error('[Windrow SW] setPanelBehavior failed:', err));
-
-// Fallback: if openPanelOnActionClick were ever false, open the side panel on click.
-// (Currently inert due to setPanelBehavior above, but kept as the documented gesture path.)
+// ── Action surface ──
+// M3: the toolbar button opens the popup (manifest `action.default_popup`), so
+// the side panel needs its own entry point. A popup cannot close the panel and
+// vice versa, so they are separate gestures:
+//   click icon  → popup        (manifest default_popup)
+//   Alt+A       → side panel   (command `open-side-panel`)
+//   Alt+S       → full tab     (command `open-full-tab`)
+//
+// Do NOT call setPanelBehavior({openPanelOnActionClick:true}) while a
+// default_popup is set: Chrome ignores the popup and the button appears dead.
 chrome.action.onClicked.addListener(async (tab) => {
-  console.log('[Windrow SW] action clicked (fallback path)');
+  // Only reached if the popup is removed from the manifest (e.g. a future mode).
+  console.log('[Windrow SW] action clicked: opening side panel');
   try {
     await chrome.sidePanel.open({ windowId: tab.windowId });
   } catch {
-    // Last-resort: open the full-tab UI
     chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
   }
 });

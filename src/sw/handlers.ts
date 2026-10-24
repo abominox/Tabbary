@@ -3,6 +3,8 @@
 
 import { sessionsRepo, tabsRepo, tagsRepo, settingsRepo, sessionVersionsRepo, sessionOps, tabGroupsRepo } from '@/db';
 import { exportAll, importText } from '@/db/io';
+import { getRestoreReport } from './events/startup';
+import { applyAllMatches, matchCandidates } from './restore-service';
 import { onMessageTyped } from '@/messaging';
 import { swCache } from './cache';
 import { broadcast } from '@/messaging';
@@ -210,6 +212,55 @@ export function registerBusHandlers(): void {
       const result = await importText(msg.text);
       if (result.sessions > 0) broadcast({ type: 'sessionsChanged' });
       return result;
+    },
+
+    async getRestoreReport() {
+      return getRestoreReport();
+    },
+
+    async getTags() {
+      return sessionOps.listTags();
+    },
+
+    async renameTag(msg) {
+      const affected = await sessionOps.renameTag(msg.from, msg.to);
+      if (affected > 0) broadcast({ type: 'sessionsChanged' });
+      return affected;
+    },
+
+    async deleteTag(msg) {
+      const affected = await sessionOps.deleteTag(msg.name);
+      if (affected > 0) broadcast({ type: 'sessionsChanged' });
+      return affected;
+    },
+
+    async matchWindows() {
+      const { matches } = await matchCandidates();
+      return matches;
+    },
+
+    async restoreLastSession() {
+      // Used by the "ask" prompt: apply every confident match in one go.
+      const applied = await applyAllMatches();
+      if (applied.length > 0) {
+        broadcast({ type: 'sessionsChanged' });
+        return;
+      }
+
+      // Nothing matched — fall back to restoring the most recent closed session.
+      const closed = await sessionsRepo.listClosed({ limit: 1 });
+      const session = closed[0];
+      if (!session) return;
+      const tabs = await tabsRepo.listBySession(session.id);
+      const urls = tabs.map((t) => t.url).filter(Boolean);
+      if (urls.length === 0) return;
+
+      const win = await chrome.windows.create({ url: urls });
+      if (win.id !== undefined) {
+        await sessionsRepo.markActive(session.id, win.id);
+        swCache.bindWindow(win.id, session.id);
+        broadcast({ type: 'sessionsChanged' });
+      }
     },
   });
 }
