@@ -22,10 +22,25 @@ must be re-paired, because the extension stores the origin it syncs to.
 
 ---
 
+## Choosing a route
+
+Two ways to run the server. Both give the same result; pick one.
+
+- **A — systemd** (steps 1–4 below). No Docker. Best if you want the smallest
+  possible footprint, or you already run other services this way.
+- **B — Docker** (step 5). Best if you would rather not install Node on the
+  host at all, or you want the service isolated from the rest of the box.
+
+Step 5 also covers Docker; steps 1–4 are specific to route A. Either way you
+need Caddy (§6) and the firewall (§7).
+
 ## 1. Install Node 22 and Caddy
 
+> **Skip Node if you are using Docker** — you only need Caddy from this step.
+
 ```bash
-# Node 22 — Debian/Ubuntu's own node is too old for node:sqlite
+# Node 22 — Debian/Ubuntu's own node is too old for node:sqlite.
+# Needs 22.13.0 or newer: before that, node:sqlite is behind --experimental-sqlite.
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
@@ -37,10 +52,10 @@ curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
   | sudo tee /etc/apt/sources.list.d/caddy-stable.list
 sudo apt-get update && sudo apt-get install -y caddy
 
-node --version   # expect v22.x or newer
+node --version   # expect v22.13.0 or newer
 ```
 
-> `node:sqlite` is built in from Node 22. There is nothing to compile and no
+> `node:sqlite` is built in from Node 22.13. There is nothing to compile and no
 > native module to rebuild on upgrade.
 
 ## 2. Create a service user and install the server
@@ -135,7 +150,107 @@ If it fails, `journalctl -u tabbary-sync -n 50 --no-pager` will say why. The mos
 common cause is a pairing secret shorter than 16 characters — the server refuses
 to start rather than run unprotected.
 
-## 5. Put Caddy in front
+## 5. Run it with Docker (route B)
+
+Skip steps 2–4 if you take this route. The image is `node:22-alpine`; the server
+has no dependencies, so there is no build step beyond copying two files.
+
+### Build and run
+
+```bash
+# From the repository root.
+cd server
+
+# The pairing secret, and a fresh one each time you deploy. compose.yaml
+# already sets the DB path and rate limit, so only the secret is needed here.
+echo "TABBARY_PAIRING_SECRET=$(openssl rand -base64 32)" > .env
+# (`.env.example` has the same thing with comments, if you prefer cp + edit.)
+chmod 600 .env        # .env is gitignored; keep it that way
+
+# Build + start, detached.
+sudo docker compose up -d --build
+
+sudo docker compose ps
+curl -s http://127.0.0.1:8787/health
+```
+
+`compose.yaml` binds the port to **127.0.0.1 only**, so Caddy on the host can
+reach it while the port stays unreachable from the internet. Do not change that
+to `8787:8787` — that would publish the cleartext service on every interface.
+
+Show the secret when pairing devices:
+
+```bash
+grep PAIRING .env
+```
+
+### Plain docker, without compose
+
+```bash
+sudo docker build -t tabbary-sync .
+sudo docker run -d --name tabbary-sync \
+  --restart unless-stopped \
+  -p 127.0.0.1:8787:8787 \
+  -e TABBARY_PAIRING_SECRET="$(openssl rand -base64 32)" \
+  -v tabbary-data:/data \
+  tabbary-sync
+```
+
+Note the difference: `docker run` creates a volume named `tabbary-data`, while
+compose prefixes it with the project name — from this directory that is
+`server_tabbary-data`. Check which one you have before restoring a backup:
+
+```bash
+sudo docker volume ls | grep tabbary
+```
+
+### Operating it
+
+```bash
+sudo docker compose logs -f --tail 50      # follow logs
+sudo docker compose restart                # restart
+sudo docker compose down                   # stop (the volume survives)
+```
+
+To upgrade, from a new checkout:
+
+```bash
+cd server
+sudo docker compose up -d --build          # rebuilds and recreates the container
+```
+
+The database lives in the named volume, so recreating the container does not
+touch your data.
+
+### Backups with Docker
+
+The container has no `sqlite3` binary, so run the backup from a throwaway
+container against the same volume. Using `sqlite3 .backup` (not `cp`) matters
+because WAL mode may have unflushed pages.
+
+```bash
+# Adjust the volume name to whatever `docker volume ls` showed.
+VOL=server_tabbary-data
+sudo mkdir -p /var/backups/tabbary
+sudo docker run --rm -v "$VOL":/data -v /var/backups/tabbary:/backup alpine \
+  sh -c 'apk add --no-cache sqlite >/dev/null && \
+         sqlite3 /data/tabbary.db ".backup /backup/tabbary-$(date +%F).db"'
+
+ls -la /var/backups/tabbary
+```
+
+Nightly:
+
+```bash
+echo '17 3 * * * root /usr/local/bin/tabbary-backup' | sudo tee /etc/cron.d/tabbary-backup
+```
+
+Put the commands above in `/usr/local/bin/tabbary-backup` as a `#!/bin/sh`
+script and make it executable.
+
+---
+
+## 6. Put Caddy in front
 
 ```bash
 sudo tee /etc/caddy/Caddyfile >/dev/null <<'EOF'
@@ -157,7 +272,7 @@ Verify from your laptop:
 curl -s https://sync.example.net/health
 ```
 
-## 6. Firewall
+## 7. Firewall
 
 ```bash
 sudo ufw allow OpenSSH
@@ -170,7 +285,7 @@ sudo ufw status
 8787 must **not** be open. The bind to `127.0.0.1` already prevents access, and
 the firewall is the second layer.
 
-## 7. Pair the extension
+## 8. Pair the extension
 
 1. Open tabbary → **Settings → Sync & backup**.
 2. Enter `https://sync.example.net` and the pairing secret.
@@ -185,7 +300,10 @@ access tabbary ever requests, and it is granted per-origin.
 
 ---
 
-## Backups
+## Backups (route A, systemd)
+
+Route B (Docker) has its own backup commands in §5 — the container has no
+`sqlite3`, so the invocation differs.
 
 The whole datastore is one SQLite file. A consistent copy needs `.backup`, not
 `cp`, because WAL mode may have unflushed pages.
@@ -216,7 +334,7 @@ echo '17 3 * * * root /usr/local/bin/tabbary-backup' | sudo tee /etc/cron.d/tabb
 Backups are ciphertext, so they are safe to copy off the box — but they are
 useless without a device passphrase, by design.
 
-## Upgrading
+## Upgrading (route A, systemd)
 
 ```bash
 sudo cp server/index.mjs /opt/tabbary/index.mjs     # from the new checkout
@@ -264,6 +382,8 @@ sudo systemctl restart tabbary-sync
 | Symptom | Cause |
 |---|---|
 | Service exits immediately | `TABBARY_PAIRING_SECRET` missing or under 16 chars. Check `journalctl`. |
+| `Cannot find module 'node:sqlite'` / `ERR_UNKNOWN_BUILTIN_MODULE` | Node is older than **22.13.0**. `node:sqlite` sits behind `--experimental-sqlite` before that. Upgrade Node; do not add the flag. |
+| Log line: `ExperimentalWarning: SQLite is an experimental feature` | Expected and harmless on Node 22.x/23.x. It is informational, not an error. |
 | `curl https://…/health` times out | DNS not pointing at the box, or 80/443 closed. `dig +short your.host`. |
 | Certificate error in Chrome | Caddy could not complete ACME. Port 80 must be reachable for the challenge. |
 | Extension says it cannot reach the server | The origin must be `https://`, not `http://` (except `localhost`). Check the exact hostname, including any port. |

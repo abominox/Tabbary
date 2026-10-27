@@ -3,7 +3,9 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - '8787:8787'
+      # Loopback only. Caddy runs on the host and proxies to this; publishing
+      # on 0.0.0.0 would expose the cleartext port to the internet.
+      - '127.0.0.1:8787:8787'
     environment:
       # Required. Generate with: openssl rand -base64 32
       TABBARY_PAIRING_SECRET: ${TABBARY_PAIRING_SECRET:?set TABBARY_PAIRING_SECRET in .env}

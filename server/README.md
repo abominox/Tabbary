@@ -6,7 +6,8 @@ no user records, and no ability to read what it stores.
 - **Server stores:** blob ids, type, a monotonic revision, ciphertext, IV,
   device-token *hashes*, and timestamps.
 - **Server never sees:** tab URLs, titles, session names, tags, or the data key.
-- **Dependencies:** none beyond Node 22 (`node:sqlite` is built in).
+- **Dependencies:** none beyond Node **22.13+** (`node:sqlite` is built in; before
+  22.13 it sits behind `--experimental-sqlite`).
 
 ## Quick start
 
@@ -19,14 +20,22 @@ node index.mjs
 # → [tabbary-sync] listening on http://0.0.0.0:8787
 ```
 
-Or with Docker:
+Or with Docker (port bound to loopback — put TLS in front, see `DEPLOY.md`):
 
 ```bash
 docker build -t tabbary-sync .
-docker run -d --name tabbary-sync -p 8787:8787 \
+docker run -d --name tabbary-sync --restart unless-stopped \
+  -p 127.0.0.1:8787:8787 \
   -e TABBARY_PAIRING_SECRET="$TABBARY_PAIRING_SECRET" \
   -v tabbary-data:/data \
   tabbary-sync
+```
+
+Docker Compose is also supported; `compose.yaml` reads the secret from `.env`:
+
+```bash
+cp .env.example .env        # then edit in your secret
+docker compose up -d --build
 ```
 
 Then in tabbary: **Settings → Sync & backup → Set up a new server**.
@@ -100,13 +109,14 @@ Or take a filesystem snapshot while the container is stopped.
 
 ## Deploying to a VPS
 
-`DEPLOY.md` is a step-by-step runbook: Node 22, systemd hardening, Caddy with
-automatic TLS, ufw, backups, upgrade and monitoring commands. Use it if you want
-HTTPS and a service that survives reboots.
+`DEPLOY.md` is a step-by-step runbook: Node 22.13+, systemd hardening or Docker,
+Caddy with automatic TLS, ufw, backups, upgrade and monitoring commands. Use it
+if you want HTTPS and a service that survives reboots.
 
 ## Putting it behind TLS
 
-Any reverse proxy works. Caddy needs three lines:
+Any reverse proxy works. `DEPLOY.md` has the full VPS setup; Caddy needs three
+lines:
 
 ```caddyfile
 sync.example.net {

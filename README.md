@@ -105,7 +105,7 @@ docker compose -f docker-compose.e2e.yml run --rm e2e
 | `src/ui/` | React app; one bundle mounted as side panel, full tab, popup, window, options, onboarding, tags |
 | `src/messaging/` | Typed service-worker ↔ UI message bus |
 | `src/sync/` | Sync engine: crypto, connector, state, scheduler |
-| `server/` | Self-hosted ciphertext-only sync server (Node 22, no deps) |
+| `server/` | Self-hosted ciphertext-only sync server (Node 22.13+, no deps) |
 | `src/lib/` | Favicon, discard, permission helpers |
 | `public/` | Icons, locales |
 
