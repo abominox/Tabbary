@@ -52,7 +52,7 @@ export async function extractFaviconViaOffscreen(pageUrl: string): Promise<strin
 
     return (faviconUrl as string | null) ?? null;
   } catch (err) {
-    console.warn('[Windrow] offscreen favicon extraction failed:', err);
+    console.warn('[Tabbary] offscreen favicon extraction failed:', err);
     return null;
   }
 }

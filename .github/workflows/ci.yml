@@ -38,7 +38,7 @@ jobs:
       - name: Upload unpacked extension
         uses: actions/upload-artifact@v4
         with:
-          name: windrow-unpacked
+          name: tabbary-unpacked
           path: dist/
           retention-days: 14
 
@@ -55,7 +55,7 @@ jobs:
 
       - name: Start the server and probe /health
         env:
-          WINDROW_PAIRING_SECRET: ci-smoke-test-secret-123456
+          TABBARY_PAIRING_SECRET: ci-smoke-test-secret-123456
           PORT: '8899'
         run: |
           node server/index.mjs &

@@ -64,7 +64,7 @@ export function Options() {
       <header className="flex items-start gap-3">
         <div className="flex-1">
           <p className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
-            Windrow {chrome.runtime.getManifest().version} · MIT
+            Tabbary {chrome.runtime.getManifest().version} · MIT
           </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-text-primary">
             Settings
@@ -130,7 +130,7 @@ export function Options() {
             <Panel title="General" description="Startup and capture behaviour.">
               <SelectRow
                 label="Restore sessions on startup"
-                hint="Whether Windrow reopens the windows it was tracking when Chrome starts."
+                hint="Whether Tabbary reopens the windows it was tracking when Chrome starts."
                 value={settings.restoreOnStartup}
                 options={[
                   ['yes', 'Yes, restore'],
@@ -142,7 +142,7 @@ export function Options() {
               <div className="px-3 py-3">
                 <p className="text-[12px] font-medium text-text-primary">Session mode</p>
                 <p className="mt-0.5 text-[11px] leading-relaxed text-text-muted">
-                  Windrow currently tracks one session per browser window. A combined
+                  Tabbary currently tracks one session per browser window. A combined
                   &ldquo;single window&rdquo; mode is not implemented, so the option is not shown
                   rather than pretending to work.
                 </p>
@@ -155,7 +155,7 @@ export function Options() {
               />
               <SelectRow
                 label="Preferred surface"
-                hint="Where the toolbar button opens Windrow."
+                hint="Where the toolbar button opens Tabbary."
                 value={settings.preferredSurface}
                 options={[
                   ['sidepanel', 'Side panel'],
@@ -169,7 +169,7 @@ export function Options() {
           )}
 
           {section === 'interface' && (
-            <Panel title="Interface" description="How Windrow looks.">
+            <Panel title="Interface" description="How Tabbary looks.">
               <SelectRow
                 label="Theme"
                 value={settings.theme}
@@ -221,7 +221,7 @@ export function Options() {
                 onChange={(v) => save({ openSuspended: v })}
               />
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-2.5 text-[11px] leading-relaxed text-text-secondary">
-                Windrow calls <code className="font-mono">chrome.tabs.discard</code> instead of
+                Tabbary calls <code className="font-mono">chrome.tabs.discard</code> instead of
                 sending tabs through a third-party suspense service, so the address bar always
                 shows the real URL.
               </div>
@@ -251,7 +251,7 @@ export function Options() {
           )}
 
           {section === 'history' && (
-            <Panel title="Storage & history" description="What Windrow keeps on this device.">
+            <Panel title="Storage & history" description="What Tabbary keeps on this device.">
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-3 text-[11px] text-text-secondary">
                 <p className="font-medium text-text-primary">Everything is local</p>
                 <p className="mt-1 leading-relaxed">
@@ -282,7 +282,7 @@ export function Options() {
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-3 text-[11px] leading-relaxed text-text-secondary">
                 <p className="font-medium text-text-primary">No account required</p>
                 <p className="mt-1">
-                  Windrow has no sign-in, no user profile, and no server holding your data. If
+                  Tabbary has no sign-in, no user profile, and no server holding your data. If
                   you later run the optional sync server, it stores ciphertext only and you
                   hold the key.
                 </p>
@@ -291,11 +291,11 @@ export function Options() {
                 Licence: MIT · Source:{' '}
                 <a
                   className="text-accent-600 underline underline-offset-2"
-                  href="https://github.com/abominox/Windrow"
+                  href="https://github.com/abominox/Tabbary"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  github.com/abominox/Windrow
+                  github.com/abominox/Tabbary
                 </a>
               </p>
             </Panel>

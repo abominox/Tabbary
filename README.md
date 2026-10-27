@@ -1,21 +1,21 @@
-# Windrow
+# Tabbary
 
 **Rows of tabs, quietly kept.** A local-first tab and session manager for Chrome (MV3).
 
-Windrow is a **tab manager**. The tabs you are working on — across groups and windows —
+Tabbary is a **tab manager**. The tabs you are working on — across groups and windows —
 are captured continuously as a *session*, so they survive crashes and restarts and can be
 restored later with their tab groups intact. Everything lives in your own browser profile.
 There is no account, no telemetry, and no paid tier.
 
-> **Status: 0.6, feature-complete for 1.0.** Tab capture, restore matching, revision
+> **Status: 0.8, feature-complete for 1.0.** Tab capture, restore matching, revision
 > history, four surfaces, tags, bookmarks, import/export, optional self-hosted sync, and
 > tab suspension are all implemented and tested. What remains is store packaging: real
-> screenshots and the listing review. See [Roadmap](#roadmap).
+> the developer account and store review. See [Roadmap](#roadmap).
 
 ## Why
 
 Existing session managers put restoration, history, and cross-device sync behind a
-subscription. Windrow's goal is to make the useful parts free and auditable, with
+subscription. Tabbary's goal is to make the useful parts free and auditable, with
 client-side encryption and a sync server you can run yourself.
 
 ## Features (working today)
@@ -30,7 +30,7 @@ client-side encryption and a sync server you can run yourself.
 - **Revision history** — per-session snapshots with pruning. Restoring a revision snapshots
   the current state first, so it is reversible.
 - **Import / export** — plain JSON (human-readable, no lock-in) or a passphrase-encrypted
-  file (PBKDF2-SHA256 600k → AES-GCM-256). Imports Windrow bundles, OneTab exports, and
+  file (PBKDF2-SHA256 600k → AES-GCM-256). Imports Tabbary bundles, OneTab exports, and
   plain URL lists; imports are always additive.
 - **Popup** — click the toolbar icon for the current window, recent sessions, and search.
 - **Dedicated window** — the same manager in a compact two-pane window (Alt+W via the UI).
@@ -87,7 +87,7 @@ message bus. **They run headless by default** using Chromium's new headless shel
 headless mode cannot load extensions, so do not remove the channel.
 
 ```bash
-WINDROW_HEADED=1 npm run test:e2e:m2   # watch it in a real window
+TABBARY_HEADED=1 npm run test:e2e:m2   # watch it in a real window
 ```
 
 In a container, use the same headless path (no `xvfb-run` needed):
@@ -198,7 +198,7 @@ Each session is one blob. Writes carry the revision they were based on:
 ### Running the server
 
 ```bash
-export WINDROW_PAIRING_SECRET="$(openssl rand -base64 32)"
+export TABBARY_PAIRING_SECRET="$(openssl rand -base64 32)"
 node server/index.mjs            # or: docker compose -f server/compose.yaml up -d
 ```
 
@@ -212,7 +212,7 @@ backup notes.
 
 Settings → **Import & export**.
 
-**Export** produces `windrow-YYYY-MM-DD.json` containing every session with its tab groups,
+**Export** produces `tabbary-YYYY-MM-DD.json` containing every session with its tab groups,
 tabs (title, URL, pinned flag, order), tags, and timestamps. That file is plain, readable
 JSON — it is meant to be a backup you can inspect, script against, and keep even if this
 project stops being maintained.
@@ -231,8 +231,8 @@ never stored.
 
 | Format | Notes |
 |---|---|
-| Windrow JSON | Validated; unknown/newer versions refused |
-| Windrow encrypted | Prompts for the passphrase, decrypts locally |
+| Tabbary JSON | Validated; unknown/newer versions refused |
+| Tabbary encrypted | Prompts for the passphrase, decrypts locally |
 | OneTab export | Both the JSON-array and plain-text forms |
 | URL list | One per line; duplicates dropped |
 

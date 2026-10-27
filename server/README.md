@@ -1,6 +1,6 @@
-# Windrow sync server
+# Tabbary sync server
 
-A small, ciphertext-only store for **Windrow** session sync. It has no accounts,
+A small, ciphertext-only store for **Tabbary** session sync. It has no accounts,
 no user records, and no ability to read what it stores.
 
 - **Server stores:** blob ids, type, a monotonic revision, ciphertext, IV,
@@ -12,24 +12,24 @@ no user records, and no ability to read what it stores.
 
 ```bash
 # 1. Generate the pairing secret (this is what devices present once)
-export WINDROW_PAIRING_SECRET="$(openssl rand -base64 32)"
+export TABBARY_PAIRING_SECRET="$(openssl rand -base64 32)"
 
 # 2. Run it
 node index.mjs
-# → [windrow-sync] listening on http://0.0.0.0:8787
+# → [tabbary-sync] listening on http://0.0.0.0:8787
 ```
 
 Or with Docker:
 
 ```bash
-docker build -t windrow-sync .
-docker run -d --name windrow-sync -p 8787:8787 \
-  -e WINDROW_PAIRING_SECRET="$WINDROW_PAIRING_SECRET" \
-  -v windrow-data:/data \
-  windrow-sync
+docker build -t tabbary-sync .
+docker run -d --name tabbary-sync -p 8787:8787 \
+  -e TABBARY_PAIRING_SECRET="$TABBARY_PAIRING_SECRET" \
+  -v tabbary-data:/data \
+  tabbary-sync
 ```
 
-Then in Windrow: **Settings → Sync & backup → Set up a new server**.
+Then in Tabbary: **Settings → Sync & backup → Set up a new server**.
 
 > The pairing secret is required. A server with no secret would let the first
 > visitor own the instance, so startup refuses to continue without one.
@@ -38,13 +38,13 @@ Then in Windrow: **Settings → Sync & backup → Set up a new server**.
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `WINDROW_PAIRING_SECRET` | — (**required**) | Secret devices present to pair. Store only as an env var. |
+| `TABBARY_PAIRING_SECRET` | — (**required**) | Secret devices present to pair. Store only as an env var. |
 | `PORT` | `8787` | Listen port. |
 | `HOST` | `0.0.0.0` | Listen address. |
-| `WINDROW_DB` | `./data/windrow.db` | SQLite file. Use a mounted volume in Docker. |
-| `WINDROW_PAIR_LIMIT` | `5` | Pairing attempts per IP per minute. |
-| `WINDROW_MAX_BLOB_BYTES` | `5000000` | Reject larger individual blobs. |
-| `WINDROW_MAX_BODY_BYTES` | `25000000` | Reject larger request bodies. |
+| `TABBARY_DB` | `./data/tabbary.db` | SQLite file. Use a mounted volume in Docker. |
+| `TABBARY_PAIR_LIMIT` | `5` | Pairing attempts per IP per minute. |
+| `TABBARY_MAX_BLOB_BYTES` | `5000000` | Reject larger individual blobs. |
+| `TABBARY_MAX_BODY_BYTES` | `25000000` | Reject larger request bodies. |
 
 ## API
 
@@ -92,8 +92,8 @@ changed in transit).
 The database is a single SQLite file. With the volume mounted:
 
 ```bash
-docker run --rm -v windrow-data:/data -v "$PWD":/backup alpine \
-  sh -c 'sqlite3 /data/windrow.db ".backup /backup/windrow-$(date +%F).db"' 
+docker run --rm -v tabbary-data:/data -v "$PWD":/backup alpine \
+  sh -c 'sqlite3 /data/tabbary.db ".backup /backup/tabbary-$(date +%F).db"' 
 ```
 
 Or take a filesystem snapshot while the container is stopped.

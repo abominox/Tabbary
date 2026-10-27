@@ -18,7 +18,7 @@ const EXT = path.resolve('dist');
 const W = 1280;
 const H = 800;
 
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'windrow-shots-'));
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tabbary-shots-'));
 
 const browser = await chromium.launchPersistentContext(dir, {
   headless: true,
@@ -127,7 +127,7 @@ await setup.evaluate(async () => {
   }));
 
   await chrome.runtime.sendMessage({ type: 'importData', text: JSON.stringify({
-    format: 'windrow-export', version: 1, exportedAt: now, generator: 'demo',
+    format: 'tabbary-export', version: 1, exportedAt: now, generator: 'demo',
     counts: { sessions: sessions.length, tabs: tabs.length, groups: groups.length },
     sessions: sessions.map((s) => ({
       id: s.id, name: s.name, state: 'closed', tags: s.tags,

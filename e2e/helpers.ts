@@ -10,7 +10,7 @@ const EXTENSION_PATH = path.resolve('dist');
  * Each test gets its own to simulate a clean profile.
  */
 export function createUserDataDir(): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'windrow-e2e-'));
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'tabbary-e2e-'));
 }
 
 /** Clean up a user data directory after a test (best-effort). */
@@ -27,13 +27,13 @@ export function cleanUserDataDir(dir: string): void {
  * (`channel: 'chromium'`), which supports extensions. The old headless mode
  * (`headless: true` without a channel) does not load extensions at all.
  *
- * Set WINDROW_HEADED=1 to watch the run in a real window (useful when debugging).
+ * Set TABBARY_HEADED=1 to watch the run in a real window (useful when debugging).
  */
 export async function launchContext(
   userDataDir: string,
   extensionPath: string = EXTENSION_PATH,
 ): Promise<BrowserContext> {
-  const headed = process.env.WINDROW_HEADED === '1';
+  const headed = process.env.TABBARY_HEADED === '1';
 
   return chromium.launchPersistentContext(userDataDir, {
     ...(headed ? { headless: false } : { headless: true, channel: 'chromium' }),

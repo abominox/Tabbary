@@ -25,7 +25,7 @@ await page.setContent(`<html><body style="margin:0">
   font-family:-apple-system,Helvetica,Arial,sans-serif;display:flex;flex-direction:column">
   <div style="display:flex;align-items:center;gap:18px">
     ${icon(52)}
-    <span style="font-family:Georgia,serif;font-size:27px;color:${INK};letter-spacing:-.01em">Windrow</span>
+    <span style="font-family:Georgia,serif;font-size:27px;color:${INK};letter-spacing:-.01em">Tabbary</span>
     <span style="font-family:monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6A7180">v0.6 · MIT</span>
   </div>
   <div style="margin-top:auto">

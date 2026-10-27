@@ -1,12 +1,12 @@
 /**
- * Windrow sync server.
+ * Tabbary sync server.
  *
  * Holds ciphertext only. It authenticates *devices* against one operator-set
  * pairing secret; it has no accounts, no user records, and no way to decrypt a
  * blob. Delete this database and the data is gone — the client keeps its own
  * copy, which is the point.
  *
- * Run:  WINDROW_PAIRING_SECRET=... node server/index.mjs
+ * Run:  TABBARY_PAIRING_SECRET=... node server/index.mjs
  */
 
 import { createServer } from 'node:http';
@@ -22,20 +22,20 @@ const VERSION = '0.1.0';
 const config = {
   port: Number(process.env.PORT ?? 8787),
   host: process.env.HOST ?? '0.0.0.0',
-  dbPath: process.env.WINDROW_DB ?? './data/windrow.db',
+  dbPath: process.env.TABBARY_DB ?? './data/tabbary.db',
   // Operator sets this once at deploy time. Required: a server that accepts
   // any pairing key would let the first visitor own the instance.
-  pairingSecret: process.env.WINDROW_PAIRING_SECRET ?? '',
+  pairingSecret: process.env.TABBARY_PAIRING_SECRET ?? '',
   // Requests per IP per minute for /auth/pair.
-  pairLimit: Number(process.env.WINDROW_PAIR_LIMIT ?? 5),
+  pairLimit: Number(process.env.TABBARY_PAIR_LIMIT ?? 5),
   // Optional: reject oversized pushes instead of filling the disk.
-  maxBlobBytes: Number(process.env.WINDROW_MAX_BLOB_BYTES ?? 5_000_000),
-  maxBodyBytes: Number(process.env.WINDROW_MAX_BODY_BYTES ?? 25_000_000),
+  maxBlobBytes: Number(process.env.TABBARY_MAX_BLOB_BYTES ?? 5_000_000),
+  maxBodyBytes: Number(process.env.TABBARY_MAX_BODY_BYTES ?? 25_000_000),
 };
 
 if (config.pairingSecret.length < 16) {
   console.error(
-    'WINDROW_PAIRING_SECRET must be set to at least 16 characters.\n' +
+    'TABBARY_PAIRING_SECRET must be set to at least 16 characters.\n' +
       'Generate one with:  openssl rand -base64 32',
   );
   process.exit(1);
@@ -215,7 +215,7 @@ async function handle(db, cfg, req, res) {
   if (path === '/health' && req.method === 'GET') {
     return json(res, 200, {
       ok: true,
-      service: 'windrow-sync',
+      service: 'tabbary-sync',
       version: VERSION,
       blobs: db.prepare(`SELECT COUNT(*) AS n FROM blobs WHERE deleted = 0`).get().n,
     });
@@ -399,7 +399,7 @@ export function createSyncServer(options = {}) {
   const server = createServer((req, res) => {
     handle(db, cfg, req, res).catch((err) => {
       const status = err?.status ?? 500;
-      if (status === 500) console.error('[windrow-sync]', err);
+      if (status === 500) console.error('[tabbary-sync]', err);
       if (!res.headersSent) json(res, status, { error: err?.message ?? 'Internal error' });
       else res.end();
     });
@@ -432,13 +432,13 @@ export function createSyncServer(options = {}) {
 if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname)) {
   const app = createSyncServer();
   app.listen(config.port, config.host).then((port) => {
-    console.log(`[windrow-sync] listening on http://${config.host}:${port}`);
-    console.log(`[windrow-sync] database: ${config.dbPath}`);
+    console.log(`[tabbary-sync] listening on http://${config.host}:${port}`);
+    console.log(`[tabbary-sync] database: ${config.dbPath}`);
   });
 
   for (const signal of ['SIGINT', 'SIGTERM']) {
     process.on(signal, () => {
-      console.log(`\n[windrow-sync] ${signal} — shutting down`);
+      console.log(`\n[tabbary-sync] ${signal} — shutting down`);
       app.close().then(() => process.exit(0));
     });
   }

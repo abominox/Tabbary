@@ -1,4 +1,4 @@
-export { db, WindrowDB } from './schema';
+export { db, TabbaryDB } from './schema';
 export {
   sessionsRepo,
   tabsRepo,

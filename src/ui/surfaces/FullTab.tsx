@@ -150,7 +150,7 @@ export function FullTab() {
           <span className="grid h-6 w-6 place-items-center rounded-md bg-text-primary text-[11px] font-bold text-surface-base">
             W
           </span>
-          <span className="text-sm font-bold">Windrow</span>
+          <span className="text-sm font-bold">Tabbary</span>
         </div>
 
         <div className="ml-2 w-full max-w-sm">

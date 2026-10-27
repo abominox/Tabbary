@@ -12,7 +12,7 @@ import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs';
 import Dexie from 'dexie';
-import { WindrowDB } from '@/db/schema';
+import { TabbaryDB } from '@/db/schema';
 import { sessionsRepo } from '@/db/repositories/sessions';
 import { tabsRepo } from '@/db/repositories/tabs';
 import { sessionOps } from '@/db/repositories/sessionOps';
@@ -52,14 +52,14 @@ async function waitForHealth(url: string, timeoutMs = 15_000): Promise<void> {
 }
 
 beforeEach(async () => {
-  dbDir = fs.mkdtempSync(path.join(os.tmpdir(), 'windrow-sync-test-'));
+  dbDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tabbary-sync-test-'));
   const port = 20_000 + Math.floor(Math.random() * 20_000);
 
   server = spawn(process.execPath, [path.resolve('server/index.mjs')], {
     env: {
       ...process.env,
-      WINDROW_PAIRING_SECRET: PAIRING_SECRET,
-      WINDROW_DB: path.join(dbDir, 'sync.db'),
+      TABBARY_PAIRING_SECRET: PAIRING_SECRET,
+      TABBARY_DB: path.join(dbDir, 'sync.db'),
       PORT: String(port),
       HOST: '127.0.0.1',
     },
@@ -86,15 +86,15 @@ afterEach(async () => {
     server = null;
   }
   // Unique DB per suite; drop it so the next test starts clean.
-  await Dexie.delete('Windrow');
+  await Dexie.delete('Tabbary');
   fs.rmSync(dbDir, { recursive: true, force: true });
 });
 
 // ── Helpers ─────────────────────────────────────────────
 
 const freshDb = async () => {
-  await Dexie.delete('Windrow');
-  const db = new WindrowDB();
+  await Dexie.delete('Tabbary');
+  const db = new TabbaryDB();
   await db.open();
   return db;
 };

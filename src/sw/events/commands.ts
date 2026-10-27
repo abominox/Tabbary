@@ -4,7 +4,7 @@
 /** Register command listeners. Called synchronously from index.ts on SW load. */
 export function registerCommandListeners(): void {
   chrome.commands.onCommand.addListener((command) => {
-    console.log('[Windrow SW] command:', command);
+    console.log('[Tabbary SW] command:', command);
 
     switch (command) {
       case 'open-full-tab':
@@ -60,7 +60,7 @@ export function registerCommandListeners(): void {
       // case 'hot-bookmark-0': ...
 
       default:
-        console.log('[Windrow SW] unknown command:', command);
+        console.log('[Tabbary SW] unknown command:', command);
     }
   });
 }

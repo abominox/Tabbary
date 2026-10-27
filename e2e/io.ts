@@ -1,5 +1,5 @@
 /**
- * Windrow import/export E2E.
+ * Tabbary import/export E2E.
  *
  * Exercises the real path a user takes:
  *   seed sessions → Settings → Export JSON (actual browser download) →
@@ -100,7 +100,7 @@ async function main() {
     const exported = await querySW<ExportResult>(page, { type: 'exportData' });
     check(
       'exportData returns a valid bundle',
-      exported?.bundle?.format === 'windrow-export' && exported.bundle.counts.tabs >= 2,
+      exported?.bundle?.format === 'tabbary-export' && exported.bundle.counts.tabs >= 2,
       `sessions=${exported?.bundle?.counts.sessions} tabs=${exported?.bundle?.counts.tabs} bytes=${exported?.bytes}`,
     );
 
@@ -134,8 +134,8 @@ async function main() {
       sessions: { tabs: { url: string }[] }[];
     };
     check(
-      'downloaded file is a Windrow bundle',
-      onDisk.format === 'windrow-export' && onDisk.counts.tabs >= 2,
+      'downloaded file is a Tabbary bundle',
+      onDisk.format === 'tabbary-export' && onDisk.counts.tabs >= 2,
       `tabs=${onDisk.counts.tabs}`,
     );
     check(

@@ -42,13 +42,13 @@ export function SessionList({
   heading,
 }: SessionListProps) {
   const handleDragStart = (e: React.DragEvent, sessionId: string) => {
-    e.dataTransfer.setData('application/x-windrow-session', sessionId);
+    e.dataTransfer.setData('application/x-tabbary-session', sessionId);
     e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     if (!onDropTabs) return;
-    if (e.dataTransfer.types.includes('application/x-windrow-tabs')) {
+    if (e.dataTransfer.types.includes('application/x-tabbary-tabs')) {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
     }
@@ -56,7 +56,7 @@ export function SessionList({
 
   const handleDrop = (e: React.DragEvent, sessionId: string) => {
     if (!onDropTabs) return;
-    const raw = e.dataTransfer.getData('application/x-windrow-tabs');
+    const raw = e.dataTransfer.getData('application/x-tabbary-tabs');
     if (!raw) return;
     e.preventDefault();
     const ids = raw.split(',').filter(Boolean);

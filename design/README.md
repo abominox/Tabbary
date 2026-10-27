@@ -11,7 +11,7 @@ as the source of record; promote again with `cp -r design/v2/* site/`.
 | `v2/index.html` | The proposed homepage |
 | `v2/assets/style.css` | Hand-written stylesheet (no framework, no webfonts) |
 | `deck.html` | Nine-slide approval deck (arrow keys, `P` to print) |
-| `assets/windrow-redesign-deck.pdf` | The same deck as a PDF, for reading offline |
+| `assets/tabbary-redesign-deck.pdf` | The same deck as a PDF, for reading offline |
 | `assets/before.png` / `after.png` | The comparison screenshots used in the deck |
 | `shoot.mjs` | Regenerates the screenshots (headless) |
 | `audit.mjs` | Geometry audit: overflow, spill, oversized elements |

@@ -1,5 +1,5 @@
 /**
- * Windrow M2 E2E suite — full-tab manager, drag-and-drop data path, revisions,
+ * Tabbary M2 E2E suite — full-tab manager, drag-and-drop data path, revisions,
  * and settings. Exercises the real message bus from an extension page against a
  * live service worker, then checks the rendered UI.
  *
@@ -170,7 +170,7 @@ async function main() {
       // innerText applies CSS text-transform, so compare case-insensitively.
       const text = document.body.innerText.toLowerCase();
       return {
-        hasBrand: text.includes('windrow'),
+        hasBrand: text.includes('tabbary'),
         hasActiveHeading: text.includes('active sessions'),
         hasClosedHeading: text.includes('closed sessions'),
         hasSearch: Boolean(document.querySelector('input')),

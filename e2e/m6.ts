@@ -132,7 +132,7 @@ async function main() {
     check('choosing dark applies the theme', darkApplied);
 
     const cached = await opts.evaluate(async () =>
-      (await chrome.storage.local.get('windrow.appearance'))['windrow.appearance'],
+      (await chrome.storage.local.get('tabbary.appearance'))['tabbary.appearance'],
     );
     check('theme is cached for other surfaces', (cached as { theme?: string })?.theme === 'dark', JSON.stringify(cached));
 

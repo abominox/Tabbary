@@ -14,7 +14,7 @@ describe('encryptJson / decryptJson', () => {
 
   it('produces a self-describing envelope', async () => {
     const payload = await encryptJson({ a: 1 }, 'pw', FAST);
-    expect(payload.format).toBe('windrow-encrypted');
+    expect(payload.format).toBe('tabbary-encrypted');
     expect(payload.version).toBe(1);
     expect(payload.kdf.name).toBe('PBKDF2-SHA256');
     expect(payload.kdf.iterations).toBe(1_000);
@@ -50,9 +50,9 @@ describe('encryptJson / decryptJson', () => {
     await expect(decryptJson(tampered, 'pw')).rejects.toThrow(/Wrong passphrase|corrupted/);
   });
 
-  it('rejects a non-Windrow envelope', async () => {
+  it('rejects a non-Tabbary envelope', async () => {
     await expect(decryptJson({ format: 'other' } as never, 'pw')).rejects.toThrow(
-      /Not an encrypted Windrow export/,
+      /Not an encrypted Tabbary export/,
     );
   });
 
@@ -77,6 +77,6 @@ describe('isEncryptedPayload', () => {
   it('rejects everything else', () => {
     expect(isEncryptedPayload(null)).toBe(false);
     expect(isEncryptedPayload({})).toBe(false);
-    expect(isEncryptedPayload({ format: 'windrow-export' })).toBe(false);
+    expect(isEncryptedPayload({ format: 'tabbary-export' })).toBe(false);
   });
 });

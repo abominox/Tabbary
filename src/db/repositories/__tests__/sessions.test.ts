@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import Dexie from 'dexie';
-import { WindrowDB } from '@/db/schema';
+import { TabbaryDB } from '@/db/schema';
 import type { Session } from '@/models';
 import { sessionsRepo } from '@/db/repositories/sessions';
 
 /** Cast tables for runtime string key access (Dexie type 'id' literal is too strict). */
-const _s = (db: WindrowDB) => db.sessions as Dexie.Table<Session, string>;
+const _s = (db: TabbaryDB) => db.sessions as Dexie.Table<Session, string>;
 
 function createTestSession(overrides: Partial<Session> = {}): Session {
   return {
@@ -26,10 +26,10 @@ function createTestSession(overrides: Partial<Session> = {}): Session {
 }
 
 describe('sessionsRepo', () => {
-  let db: WindrowDB;
+  let db: TabbaryDB;
 
   beforeEach(async () => {
-    db = new WindrowDB();
+    db = new TabbaryDB();
     // Clear all tables to keep tests isolated; wait for DB to be ready
     await db.sessions.clear().catch(() => {});
     await db.tabs.clear().catch(() => {});

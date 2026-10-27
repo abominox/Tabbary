@@ -16,7 +16,7 @@ import path from 'node:path';
 
 export function buildE2EExtension(origin: string): string {
   const source = path.resolve('dist');
-  const target = fs.mkdtempSync(path.join(os.tmpdir(), 'windrow-ext-e2e-'));
+  const target = fs.mkdtempSync(path.join(os.tmpdir(), 'tabbary-ext-e2e-'));
 
   fs.cpSync(source, target, { recursive: true });
 

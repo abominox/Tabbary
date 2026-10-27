@@ -15,8 +15,8 @@ export async function applyAppearance(): Promise<void> {
   let density: Density = 'comfortable';
 
   try {
-    const stored = await chrome.storage.local.get('windrow.appearance');
-    const cached = stored['windrow.appearance'] as { theme?: Theme; density?: Density } | undefined;
+    const stored = await chrome.storage.local.get('tabbary.appearance');
+    const cached = stored['tabbary.appearance'] as { theme?: Theme; density?: Density } | undefined;
     if (cached?.theme) theme = cached.theme;
     if (cached?.density) density = cached.density;
   } catch {
@@ -46,7 +46,7 @@ export function setDensity(density: Density): void {
 
 /** Cache appearance so surfaces can apply it before the SW responds. */
 export async function cacheAppearance(theme: Theme, density: Density): Promise<void> {
-  await chrome.storage.local.set({ 'windrow.appearance': { theme, density } });
+  await chrome.storage.local.set({ 'tabbary.appearance': { theme, density } });
   setTheme(theme);
   setDensity(density);
 }

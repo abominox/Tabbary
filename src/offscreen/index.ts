@@ -71,6 +71,6 @@ chrome.runtime.onMessage.addListener(
 );
 
 // Log that the offscreen doc is alive (debug)
-console.log('[Windrow offscreen] ready');
+console.log('[Tabbary offscreen] ready');
 
 export {};

@@ -1,20 +1,20 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import Dexie from 'dexie';
-import { WindrowDB } from '@/db/schema';
+import { TabbaryDB } from '@/db/schema';
 import type { Session, Tab, TabGroup, SessionVersion } from '@/models';
 import { sessionVersionsRepo } from '@/db/repositories/sessionVersions';
 
 /** Cast tables for runtime string key access (Dexie type 'id' literal is too strict). */
-const _sessions = (db: WindrowDB) => db.sessions as Dexie.Table<Session, string>;
-const _tabs = (db: WindrowDB) => db.tabs as Dexie.Table<Tab, string>;
-const _tabGroups = (db: WindrowDB) => db.tabGroups as Dexie.Table<TabGroup, string>;
-const _sv = (db: WindrowDB) => db.sessionVersions as Dexie.Table<SessionVersion, string>;
+const _sessions = (db: TabbaryDB) => db.sessions as Dexie.Table<Session, string>;
+const _tabs = (db: TabbaryDB) => db.tabs as Dexie.Table<Tab, string>;
+const _tabGroups = (db: TabbaryDB) => db.tabGroups as Dexie.Table<TabGroup, string>;
+const _sv = (db: TabbaryDB) => db.sessionVersions as Dexie.Table<SessionVersion, string>;
 
 /**
  * Helper: seed a session with tabs + groups so snapshot() can read them.
  */
 async function seedSession(
-  d: WindrowDB,
+  d: TabbaryDB,
   overrides: Partial<Session> & { id: string; version?: number },
 ): Promise<void> {
   const session: Session = {
@@ -70,10 +70,10 @@ function makeGroup(sessionId: string, position: number, overrides: Partial<TabGr
 }
 
 describe('sessionVersionsRepo', () => {
-  let db: WindrowDB;
+  let db: TabbaryDB;
 
   beforeEach(async () => {
-    db = new WindrowDB();
+    db = new TabbaryDB();
     // Clear all tables to keep tests isolated; wait for DB to be ready
     await db.sessions.clear().catch(() => {});
     await db.tabs.clear().catch(() => {});

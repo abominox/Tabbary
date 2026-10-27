@@ -7,7 +7,7 @@
 
 import type { Session, Tab, TabGroup } from '@/models';
 
-export const BUNDLE_FORMAT = 'windrow-export';
+export const BUNDLE_FORMAT = 'tabbary-export';
 export const BUNDLE_VERSION = 1;
 
 export interface BundleSession {
@@ -53,7 +53,7 @@ export function buildBundle(
   sessions: Session[],
   tabsBySession: Record<string, Tab[]>,
   groupsBySession: Record<string, TabGroup[]>,
-  generator = 'Windrow',
+  generator = 'Tabbary',
 ): Bundle {
   const bundleSessions: BundleSession[] = sessions.map((s) => {
     const groups = (groupsBySession[s.id] ?? [])
@@ -148,7 +148,7 @@ export function parseBundle(input: unknown): ParseResult {
   if (raw.format !== BUNDLE_FORMAT) {
     return {
       ok: false,
-      error: `Not a Windrow export (expected format "${BUNDLE_FORMAT}")`,
+      error: `Not a Tabbary export (expected format "${BUNDLE_FORMAT}")`,
       warnings,
     };
   }
@@ -351,20 +351,20 @@ function wrapSession(name: string, tabs: BundleTab[]): BundleSession {
  * Returns the detected source so the UI can tell the user what happened.
  */
 export function detectAndParseImport(text: string): {
-  source: 'windrow' | 'onetab' | 'urls' | 'none';
+  source: 'tabbary' | 'onetab' | 'urls' | 'none';
   sessions: BundleSession[];
   warnings: string[];
 } {
   const trimmed = text.trim();
   if (!trimmed) return { source: 'none', sessions: [], warnings: [] };
 
-  // Windrow JSON
+  // Tabbary JSON
   if (trimmed.startsWith('{')) {
     try {
       const parsed: unknown = JSON.parse(trimmed);
       const result = parseBundle(parsed);
       if (result.ok && result.bundle) {
-        return { source: 'windrow', sessions: result.bundle.sessions, warnings: result.warnings };
+        return { source: 'tabbary', sessions: result.bundle.sessions, warnings: result.warnings };
       }
       if (result.error) {
         return { source: 'none', sessions: [], warnings: [result.error] };

@@ -7,7 +7,7 @@ const page = await browser.newPage({ viewport: { width: 1400, height: 800 } });
 await page.goto('file://' + path.resolve('design/deck.html'), { waitUntil: 'load' });
 await page.emulateMedia({ media: 'print' });
 await page.pdf({
-  path: path.resolve('design/assets/windrow-redesign-deck.pdf'),
+  path: path.resolve('design/assets/tabbary-redesign-deck.pdf'),
   width: '1400px',
   height: '800px',
   printBackground: true,

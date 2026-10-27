@@ -147,7 +147,7 @@ async function importOne(bs: BundleSession): Promise<void> {
 }
 
 export interface ImportTextResult extends ImportResult {
-  source: 'windrow' | 'onetab' | 'urls' | 'none';
+  source: 'tabbary' | 'onetab' | 'urls' | 'none';
   error?: string;
 }
 
@@ -166,7 +166,7 @@ export async function importText(text: string): Promise<ImportTextResult> {
     };
   }
 
-  // detectAndParseImport already validated the bundle shape for Windrow files
+  // detectAndParseImport already validated the bundle shape for Tabbary files
   // and built well-formed sessions for the foreign formats.
   const sessions = detected.sessions;
 

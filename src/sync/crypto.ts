@@ -16,7 +16,7 @@
 import { generateMnemonic, mnemonicToEntropy, entropyToMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
-export const SYNC_AAD = 'windrow-sync-v1';
+export const SYNC_AAD = 'tabbary-sync-v1';
 export const RECOVERY_WORDS = 24;
 
 const encoder = new TextEncoder();
@@ -82,7 +82,7 @@ async function deriveFromRecoveryPhrase(phrase: string): Promise<Uint8Array> {
     throw new Error('That is not a valid recovery phrase');
   }
 
-  const salt = encoder.encode('windrow-recovery-v1');
+  const salt = encoder.encode('tabbary-recovery-v1');
   const key = await importHkdfKey(entropy);
   const bits = await crypto.subtle.deriveBits(
     { name: 'HKDF', hash: 'SHA-256', salt: salt as BufferSource, info: encoder.encode(SYNC_AAD) as BufferSource },
@@ -179,7 +179,7 @@ async function wrapWithRecoveryPhrase(
   return wrap(dataKey, await importAesKey(kekBytes), {
     name: 'HKDF-SHA256',
     iterations: 1,
-    salt: bytesToBase64(encoder.encode('windrow-recovery-v1')),
+    salt: bytesToBase64(encoder.encode('tabbary-recovery-v1')),
   });
 }
 

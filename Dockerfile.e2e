@@ -1,7 +1,7 @@
-# Windrow E2E Test Harness
+# Tabbary E2E Test Harness
 #
-# Build: docker build -f Dockerfile.e2e -t windrow-e2e .
-# Run:   docker run --rm windrow-e2e
+# Build: docker build -f Dockerfile.e2e -t tabbary-e2e .
+# Run:   docker run --rm tabbary-e2e
 #
 # Uses the official Playwright Docker image, which has Chromium + system deps
 # preinstalled. Tests run headless via Chromium's new headless shell
@@ -23,5 +23,5 @@ RUN npm run build
 # Verify the dist/ is valid (extension should be loadable)
 RUN test -f dist/manifest.json && echo "dist/manifest.json OK" || (echo "dist/manifest.json MISSING" && exit 1)
 
-# Headless by default; pass WINDROW_HEADED=1 with a display to watch it run.
+# Headless by default; pass TABBARY_HEADED=1 with a display to watch it run.
 CMD ["npm", "run", "test:e2e:all"]

@@ -9,7 +9,7 @@ dist-e2e/
 .DS_Store
 .vite/
 # E2E test temp directories (created per-test by the harness)
-windrow-e2e-*_/
+tabbary-e2e-*_/
 # Playwright browser downloads (local dev)
 ms-playwright/
 

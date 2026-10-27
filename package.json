@@ -1,6 +1,6 @@
 {
-  "name": "windrow",
-  "version": "0.7.0",
+  "name": "tabbary",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "scripts": {

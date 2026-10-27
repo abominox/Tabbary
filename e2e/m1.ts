@@ -1,5 +1,5 @@
 /**
- * Windrow M1 E2E Test Suite
+ * Tabbary M1 E2E Test Suite
  *
  * Tests the M1 definition-of-done cycle by driving the extension through its
  * chrome.* API from an extension page context (sidepanel.html opened as a tab).
@@ -63,7 +63,7 @@ function test(name: string, fn: () => Promise<void>): void {
 }
 
 async function runAll(): Promise<void> {
-  console.log('\n🧪 Windrow M1 E2E Tests\n');
+  console.log('\n🧪 Tabbary M1 E2E Tests\n');
     console.log(`Extension dist: ${path.resolve('dist')}\n`);
 
   for (const t of tests) {

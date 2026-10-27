@@ -5,7 +5,7 @@ import { settingsRepo } from '@/db';
 import { handleSyncNow } from '@/sw/sync-handlers';
 import { broadcast } from '@/messaging';
 
-export const SYNC_POLL_ALARM = 'windrow-sync-poll';
+export const SYNC_POLL_ALARM = 'tabbary-sync-poll';
 
 let pushTimer: ReturnType<typeof setTimeout> | null = null;
 let inFlight = false;
@@ -60,10 +60,10 @@ async function runScheduledSync(reason: string): Promise<void> {
       status: result.ok ? 'synced' : 'error',
     });
     if ((result.conflicts ?? 0) > 0) {
-      console.log(`[Windrow SW] sync (${reason}): ${result.conflicts} conflict(s) resolved by pull`);
+      console.log(`[Tabbary SW] sync (${reason}): ${result.conflicts} conflict(s) resolved by pull`);
     }
   } catch (err) {
-    console.warn('[Windrow SW] scheduled sync failed:', err);
+    console.warn('[Tabbary SW] scheduled sync failed:', err);
     broadcast({ type: 'syncStatusChanged', status: 'error' });
   } finally {
     inFlight = false;

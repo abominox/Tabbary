@@ -6,12 +6,12 @@ services:
       - '8787:8787'
     environment:
       # Required. Generate with: openssl rand -base64 32
-      WINDROW_PAIRING_SECRET: ${WINDROW_PAIRING_SECRET:?set WINDROW_PAIRING_SECRET in .env}
-      WINDROW_DB: /data/windrow.db
+      TABBARY_PAIRING_SECRET: ${TABBARY_PAIRING_SECRET:?set TABBARY_PAIRING_SECRET in .env}
+      TABBARY_DB: /data/tabbary.db
       # Pairing attempts per IP per minute.
-      WINDROW_PAIR_LIMIT: '5'
+      TABBARY_PAIR_LIMIT: '5'
     volumes:
-      - windrow-data:/data
+      - tabbary-data:/data
     healthcheck:
       test:
         - CMD
@@ -23,4 +23,4 @@ services:
       retries: 3
 
 volumes:
-  windrow-data:
+  tabbary-data:

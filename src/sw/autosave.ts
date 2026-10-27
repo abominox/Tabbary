@@ -146,7 +146,7 @@ async function saveSession(windowId: number): Promise<void> {
     await tabGroupsRepo.replaceForSession(sessionId, ourGroups);
     await sessionsRepo.bumpVersion(sessionId);
   } catch (err) {
-    console.error('[Windrow SW] saveSession error:', err);
+    console.error('[Tabbary SW] saveSession error:', err);
     return;
   }
 
@@ -183,7 +183,7 @@ async function maybeSnapshot(sessionId: string): Promise<void> {
       await sessionVersionsRepo.snapshot(sessionId);
       lastSnapshotAt.set(sessionId, now);
     } catch (err) {
-      console.error('[Windrow SW] snapshot error:', err);
+      console.error('[Tabbary SW] snapshot error:', err);
     }
   }
 }

@@ -46,12 +46,12 @@ let server: ChildProcess | null = null;
 let serverLog = '';
 
 async function startServer(): Promise<string> {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'windrow-sync-e2e-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tabbary-sync-e2e-'));
   server = spawn(process.execPath, [path.resolve('server/index.mjs')], {
     env: {
       ...process.env,
-      WINDROW_PAIRING_SECRET: PAIRING_SECRET,
-      WINDROW_DB: path.join(dir, 'sync.db'),
+      TABBARY_PAIRING_SECRET: PAIRING_SECRET,
+      TABBARY_DB: path.join(dir, 'sync.db'),
       PORT: String(PORT),
       HOST: '127.0.0.1',
     },

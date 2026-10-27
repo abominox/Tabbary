@@ -8,9 +8,9 @@
 
 import type { WrappedKey } from './crypto';
 
-export const SYNC_STORAGE_KEY = 'windrow.sync.v1';
-export const SYNC_ALARM = 'windrow-sync-poll';
-export const HEARTBEAT_ALARM = 'windrow-sync-heartbeat';
+export const SYNC_STORAGE_KEY = 'tabbary.sync.v1';
+export const SYNC_ALARM = 'tabbary-sync-poll';
+export const HEARTBEAT_ALARM = 'tabbary-sync-heartbeat';
 
 export interface SyncState {
   /** Schema version so a future migration can branch. */

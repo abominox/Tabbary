@@ -43,7 +43,7 @@ export function registerWindowListeners(): void {
     const sessionId = swCache.getSessionForWindow(windowId);
     if (!sessionId) return;
 
-    console.log('[Windrow SW] window removed:', windowId, 'session:', sessionId);
+    console.log('[Tabbary SW] window removed:', windowId, 'session:', sessionId);
 
     await sessionsRepo.markClosed(sessionId);
     swCache.unbindWindow(windowId);
@@ -53,7 +53,7 @@ export function registerWindowListeners(): void {
   // ── onFocusChanged: track focus for future use ──
   chrome.windows.onFocusChanged.addListener((windowId) => {
     if (windowId === chrome.windows.WINDOW_ID_NONE) return;
-    console.log('[Windrow SW] window focus changed:', windowId);
+    console.log('[Tabbary SW] window focus changed:', windowId);
   });
 }
 
@@ -89,7 +89,7 @@ async function bindOrCreateSession(windowId: number): Promise<void> {
         await sessionsRepo.markActive(match.sessionId, windowId);
         swCache.bindWindow(windowId, match.sessionId);
         console.log(
-          `[Windrow SW] window ${windowId} restored session ${match.sessionId} ` +
+          `[Tabbary SW] window ${windowId} restored session ${match.sessionId} ` +
             `(score ${match.score})`,
         );
         // Capture the as-opened tab set so the session reflects reality.
@@ -159,7 +159,7 @@ async function findMatchForWindow(
     const best = matches[0];
     return best ? { sessionId: best.sessionId, score: best.score } : null;
   } catch (err) {
-    console.warn('[Windrow SW] match failed:', err);
+    console.warn('[Tabbary SW] match failed:', err);
     return null;
   }
 }

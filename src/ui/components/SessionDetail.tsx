@@ -260,7 +260,7 @@ function TabLine({ tab }: { tab: Tab }) {
     <div
       draggable
       onDragStart={(e) => {
-        e.dataTransfer.setData('application/x-windrow-tabs', tab.id);
+        e.dataTransfer.setData('application/x-tabbary-tabs', tab.id);
         e.dataTransfer.effectAllowed = 'move';
       }}
       className="group flex cursor-grab items-center gap-2 rounded px-2 py-1 text-xs hover:bg-surface-hover active:cursor-grabbing"

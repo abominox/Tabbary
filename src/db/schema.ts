@@ -1,7 +1,7 @@
 import Dexie from 'dexie';
 import type { Session, Tab, TabGroup, Tag, Bookmark, SessionVersion } from '@/models';
 
-export class WindrowDB extends Dexie {
+export class TabbaryDB extends Dexie {
   sessions!: Dexie.Table<Session, 'id'>;
   tabs!: Dexie.Table<Tab, 'id'>;
   tabGroups!: Dexie.Table<TabGroup, 'id'>;
@@ -10,7 +10,7 @@ export class WindrowDB extends Dexie {
   sessionVersions!: Dexie.Table<SessionVersion, 'id'>;
 
   constructor() {
-    super('Windrow');
+    super('Tabbary');
     this.version(1).stores({
       sessions: 'id, state, updatedAt, deleted, *tags',
       tabs: 'id, sessionId, chromeTabId, deleted, [sessionId+position]',
@@ -23,4 +23,4 @@ export class WindrowDB extends Dexie {
   }
 }
 
-export const db = new WindrowDB();
+export const db = new TabbaryDB();

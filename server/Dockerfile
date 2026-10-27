@@ -1,12 +1,12 @@
-# Windrow sync server
+# Tabbary sync server
 #
-# Ciphertext-only store for Windrow. It never sees a tab URL, a session name,
+# Ciphertext-only store for Tabbary. It never sees a tab URL, a session name,
 # or the user's key.
 #
-#   docker build -t windrow-sync ./server
-#   docker run -d --name windrow-sync -p 8787:8787 \
-#     -e WINDROW_PAIRING_SECRET="$(openssl rand -base64 32)" \
-#     -v windrow-data:/data windrow-sync
+#   docker build -t tabbary-sync ./server
+#   docker run -d --name tabbary-sync -p 8787:8787 \
+#     -e TABBARY_PAIRING_SECRET="$(openssl rand -base64 32)" \
+#     -v tabbary-data:/data tabbary-sync
 #
 # Put it behind TLS before using it from another machine.
 
@@ -22,7 +22,7 @@ RUN mkdir -p /data && chown -R node:node /app /data
 
 USER node
 
-ENV WINDROW_DB=/data/windrow.db \
+ENV TABBARY_DB=/data/tabbary.db \
     PORT=8787 \
     HOST=0.0.0.0 \
     NODE_ENV=production

@@ -14,9 +14,9 @@
 import { exportAll } from '@/db/io';
 import { readSyncState } from '@/sync/state';
 
-export const BACKUP_ALARM = 'windrow-backup';
-export const BACKUP_INDEX_KEY = 'windrow.backups.index';
-export const BACKUP_SLOT_PREFIX = 'windrow.backups.slot.';
+export const BACKUP_ALARM = 'tabbary-backup';
+export const BACKUP_INDEX_KEY = 'tabbary.backups.index';
+export const BACKUP_SLOT_PREFIX = 'tabbary.backups.slot.';
 
 export interface BackupSlot {
   id: string;

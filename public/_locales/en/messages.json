@@ -1,20 +1,20 @@
 {
   "extName": {
-    "message": "Windrow"
+    "message": "Tabbary"
   },
   "extDescription": {
     "message": "A local-first tab and session manager."
   },
   "commandOpenSidePanel": {
-    "message": "Open the Windrow side panel"
+    "message": "Open the Tabbary side panel"
   },
   "commandOpenFullTab": {
-    "message": "Open the Windrow full-tab manager"
+    "message": "Open the Tabbary full-tab manager"
   },
   "commandOpenTags": {
-    "message": "Open Windrow tags"
+    "message": "Open Tabbary tags"
   },
   "commandOpenBookmarks": {
-    "message": "Open Windrow bookmarks"
+    "message": "Open Tabbary bookmarks"
   }
 }

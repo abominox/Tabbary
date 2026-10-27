@@ -1,5 +1,5 @@
 /**
- * Windrow icon set.
+ * Tabbary icon set.
  *
  * One glyph, five optical sizes. The mark is three tab rows with the live tab
  * marked — the product in one shape: rows of tabs, one of them active.

@@ -90,7 +90,7 @@ export function SyncPanel() {
     const permission = requestOrigin();
     return run(async () => {
       if (permission !== true && !(await permission)) {
-        setError('Windrow needs permission to reach that server.');
+        setError('Tabbary needs permission to reach that server.');
         return;
       }
       if (passphrase.length < 10) {
@@ -124,7 +124,7 @@ export function SyncPanel() {
     const permission = requestOrigin();
     return run(async () => {
       if (permission !== true && !(await permission)) {
-        setError('Windrow needs permission to reach that server.');
+        setError('Tabbary needs permission to reach that server.');
         return;
       }
       const result = (await sendMessage({
@@ -292,7 +292,7 @@ export function SyncPanel() {
 
           <Field
             label="Pairing secret"
-            hint="The WINDROW_PAIRING_SECRET your server was started with. Sent once, stored by the server only as a hash."
+            hint="The TABBARY_PAIRING_SECRET your server was started with. Sent once, stored by the server only as a hash."
           >
             <input
               type="password"
@@ -398,7 +398,7 @@ export function SyncPanel() {
               onClick={() => {
                 const blob = new Blob(
                   [
-                    'Windrow recovery phrase\n',
+                    'Tabbary recovery phrase\n',
                     '=======================\n\n',
                     newPhrase.replace(/ /g, '\n'),
                     '\n\nKeep this offline. Anyone with it can read your synced sessions.\n',
@@ -408,7 +408,7 @@ export function SyncPanel() {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'windrow-recovery.txt';
+                a.download = 'tabbary-recovery.txt';
                 a.click();
                 setTimeout(() => URL.revokeObjectURL(url), 10_000);
               }}
@@ -595,13 +595,13 @@ export function SyncPanel() {
 openssl rand -base64 32
 
 # 2. Start it (Node 22+)
-WINDROW_PAIRING_SECRET=… node server/index.mjs
+TABBARY_PAIRING_SECRET=… node server/index.mjs
 
 # or with Docker
 docker run -d -p 8787:8787 \\
-  -e WINDROW_PAIRING_SECRET=… \\
-  -v windrow-data:/data \\
-  ghcr.io/abominox/windrow-sync`}
+  -e TABBARY_PAIRING_SECRET=… \\
+  -v tabbary-data:/data \\
+  ghcr.io/abominox/tabbary-sync`}
         </pre>
         <p className="mt-2 text-[10px] leading-relaxed text-text-muted">
           The server keeps ciphertext, device token hashes, and a monotonic revision counter.

@@ -10,7 +10,7 @@ host the privacy policy at a public URL, and paste the justifications below.
 ## Listing
 
 **Name**
-> Windrow — tab manager
+> Tabbary — tab manager
 
 **Short description (132 chars max)**
 > Save the tabs you are working on as sessions, restore them with tab groups intact. Local-first, no account, MIT licensed.
@@ -23,11 +23,11 @@ host the privacy policy at a public URL, and paste the justifications below.
 
 **Detailed description**
 
-> Windrow is a tab manager that saves the tabs you are working on as sessions, continuously
+> Tabbary is a tab manager that saves the tabs you are working on as sessions, continuously
 > and without a save button. Close a window by accident, or crash, and your work is still
 > there — with its tab groups.
 >
-> **Tabs, not windows.** Windrow captures tabs across groups and windows and organises them
+> **Tabs, not windows.** Tabbary captures tabs across groups and windows and organises them
 > into sessions. Windows are just where the tabs happened to be.
 >
 > **What you get**
@@ -48,16 +48,16 @@ host the privacy policy at a public URL, and paste the justifications below.
 >
 > **Open source**
 > MIT licensed. Every claim above can be checked in the source at
-> github.com/abominox/Windrow.
+> github.com/abominox/Tabbary.
 
 **Homepage**
-> https://abominox.github.io/Windrow/
+> https://abominox.github.io/Tabbary/
 
 **Support URL**
-> https://github.com/abominox/Windrow/issues
+> https://github.com/abominox/Tabbary/issues
 
 **Privacy policy URL**
-> https://abominox.github.io/Windrow/privacy.html
+> https://abominox.github.io/Tabbary/privacy.html
 > (file lives at `site/privacy.html`; deploys with Pages)
 
 ---
@@ -88,7 +88,7 @@ Paste each into the dashboard's per-permission field.
 
 **`tabs`**
 > Core function. A tab manager must read tab titles and URLs to save them as a session and
-> reopen them later. Windrow does not read page content; no host permissions are requested.
+> reopen them later. Tabbary does not read page content; no host permissions are requested.
 
 **`tabGroups`**
 > Sessions must preserve Chrome tab groups. This API is used to read group names and colours
@@ -114,7 +114,7 @@ Paste each into the dashboard's per-permission field.
 > Only requested if the user turns on history-based features. Not requested at install.
 
 **`bookmarks`** *(optional)*
-> Only requested when the user presses “Import from Chrome”. Windrow imports the bookmark
+> Only requested when the user presses “Import from Chrome”. Tabbary imports the bookmark
 > tree into its own store and never writes back to Chrome's bookmarks.
 
 **Host permissions** *(optional)*
@@ -125,7 +125,7 @@ Paste each into the dashboard's per-permission field.
 
 ## Single purpose statement
 
-> Windrow saves the tabs in a browser window as a session and restores them later with their
+> Tabbary saves the tabs in a browser window as a session and restores them later with their
 > tab groups intact.
 
 ---
@@ -151,7 +151,7 @@ Paste into “Notes for the reviewer”.
 > network requests at all. This can be verified in DevTools → Network.
 >
 > **Source**
-> MIT, public: https://github.com/abominox/Windrow — the store build is `npm ci && npm run build`.
+> MIT, public: https://github.com/abominox/Tabbary — the store build is `npm ci && npm run build`.
 
 ---
 

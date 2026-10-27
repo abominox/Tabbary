@@ -8,8 +8,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-process.env.WINDROW_PAIRING_SECRET = 'test-pairing-secret-long-enough';
-process.env.WINDROW_PAIR_LIMIT = '100';
+process.env.TABBARY_PAIRING_SECRET = 'test-pairing-secret-long-enough';
+process.env.TABBARY_PAIR_LIMIT = '100';
 
 const { createSyncServer } = await import('./index.mjs');
 
@@ -62,7 +62,7 @@ test('health is public and reports the service', async (t) => {
   const r = await s.req('/health');
   assert.equal(r.status, 200);
   assert.equal(r.body.ok, true);
-  assert.equal(r.body.service, 'windrow-sync');
+  assert.equal(r.body.service, 'tabbary-sync');
 });
 
 test('pairing requires the configured secret', async (t) => {
@@ -277,7 +277,7 @@ test('rate-limits pairing per IP', async (t) => {
 
 test('data survives a restart (file-backed database)', async (t) => {
   const dir = await import('node:fs').then((fs) =>
-    fs.mkdtempSync('/tmp/windrow-server-test-'),
+    fs.mkdtempSync('/tmp/tabbary-server-test-'),
   );
   const dbPath = `${dir}/sync.db`;
 

@@ -1,8 +1,8 @@
 {
-  "name": "windrow-sync",
+  "name": "tabbary-sync",
   "version": "0.1.0",
   "private": true,
-  "description": "Self-hosted, ciphertext-only sync server for Windrow",
+  "description": "Self-hosted, ciphertext-only sync server for Tabbary",
   "type": "module",
   "main": "index.mjs",
   "engines": {

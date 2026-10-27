@@ -9,7 +9,7 @@
 const DEFAULT_ITERATIONS = 600_000;
 
 export interface EncryptedPayload {
-  format: 'windrow-encrypted';
+  format: 'tabbary-encrypted';
   version: 1;
   kdf: {
     name: 'PBKDF2-SHA256';
@@ -80,7 +80,7 @@ export async function encryptJson(
   );
 
   return {
-    format: 'windrow-encrypted',
+    format: 'tabbary-encrypted',
     version: 1,
     kdf: { name: 'PBKDF2-SHA256', iterations, salt: toBase64(salt) },
     cipher: 'AES-GCM',
@@ -98,8 +98,8 @@ export async function decryptJson<T = unknown>(
   payload: EncryptedPayload,
   passphrase: string,
 ): Promise<T> {
-  if (payload?.format !== 'windrow-encrypted') {
-    throw new Error('Not an encrypted Windrow export');
+  if (payload?.format !== 'tabbary-encrypted') {
+    throw new Error('Not an encrypted Tabbary export');
   }
 
   const salt = fromBase64(payload.kdf.salt);
@@ -125,6 +125,6 @@ export function isEncryptedPayload(value: unknown): value is EncryptedPayload {
   return (
     typeof value === 'object' &&
     value !== null &&
-    (value as { format?: unknown }).format === 'windrow-encrypted'
+    (value as { format?: unknown }).format === 'tabbary-encrypted'
   );
 }
