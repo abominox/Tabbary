@@ -80,3 +80,18 @@ describe('isEncryptedPayload', () => {
     expect(isEncryptedPayload({ format: 'tabbary-export' })).toBe(false);
   });
 });
+
+describe('legacy encrypted tags', () => {
+  it('recognises a payload written before the rename', () => {
+    // The ciphertext is format-identical; only the tag changed.
+    expect(isEncryptedPayload({ format: 'windrow-encrypted', kdf: {}, iv: '', data: '' })).toBe(true);
+  });
+
+  it('still recognises the current tag', () => {
+    expect(isEncryptedPayload({ format: 'tabbary-encrypted', kdf: {}, iv: '', data: '' })).toBe(true);
+  });
+
+  it('rejects an unrelated payload', () => {
+    expect(isEncryptedPayload({ format: 'other', kdf: {}, iv: '', data: '' })).toBe(false);
+  });
+});

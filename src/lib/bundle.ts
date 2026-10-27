@@ -10,6 +10,18 @@ import type { Session, Tab, TabGroup } from '@/models';
 export const BUNDLE_FORMAT = 'tabbary-export';
 export const BUNDLE_VERSION = 1;
 
+/**
+ * Format tags this build still reads. Files exported before the rename carry
+ * 'windrow-export'; refusing them would turn a rename into data loss for
+ * anyone holding a backup, which is the opposite of what a backup is for.
+ * We keep writing the current tag and keep reading the old one.
+ */
+export const LEGACY_BUNDLE_FORMATS = ['windrow-export'] as const;
+
+export function isBundleFormat(tag: unknown): boolean {
+  return tag === BUNDLE_FORMAT || (LEGACY_BUNDLE_FORMATS as readonly unknown[]).includes(tag);
+}
+
 export interface BundleSession {
   id: string;
   name: string | null;
@@ -145,7 +157,7 @@ export function parseBundle(input: unknown): ParseResult {
 
   const raw = input as Partial<Bundle> & { sessions?: unknown };
 
-  if (raw.format !== BUNDLE_FORMAT) {
+  if (!isBundleFormat(raw.format)) {
     return {
       ok: false,
       error: `Not a Tabbary export (expected format "${BUNDLE_FORMAT}")`,

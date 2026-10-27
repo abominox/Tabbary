@@ -289,3 +289,44 @@ describe('detectAndParseImport', () => {
     expect(result.sessions).toHaveLength(0);
   });
 });
+
+describe('legacy export tags', () => {
+  it('still reads a bundle exported before the rename', () => {
+    // A backup taken under the old name must not become unreadable when the
+    // product is renamed. Only the tag changed; the shape did not.
+    const legacy = {
+      format: 'windrow-export',
+      version: 1,
+      exportedAt: Date.now(),
+      generator: 'windrow',
+      counts: { sessions: 1, tabs: 1, groups: 0 },
+      sessions: [
+        {
+          id: 's1',
+          name: 'Old session',
+          state: 'closed',
+          tags: [],
+          createdAt: 1,
+          updatedAt: 1,
+          closedAt: 1,
+          groups: [],
+          tabs: [
+            { url: 'https://a.test', title: 'A', pinned: false, position: 0, groupId: null },
+          ],
+        },
+      ],
+    };
+
+    const parsed = parseBundle(legacy);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) expect(parsed.bundle.sessions).toHaveLength(1);
+  });
+
+  it('still writes the current tag', () => {
+    expect(BUNDLE_FORMAT).toBe('tabbary-export');
+  });
+
+  it('rejects an unrelated format tag', () => {
+    expect(parseBundle({ format: 'something-else', version: 1, sessions: [] }).ok).toBe(false);
+  });
+});

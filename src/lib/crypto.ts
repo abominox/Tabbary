@@ -8,6 +8,20 @@
 
 const DEFAULT_ITERATIONS = 600_000;
 
+/**
+ * Files written before the rename say 'windrow-encrypted'. The ciphertext is
+ * identical, so the only thing needed to read an old file is to accept the old
+ * tag; refusing it would make a rename lose people's encrypted backups.
+ */
+const LEGACY_ENCRYPTED_FORMATS = ['windrow-encrypted'] as const;
+
+function isEncryptedFormat(tag: unknown): boolean {
+  return (
+    tag === 'tabbary-encrypted' ||
+    (LEGACY_ENCRYPTED_FORMATS as readonly unknown[]).includes(tag)
+  );
+}
+
 export interface EncryptedPayload {
   format: 'tabbary-encrypted';
   version: 1;
@@ -98,7 +112,7 @@ export async function decryptJson<T = unknown>(
   payload: EncryptedPayload,
   passphrase: string,
 ): Promise<T> {
-  if (payload?.format !== 'tabbary-encrypted') {
+  if (!isEncryptedFormat(payload?.format)) {
     throw new Error('Not an encrypted Tabbary export');
   }
 
@@ -125,6 +139,6 @@ export function isEncryptedPayload(value: unknown): value is EncryptedPayload {
   return (
     typeof value === 'object' &&
     value !== null &&
-    (value as { format?: unknown }).format === 'tabbary-encrypted'
+    isEncryptedFormat((value as { format?: unknown }).format)
   );
 }
