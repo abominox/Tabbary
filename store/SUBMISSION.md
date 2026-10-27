@@ -43,8 +43,9 @@ host the privacy policy at a public URL, and paste the justifications below.
 > - No account. No analytics. No third-party services.
 > - Requests no access to the sites you visit.
 > - Everything is stored in your own browser profile.
-> - Optional sync is end-to-end encrypted and points at a server you choose — self-hosted,
->   or one hosted for you. The server holds ciphertext it cannot read.
+> - Optional sync is end-to-end encrypted and points at a server you choose. Run it
+>   yourself with the included server (a step-by-step deploy guide is in `server/DEPLOY.md`),
+>   or host it wherever you like. The operator holds ciphertext they cannot read.
 >
 > **Open source**
 > MIT licensed. Every claim above can be checked in the source at
@@ -139,7 +140,9 @@ Paste into “Notes for the reviewer”.
 >    in the manager (toolbar icon → Open manager).
 > 2. Press “Restore” on that session: the tabs reopen.
 > 3. Settings → Import & export → Export JSON produces a file; importing it adds sessions.
-> 4. Settings → Sync & backup is **off by default** and requires a self-hosted server. It is
+> 4. Settings → Sync & backup is **off by default** and requires a server the user runs or
+>    controls; the repository ships a dependency-free reference server and a deploy guide
+>    (`server/`, `server/DEPLOY.md`). No hosted instance is operated by this project. Sync is
 >    not needed to evaluate any other feature.
 >
 > **Permissions**
@@ -167,7 +170,8 @@ Paste into “Notes for the reviewer”.
 - [x] Single purpose statement
 - [x] Reviewer notes
 - [x] No remote code, no eval, no analytics
-- [ ] Privacy policy reachable at a public URL (deploys with Pages; confirm after push)
+- [x] Privacy policy reachable at a public URL — verified 27 Oct 2026:
+      https://abominox.github.io/Tabbary/privacy.html (HTTP 200)
 - [ ] Chrome Web Store developer account ($5 one-time) and payout/tax details
 - [ ] Trademark check on the name before publishing (see `design/README.md`)
-- [ ] Decide whether the hosted sync instance is advertised in the listing or only in docs
+- [x] Sync hosting described accurately (user-run server; no hosted instance operated by the project)

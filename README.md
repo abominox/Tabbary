@@ -160,8 +160,9 @@ through `getRestoreReport`.
 
 ## Sync (optional)
 
-Sync is off by default. It runs against a small self-hosted server; a hosted instance is
-available, and the same server runs anywhere you have a VPS. There is no account either way.
+Sync is off by default. It runs against a small server you run yourself — your own VPS,
+a homelab box, or localhost. There is no hosted instance operated by this project, and no
+account either way. `server/DEPLOY.md` is a complete deployment runbook.
 
 ### What the server can and cannot see
 
@@ -202,11 +203,12 @@ export TABBARY_PAIRING_SECRET="$(openssl rand -base64 32)"
 node server/index.mjs            # or: docker compose -f server/compose.yaml up -d
 ```
 
-Point the extension at any instance — hosted, your own VPS, or localhost. The server holds
-ciphertext only, so hosting it somewhere you rent does not give that host your data.
+Point the extension at any instance you control — your own VPS, a homelab box, or localhost.
+The server holds ciphertext only, so the machine it runs on never sees your tabs.
 
-See [server/README.md](server/README.md) for the API, configuration, TLS, and
-backup notes.
+See [server/README.md](server/README.md) for the API and configuration, and
+[server/DEPLOY.md](server/DEPLOY.md) for a full VPS runbook (systemd, Caddy TLS, backups,
+monitoring).
 
 ## Import / export
 

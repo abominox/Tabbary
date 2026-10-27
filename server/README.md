@@ -98,6 +98,12 @@ docker run --rm -v tabbary-data:/data -v "$PWD":/backup alpine \
 
 Or take a filesystem snapshot while the container is stopped.
 
+## Deploying to a VPS
+
+`DEPLOY.md` is a step-by-step runbook: Node 22, systemd hardening, Caddy with
+automatic TLS, ufw, backups, upgrade and monitoring commands. Use it if you want
+HTTPS and a service that survives reboots.
+
 ## Putting it behind TLS
 
 Any reverse proxy works. Caddy needs three lines:
