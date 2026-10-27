@@ -2,7 +2,7 @@
 
 Everything a reviewer needs, in the order the dashboard asks for it.
 
-**Status:** assets complete. Remaining before submitting: create the developer account,
+**Status:** assets complete. Name clearance recorded in `store/NAME-CLEARANCE.md`. Remaining before submitting: create the developer account,
 host the privacy policy at a public URL, and paste the justifications below.
 
 ---
@@ -173,5 +173,7 @@ Paste into “Notes for the reviewer”.
 - [x] Privacy policy reachable at a public URL — verified 27 Oct 2026:
       https://abominox.github.io/Tabbary/privacy.html (HTTP 200)
 - [ ] Chrome Web Store developer account ($5 one-time) and payout/tax details
-- [ ] Trademark check on the name before publishing (see `design/README.md`)
+- [ ] Trademark check on the name before publishing — mechanical checks done, all clear
+      (`store/NAME-CLEARANCE.md`); USPTO/EUIPO database search still to do by hand, as both
+      block automated access
 - [x] Sync hosting described accurately (user-run server; no hosted instance operated by the project)

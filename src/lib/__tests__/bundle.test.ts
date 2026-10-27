@@ -319,7 +319,9 @@ describe('legacy export tags', () => {
 
     const parsed = parseBundle(legacy);
     expect(parsed.ok).toBe(true);
-    if (parsed.ok) expect(parsed.bundle.sessions).toHaveLength(1);
+    // `ok` is a boolean field, not a discriminant, so narrow on `bundle` itself.
+    expect(parsed.bundle?.sessions).toHaveLength(1);
+    expect(parsed.bundle?.sessions[0]?.tabs[0]?.url).toBe('https://a.test');
   });
 
   it('still writes the current tag', () => {
