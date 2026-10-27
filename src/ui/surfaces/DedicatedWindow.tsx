@@ -66,7 +66,7 @@ export function DedicatedWindow() {
         <span className="grid h-5 w-5 place-items-center rounded bg-text-primary text-[10px] font-bold text-surface-base">
           W
         </span>
-        <span className="text-[12px] font-bold">Tabbary</span>
+        <span className="text-[12px] font-bold">tabbary</span>
         <div className="ml-2 min-w-0 flex-1">
           <SearchBar
             value={search}

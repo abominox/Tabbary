@@ -48,7 +48,7 @@ chrome.action.onClicked.addListener(async (tab) => {
   // user's preferred surface rather than always assuming the side panel.
   const settings = await settingsRepo.get().catch(() => null);
   const surface = settings?.preferredSurface ?? 'sidepanel';
-  console.log('[Tabbary SW] action clicked →', surface);
+  console.log('[tabbary SW] action clicked →', surface);
 
   if (surface === 'sidepanel') {
     try {
@@ -79,16 +79,16 @@ scheduleSyncAlarm().catch(() => {});
 // Local backups: on by default, checked twice a day.
 scheduleBackupAlarm()
   .then(() => runBackup())
-  .catch((e) => console.warn('[Tabbary SW] backup failed:', e));
+  .catch((e) => console.warn('[tabbary SW] backup failed:', e));
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'tabbary-health') {
-    console.log('[Tabbary SW] health alarm');
+    console.log('[tabbary SW] health alarm');
     settingsRepo.get().catch(() => {});
     // Enforce the global SessionVersion cap (500) — per-session pruning happens in
     // snapshot(); this periodic sweep is the cross-session safety net (PLAN §8).
     sessionVersionsRepo.pruneGlobal().catch((e: unknown) =>
-      console.warn('[Tabbary SW] pruneGlobal failed:', e),
+      console.warn('[tabbary SW] pruneGlobal failed:', e),
     );
   }
 
@@ -96,10 +96,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     runBackup()
       .then((r) => {
         if (r.written.length > 0) {
-          console.log(`[Tabbary SW] backup written (${r.written.map((w) => w.tier).join(', ')})`);
+          console.log(`[tabbary SW] backup written (${r.written.map((w) => w.tier).join(', ')})`);
         }
       })
-      .catch((e) => console.warn('[Tabbary SW] backup failed:', e));
+      .catch((e) => console.warn('[tabbary SW] backup failed:', e));
   }
 
   if (alarm.name === SYNC_POLL_ALARM) {
@@ -113,12 +113,12 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 // ── SW lifecycle hooks ──
 // Cancel pending saves on SW suspend (best-effort; Dexie transactions are atomic)
 chrome.runtime.onSuspend?.addListener(() => {
-  console.log('[Tabbary SW] onSuspend');
+  console.log('[tabbary SW] onSuspend');
   cancelPendingSaves();
   void cancelSyncTimers();
 });
 
-console.log('[Tabbary SW] loaded and registered');
+console.log('[tabbary SW] loaded and registered');
 
 // Ensure module-scoped exports (unused, but prevents TS isolatedModules error)
 export {};

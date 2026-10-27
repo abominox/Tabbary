@@ -6,7 +6,7 @@
  *   tag     — shared by every session carrying that tag
  *   browser — a one-way import of Chrome's bookmark tree
  *
- * Browser bookmarks are read-only here: Tabbary imports them once and never
+ * Browser bookmarks are read-only here: tabbary imports them once and never
  * writes back to Chrome's tree (that would need the `bookmarks` permission and
  * is a much bigger promise than this feature makes).
  */

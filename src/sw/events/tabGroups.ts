@@ -34,7 +34,7 @@ export function registerTabGroupListeners(): void {
     // since we don't know which window the group belonged to after removal
     // Best effort: the group's old windowId is not available in onRemoved's callback
     // In practice, tabs.onUpdated or the next save will handle cleanup
-    console.log('[Tabbary SW] group removed:', group.id);
+    console.log('[tabbary SW] group removed:', group.id);
   });
 }
 

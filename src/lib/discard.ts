@@ -10,7 +10,7 @@ export async function discardTab(chromeTabId: number): Promise<void> {
     await chrome.tabs.discard(chromeTabId);
   } catch (err) {
     // Suppress "already discarded" / "cannot discard" errors
-    console.warn('[Tabbary] discardTab failed:', err);
+    console.warn('[tabbary] discardTab failed:', err);
   }
 }
 

@@ -19,7 +19,7 @@ interface ImportOutcome {
  * Export/import panel. Lives in Settings.
  *
  * Export: plain JSON (default) or passphrase-encrypted (PBKDF2 + AES-GCM).
- * Import: Tabbary bundle, OneTab export, or a plain list of URLs.
+ * Import: tabbary bundle, OneTab export, or a plain list of URLs.
  */
 export function DataPanel() {
   const [busy, setBusy] = useState(false);
@@ -239,7 +239,7 @@ export function DataPanel() {
         <header className="border-b border-surface-border px-3 py-2.5">
           <h3 className="text-[12px] font-semibold text-text-primary">Import</h3>
           <p className="mt-0.5 text-[11px] text-text-muted">
-            Tabbary JSON or encrypted export, a OneTab export, or a plain list of URLs.
+            tabbary JSON or encrypted export, a OneTab export, or a plain list of URLs.
           </p>
         </header>
 

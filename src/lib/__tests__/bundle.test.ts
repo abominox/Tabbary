@@ -153,7 +153,7 @@ describe('parseBundle', () => {
   it('rejects a foreign object', () => {
     const result = parseBundle({ hello: 'world' });
     expect(result.ok).toBe(false);
-    expect(result.error).toContain('Not a Tabbary export');
+    expect(result.error).toContain('Not a tabbary export');
   });
 
   it('rejects a newer format version', () => {
@@ -264,7 +264,7 @@ describe('parseOneTab', () => {
 });
 
 describe('detectAndParseImport', () => {
-  it('detects a Tabbary bundle', () => {
+  it('detects a tabbary bundle', () => {
     const bundle = buildBundle([session()], { s1: [tab()] }, { s1: [] });
     const result = detectAndParseImport(JSON.stringify(bundle));
     expect(result.source).toBe('tabbary');

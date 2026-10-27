@@ -1,5 +1,5 @@
 /**
- * Tabbary M2 E2E suite — full-tab manager, drag-and-drop data path, revisions,
+ * tabbary M2 E2E suite — full-tab manager, drag-and-drop data path, revisions,
  * and settings. Exercises the real message bus from an extension page against a
  * live service worker, then checks the rendered UI.
  *

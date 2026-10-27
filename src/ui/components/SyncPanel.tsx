@@ -90,7 +90,7 @@ export function SyncPanel() {
     const permission = requestOrigin();
     return run(async () => {
       if (permission !== true && !(await permission)) {
-        setError('Tabbary needs permission to reach that server.');
+        setError('tabbary needs permission to reach that server.');
         return;
       }
       if (passphrase.length < 10) {
@@ -124,7 +124,7 @@ export function SyncPanel() {
     const permission = requestOrigin();
     return run(async () => {
       if (permission !== true && !(await permission)) {
-        setError('Tabbary needs permission to reach that server.');
+        setError('tabbary needs permission to reach that server.');
         return;
       }
       const result = (await sendMessage({
@@ -398,7 +398,7 @@ export function SyncPanel() {
               onClick={() => {
                 const blob = new Blob(
                   [
-                    'Tabbary recovery phrase\n',
+                    'tabbary recovery phrase\n',
                     '=======================\n\n',
                     newPhrase.replace(/ /g, '\n'),
                     '\n\nKeep this offline. Anyone with it can read your synced sessions.\n',

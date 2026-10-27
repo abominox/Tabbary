@@ -2,7 +2,7 @@
   "name": "tabbary-sync",
   "version": "0.1.0",
   "private": true,
-  "description": "Self-hosted, ciphertext-only sync server for Tabbary",
+  "description": "Self-hosted, ciphertext-only sync server for tabbary",
   "type": "module",
   "main": "index.mjs",
   "engines": {

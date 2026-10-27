@@ -50,7 +50,7 @@ export async function handleSyncSetup(msg: {
     const connector = new VpsConnector(endpoint);
     const health = await connector.ping().catch(() => null);
     if (!health?.ok) {
-      return { ok: false, error: `No Tabbary sync server responded at ${connector.origin}` };
+      return { ok: false, error: `No tabbary sync server responded at ${connector.origin}` };
     }
 
     const paired = await connector.pair(
@@ -193,7 +193,7 @@ async function ensureHostPermission(endpoint: string): Promise<void> {
 
   const granted = await chrome.permissions.request({ origins: [pattern] });
   if (!granted) {
-    throw new Error('Tabbary needs permission to reach that server to sync');
+    throw new Error('tabbary needs permission to reach that server to sync');
   }
 }
 

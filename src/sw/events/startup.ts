@@ -35,7 +35,7 @@ export function getRestoreReport(): RestoreReport | null {
 export function registerStartupListeners(): void {
   // ── onInstalled: first-run onboarding, settings init ──
   chrome.runtime.onInstalled.addListener(async (details) => {
-    console.log('[Tabbary SW] onInstalled:', details.reason);
+    console.log('[tabbary SW] onInstalled:', details.reason);
 
     if (details.reason === 'install') {
       // Ensure settings are initialized
@@ -47,7 +47,7 @@ export function registerStartupListeners(): void {
 
     if (details.reason === 'update') {
       // Future: migrate logic here
-      console.log('[Tabbary SW] updated from', details.previousVersion);
+      console.log('[tabbary SW] updated from', details.previousVersion);
     }
 
     // On any install/update, rebuild caches and sync
@@ -56,7 +56,7 @@ export function registerStartupListeners(): void {
 
   // ── onStartup: restore sessions and rebuild caches ──
   chrome.runtime.onStartup.addListener(async () => {
-    console.log('[Tabbary SW] onStartup');
+    console.log('[tabbary SW] onStartup');
     await initStartup();
   });
 
@@ -84,9 +84,9 @@ async function rebuildCache(): Promise<void> {
   try {
     const active = await sessionsRepo.listActive();
     swCache.rebuildFromActiveSessions(active);
-    console.log(`[Tabbary SW] cache rebuilt: ${active.length} active sessions`);
+    console.log(`[tabbary SW] cache rebuilt: ${active.length} active sessions`);
   } catch (err) {
-    console.error('[Tabbary SW] cache rebuild error:', err);
+    console.error('[tabbary SW] cache rebuild error:', err);
   }
 }
 
@@ -120,7 +120,7 @@ async function restoreOnStartup(): Promise<void> {
 
     if (settings.restoreOnStartup === 'ask') {
       lastReport = { ...report, strategy: 'ask', reason: 'waiting for the user to choose' };
-      console.log('[Tabbary SW] restore-on-startup = ask; not restoring automatically');
+      console.log('[tabbary SW] restore-on-startup = ask; not restoring automatically');
       return;
     }
 
@@ -163,7 +163,7 @@ async function restoreOnStartup(): Promise<void> {
       swCache.bindWindow(m.windowId, m.sessionId);
       report.matched.push({ sessionId: m.sessionId, windowId: m.windowId, score: m.score });
       console.log(
-        `[Tabbary SW] matched session ${m.sessionId} to window ${m.windowId} (score ${m.score})`,
+        `[tabbary SW] matched session ${m.sessionId} to window ${m.windowId} (score ${m.score})`,
       );
     }
 
@@ -203,12 +203,12 @@ async function restoreOnStartup(): Promise<void> {
         restoredSessionId: session.id,
         restoredTabs: urls.length,
       };
-      console.log(`[Tabbary SW] restored session: ${session.id} (${tabs.length} tabs)`);
+      console.log(`[tabbary SW] restored session: ${session.id} (${tabs.length} tabs)`);
     } else {
       lastReport = { ...report, strategy: 'none', reason: 'could not create a window' };
     }
   } catch (err) {
-    console.error('[Tabbary SW] restore error:', err);
+    console.error('[tabbary SW] restore error:', err);
     lastReport = { ...report, strategy: 'none', reason: (err as Error).message };
   }
 }

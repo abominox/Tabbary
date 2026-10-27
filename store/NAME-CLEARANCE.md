@@ -1,4 +1,4 @@
-# Name clearance record — Tabbary
+# Name clearance record — tabbary
 
 **Date:** 27 October 2026
 **Status:** usable, with one manual step still outstanding (USPTO/EUIPO database search).
@@ -11,7 +11,7 @@ if the project ever takes money or a company name.
 
 ## Why the name changed
 
-The previous name, *Windrow*, described nothing about the product. *Tabbary* is
+The previous name, *Windrow*, described nothing about the product. *tabbary* is
 tab + *-bary* (as in **library**, **apiary**, **aviary**): the place the tabs are kept.
 It reads as a tab manager before you read the description.
 
@@ -30,7 +30,7 @@ shortlisting and caused their candidate to be dropped:
 | tabstack, tabnest, tabrow, tabwise, tabfolio, tabkeeper, tabrail | GitHub name already taken. |
 | sheaf, quire, bindery, ream, trove, corral, muster, cairn, endpaper, flyleaf | Taken on npm and/or GitHub. Common literary nouns are exhausted. |
 
-## Mechanical checks on "Tabbary" — all clear
+## Mechanical checks on "tabbary" — all clear
 
 | Channel | Result |
 |---|---|
@@ -38,12 +38,12 @@ shortlisting and caused their candidate to be dropped:
 | `tabbary.com` / `.dev` / `.app` / `.org` | Unregistered (RDAP 404 on all four) |
 | `tabbary.io` | Available |
 | `github.com/tabbary` | Free; no user or org |
-| Chrome Web Store | No extension named Tabbary found |
-| General web / Product Hunt | No software product named Tabbary found |
+| Chrome Web Store | No extension named tabbary found |
+| General web / Product Hunt | No software product named tabbary found |
 
-## What "Tabbary" actually is, and why that helps
+## What "tabbary" actually is, and why that helps
 
-"Tabbary" is not a coined word — it is one of several transliterations of the Arabic
+"tabbary" is not a coined word — it is one of several transliterations of the Arabic
 surname **Tabari** (also rendered Tabary, Tabbari). It is used by unrelated businesses:
 a Dubai plastics wholesaler ("Al Tabbari Trading") and a small Amazon jewellery brand.
 

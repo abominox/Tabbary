@@ -1,4 +1,4 @@
-# Deploying the Tabbary sync server
+# Deploying the tabbary sync server
 
 A complete runbook for one VPS. Target: **15 minutes on a fresh Debian 12 or
 Ubuntu 24.04 box**, one HTTPS hostname, automatic certificate renewal, backups.
@@ -90,7 +90,7 @@ sudo cat /opt/tabbary/.env | grep PAIRING
 ```bash
 sudo tee /etc/systemd/system/tabbary-sync.service >/dev/null <<'EOF'
 [Unit]
-Description=Tabbary sync server
+Description=tabbary sync server
 After=network-online.target
 Wants=network-online.target
 
@@ -172,7 +172,7 @@ the firewall is the second layer.
 
 ## 7. Pair the extension
 
-1. Open Tabbary → **Settings → Sync & backup**.
+1. Open tabbary → **Settings → Sync & backup**.
 2. Enter `https://sync.example.net` and the pairing secret.
 3. Choose a passphrase. This is separate from the pairing secret and **never
    leaves the device** — it derives the key that encrypts your blobs. The server
@@ -181,7 +181,7 @@ the firewall is the second layer.
 4. Repeat on each other device with the same server, secret, and passphrase.
 
 Chrome will ask for permission to reach that one origin. That is the only host
-access Tabbary ever requests, and it is granted per-origin.
+access tabbary ever requests, and it is granted per-origin.
 
 ---
 

@@ -50,9 +50,9 @@ describe('encryptJson / decryptJson', () => {
     await expect(decryptJson(tampered, 'pw')).rejects.toThrow(/Wrong passphrase|corrupted/);
   });
 
-  it('rejects a non-Tabbary envelope', async () => {
+  it('rejects a non-tabbary envelope', async () => {
     await expect(decryptJson({ format: 'other' } as never, 'pw')).rejects.toThrow(
-      /Not an encrypted Tabbary export/,
+      /Not an encrypted tabbary export/,
     );
   });
 

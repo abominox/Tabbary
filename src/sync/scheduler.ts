@@ -60,10 +60,10 @@ async function runScheduledSync(reason: string): Promise<void> {
       status: result.ok ? 'synced' : 'error',
     });
     if ((result.conflicts ?? 0) > 0) {
-      console.log(`[Tabbary SW] sync (${reason}): ${result.conflicts} conflict(s) resolved by pull`);
+      console.log(`[tabbary SW] sync (${reason}): ${result.conflicts} conflict(s) resolved by pull`);
     }
   } catch (err) {
-    console.warn('[Tabbary SW] scheduled sync failed:', err);
+    console.warn('[tabbary SW] scheduled sync failed:', err);
     broadcast({ type: 'syncStatusChanged', status: 'error' });
   } finally {
     inFlight = false;

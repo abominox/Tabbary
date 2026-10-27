@@ -43,7 +43,7 @@ export function Onboarding() {
           <span className="grid h-5 w-5 place-items-center rounded bg-text-primary text-[10px] text-surface-base">
             W
           </span>
-          Tabbary
+          tabbary
         </span>
         <ol className="ml-auto flex items-center gap-1" aria-label="Onboarding progress">
           {STEPS.slice(0, 4).map((s, i) => (
@@ -83,7 +83,7 @@ export function Onboarding() {
           >
             <fieldset className="mt-6">
               <legend className="text-[12px] font-medium text-text-primary">
-                When Chrome starts, restore the windows Tabbary was tracking?
+                When Chrome starts, restore the windows tabbary was tracking?
               </legend>
               <div className="mt-2 space-y-1.5">
                 {(
@@ -176,7 +176,7 @@ export function Onboarding() {
           <Section
             eyebrow="Ready"
             title="That's it."
-            body="Open a window and Tabbary starts capturing. Press ? in the manager for keyboard shortcuts."
+            body="Open a window and tabbary starts capturing. Press ? in the manager for keyboard shortcuts."
           >
             <div className="mt-6 flex flex-wrap gap-2">
               <button
@@ -184,7 +184,7 @@ export function Onboarding() {
                 onClick={() => void finish()}
                 className="rounded-md bg-accent-600 px-4 py-2 text-[12px] font-semibold text-white hover:bg-accent-700"
               >
-                Open Tabbary
+                Open tabbary
               </button>
               <button
                 type="button"

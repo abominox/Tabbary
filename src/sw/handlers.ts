@@ -135,7 +135,7 @@ export function registerBusHandlers(): void {
       broadcast({ type: 'restored', sessionId: msg.sessionId, groups: restored.groupsCreated });
 
       if (restored.errors.length > 0) {
-        console.warn('[Tabbary SW] restore completed with issues:', restored.errors);
+        console.warn('[tabbary SW] restore completed with issues:', restored.errors);
       }
     },
 
@@ -496,6 +496,6 @@ async function openUrlsInWindow(windowId: number, urls: string[]): Promise<void>
       await chrome.tabs.create({ windowId, url, active: false });
     }
   } catch (err) {
-    console.warn('[Tabbary SW] could not sync window tabs:', err);
+    console.warn('[tabbary SW] could not sync window tabs:', err);
   }
 }

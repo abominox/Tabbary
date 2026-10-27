@@ -113,7 +113,7 @@ export async function decryptJson<T = unknown>(
   passphrase: string,
 ): Promise<T> {
   if (!isEncryptedFormat(payload?.format)) {
-    throw new Error('Not an encrypted Tabbary export');
+    throw new Error('Not an encrypted tabbary export');
   }
 
   const salt = fromBase64(payload.kdf.salt);

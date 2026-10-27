@@ -1,5 +1,5 @@
 /**
- * Tabbary sync server.
+ * tabbary sync server.
  *
  * Holds ciphertext only. It authenticates *devices* against one operator-set
  * pairing secret; it has no accounts, no user records, and no way to decrypt a

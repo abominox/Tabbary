@@ -1,4 +1,4 @@
-# Tabbary
+# tabbary
 
 **Rows of tabs, quietly kept.** A local-first tab and session manager for Chrome (MV3).
 
@@ -30,7 +30,7 @@ client-side encryption and a sync server you can run yourself.
 - **Revision history** — per-session snapshots with pruning. Restoring a revision snapshots
   the current state first, so it is reversible.
 - **Import / export** — plain JSON (human-readable, no lock-in) or a passphrase-encrypted
-  file (PBKDF2-SHA256 600k → AES-GCM-256). Imports Tabbary bundles, OneTab exports, and
+  file (PBKDF2-SHA256 600k → AES-GCM-256). Imports tabbary bundles, OneTab exports, and
   plain URL lists; imports are always additive.
 - **Popup** — click the toolbar icon for the current window, recent sessions, and search.
 - **Dedicated window** — the same manager in a compact two-pane window (Alt+W via the UI).
@@ -233,8 +233,8 @@ never stored.
 
 | Format | Notes |
 |---|---|
-| Tabbary JSON | Validated; unknown/newer versions refused |
-| Tabbary encrypted | Prompts for the passphrase, decrypts locally |
+| tabbary JSON | Validated; unknown/newer versions refused |
+| tabbary encrypted | Prompts for the passphrase, decrypts locally |
 | OneTab export | Both the JSON-array and plain-text forms |
 | URL list | One per line; duplicates dropped |
 

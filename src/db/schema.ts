@@ -10,7 +10,7 @@ export class TabbaryDB extends Dexie {
   sessionVersions!: Dexie.Table<SessionVersion, 'id'>;
 
   constructor() {
-    super('Tabbary');
+    super('tabbary');
     this.version(1).stores({
       sessions: 'id, state, updatedAt, deleted, *tags',
       tabs: 'id, sessionId, chromeTabId, deleted, [sessionId+position]',

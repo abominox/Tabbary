@@ -93,7 +93,7 @@ export function Popup({ compact = true }: PopupProps) {
         <span className="grid h-5 w-5 place-items-center rounded bg-text-primary text-[10px] font-bold text-surface-base">
           W
         </span>
-        <span className="text-[12px] font-bold">Tabbary</span>
+        <span className="text-[12px] font-bold">tabbary</span>
         <span className="ml-1 flex items-center gap-1 text-[10px] text-text-muted">
           <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
           local

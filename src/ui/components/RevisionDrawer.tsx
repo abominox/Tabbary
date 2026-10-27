@@ -102,7 +102,7 @@ export function RevisionDrawer({ session, onClose, onChanged }: RevisionDrawerPr
             )}
             {versions?.length === 0 && (
               <p className="px-2 py-2 text-[11px] text-text-muted">
-                No revisions yet. Tabbary snapshots a session as it changes.
+                No revisions yet. tabbary snapshots a session as it changes.
               </p>
             )}
             {versions?.map((v, i) => (

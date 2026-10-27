@@ -86,14 +86,14 @@ afterEach(async () => {
     server = null;
   }
   // Unique DB per suite; drop it so the next test starts clean.
-  await Dexie.delete('Tabbary');
+  await Dexie.delete('tabbary');
   fs.rmSync(dbDir, { recursive: true, force: true });
 });
 
 // ── Helpers ─────────────────────────────────────────────
 
 const freshDb = async () => {
-  await Dexie.delete('Tabbary');
+  await Dexie.delete('tabbary');
   const db = new TabbaryDB();
   await db.open();
   return db;

@@ -65,7 +65,7 @@ export function buildBundle(
   sessions: Session[],
   tabsBySession: Record<string, Tab[]>,
   groupsBySession: Record<string, TabGroup[]>,
-  generator = 'Tabbary',
+  generator = 'tabbary',
 ): Bundle {
   const bundleSessions: BundleSession[] = sessions.map((s) => {
     const groups = (groupsBySession[s.id] ?? [])
@@ -160,7 +160,7 @@ export function parseBundle(input: unknown): ParseResult {
   if (!isBundleFormat(raw.format)) {
     return {
       ok: false,
-      error: `Not a Tabbary export (expected format "${BUNDLE_FORMAT}")`,
+      error: `Not a tabbary export (expected format "${BUNDLE_FORMAT}")`,
       warnings,
     };
   }
@@ -370,7 +370,7 @@ export function detectAndParseImport(text: string): {
   const trimmed = text.trim();
   if (!trimmed) return { source: 'none', sessions: [], warnings: [] };
 
-  // Tabbary JSON
+  // tabbary JSON
   if (trimmed.startsWith('{')) {
     try {
       const parsed: unknown = JSON.parse(trimmed);

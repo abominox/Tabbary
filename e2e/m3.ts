@@ -1,5 +1,5 @@
 /**
- * Tabbary M3 E2E — popup, dedicated window, tags, and restore matching.
+ * tabbary M3 E2E — popup, dedicated window, tags, and restore matching.
  *
  * Restore matching is exercised through the real bus: two sessions are
  * recorded, their windows closed, then a window with identical URLs is opened
@@ -206,7 +206,7 @@ async function main() {
     const popup = await openExtensionPage(context, extId2, 'popup.html');
     const popupUi = await popup.evaluate(() => {
       return {
-        hasBrand: document.body.innerText.includes('Tabbary'),
+        hasBrand: document.body.innerText.includes('tabbary'),
         hasSearch: Boolean(document.querySelector('input')),
         hasRestoreAffordance: document.body.innerText.toLowerCase().includes('recently closed'),
         // The popup card is the fixed 380px element; the App wrapper above it is

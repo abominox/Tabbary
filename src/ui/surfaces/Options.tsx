@@ -64,7 +64,7 @@ export function Options() {
       <header className="flex items-start gap-3">
         <div className="flex-1">
           <p className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
-            Tabbary {chrome.runtime.getManifest().version} · MIT
+            tabbary {chrome.runtime.getManifest().version} · MIT
           </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-text-primary">
             Settings
@@ -130,7 +130,7 @@ export function Options() {
             <Panel title="General" description="Startup and capture behaviour.">
               <SelectRow
                 label="Restore sessions on startup"
-                hint="Whether Tabbary reopens the windows it was tracking when Chrome starts."
+                hint="Whether tabbary reopens the windows it was tracking when Chrome starts."
                 value={settings.restoreOnStartup}
                 options={[
                   ['yes', 'Yes, restore'],
@@ -155,7 +155,7 @@ export function Options() {
               />
               <SelectRow
                 label="Preferred surface"
-                hint="Where the toolbar button opens Tabbary."
+                hint="Where the toolbar button opens tabbary."
                 value={settings.preferredSurface}
                 options={[
                   ['sidepanel', 'Side panel'],
@@ -169,7 +169,7 @@ export function Options() {
           )}
 
           {section === 'interface' && (
-            <Panel title="Interface" description="How Tabbary looks.">
+            <Panel title="Interface" description="How tabbary looks.">
               <SelectRow
                 label="Theme"
                 value={settings.theme}
@@ -221,7 +221,7 @@ export function Options() {
                 onChange={(v) => save({ openSuspended: v })}
               />
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-2.5 text-[11px] leading-relaxed text-text-secondary">
-                Tabbary calls <code className="font-mono">chrome.tabs.discard</code> instead of
+                tabbary calls <code className="font-mono">chrome.tabs.discard</code> instead of
                 sending tabs through a third-party suspense service, so the address bar always
                 shows the real URL.
               </div>
@@ -251,7 +251,7 @@ export function Options() {
           )}
 
           {section === 'history' && (
-            <Panel title="Storage & history" description="What Tabbary keeps on this device.">
+            <Panel title="Storage & history" description="What tabbary keeps on this device.">
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-3 text-[11px] text-text-secondary">
                 <p className="font-medium text-text-primary">Everything is local</p>
                 <p className="mt-1 leading-relaxed">
@@ -282,7 +282,7 @@ export function Options() {
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-3 text-[11px] leading-relaxed text-text-secondary">
                 <p className="font-medium text-text-primary">No account required</p>
                 <p className="mt-1">
-                  Tabbary has no sign-in, no user profile, and no server holding your data. If
+                  tabbary has no sign-in, no user profile, and no server holding your data. If
                   you later run the optional sync server, it stores ciphertext only and you
                   hold the key.
                 </p>

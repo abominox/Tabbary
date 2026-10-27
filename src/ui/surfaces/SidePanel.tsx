@@ -58,7 +58,7 @@ export function SidePanel() {
     <div className="flex h-full flex-col overflow-hidden">
       {/* ── Header ── */}
       <header className="flex shrink-0 items-center gap-1.5 border-b border-surface-border px-2 py-1.5">
-        <span className="mr-auto text-sm font-bold leading-none text-text-primary">Tabbary</span>
+        <span className="mr-auto text-sm font-bold leading-none text-text-primary">tabbary</span>
         <SyncBadge status={syncStatus} />
         <button
           type="button"

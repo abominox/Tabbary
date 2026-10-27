@@ -10,7 +10,7 @@ host the privacy policy at a public URL, and paste the justifications below.
 ## Listing
 
 **Name**
-> Tabbary — tab manager
+> tabbary — tab manager
 
 **Short description (132 chars max)**
 > Save the tabs you are working on as sessions, restore them with tab groups intact. Local-first, no account, MIT licensed.
@@ -27,7 +27,7 @@ host the privacy policy at a public URL, and paste the justifications below.
 > and without a save button. Close a window by accident, or crash, and your work is still
 > there — with its tab groups.
 >
-> **Tabs, not windows.** Tabbary captures tabs across groups and windows and organises them
+> **Tabs, not windows.** tabbary captures tabs across groups and windows and organises them
 > into sessions. Windows are just where the tabs happened to be.
 >
 > **What you get**
@@ -52,13 +52,13 @@ host the privacy policy at a public URL, and paste the justifications below.
 > github.com/abominox/Tabbary.
 
 **Homepage**
-> https://abominox.github.io/Tabbary/
+> https://abominox.github.io/tabbary/
 
 **Support URL**
 > https://github.com/abominox/Tabbary/issues
 
 **Privacy policy URL**
-> https://abominox.github.io/Tabbary/privacy.html
+> https://abominox.github.io/tabbary/privacy.html
 > (file lives at `site/privacy.html`; deploys with Pages)
 
 ---
@@ -126,7 +126,7 @@ Paste each into the dashboard's per-permission field.
 
 ## Single purpose statement
 
-> Tabbary saves the tabs in a browser window as a session and restores them later with their
+> tabbary saves the tabs in a browser window as a session and restores them later with their
 > tab groups intact.
 
 ---
@@ -171,7 +171,7 @@ Paste into “Notes for the reviewer”.
 - [x] Reviewer notes
 - [x] No remote code, no eval, no analytics
 - [x] Privacy policy reachable at a public URL — verified 27 Oct 2026:
-      https://abominox.github.io/Tabbary/privacy.html (HTTP 200)
+      https://abominox.github.io/tabbary/privacy.html (HTTP 200)
 - [ ] Chrome Web Store developer account ($5 one-time) and payout/tax details
 - [ ] Trademark check on the name before publishing — mechanical checks done, all clear
       (`store/NAME-CLEARANCE.md`); USPTO/EUIPO database search still to do by hand, as both

@@ -22,7 +22,7 @@ interface MatchResult {
  * Restore-on-startup prompt for `restoreOnStartup: 'ask'`.
  *
  * Shows which closed sessions still match the windows Chrome reopened, so the
- * user can accept the binding instead of letting Tabbary guess.
+ * user can accept the binding instead of letting tabbary guess.
  */
 export function RestoreBanner() {
   const settings = useStore((s) => s.settings);
@@ -80,10 +80,10 @@ export function RestoreBanner() {
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-[11px] font-medium text-amber-900 dark:text-amber-200">
           {actionable.length > 0
-            ? `Tabbary recognised ${actionable.length} closed session${
+            ? `tabbary recognised ${actionable.length} closed session${
                 actionable.length === 1 ? '' : 's'
               } in your open windows.`
-            : 'Tabbary can restore your last session.'}
+            : 'tabbary can restore your last session.'}
         </p>
 
         {actionable.slice(0, 3).map((m) => {

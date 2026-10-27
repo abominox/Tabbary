@@ -166,7 +166,7 @@ export async function importText(text: string): Promise<ImportTextResult> {
     };
   }
 
-  // detectAndParseImport already validated the bundle shape for Tabbary files
+  // detectAndParseImport already validated the bundle shape for tabbary files
   // and built well-formed sessions for the foreign formats.
   const sessions = detected.sessions;
 

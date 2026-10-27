@@ -1,6 +1,6 @@
-# Tabbary sync server
+# tabbary sync server
 
-A small, ciphertext-only store for **Tabbary** session sync. It has no accounts,
+A small, ciphertext-only store for **tabbary** session sync. It has no accounts,
 no user records, and no ability to read what it stores.
 
 - **Server stores:** blob ids, type, a monotonic revision, ciphertext, IV,
@@ -29,7 +29,7 @@ docker run -d --name tabbary-sync -p 8787:8787 \
   tabbary-sync
 ```
 
-Then in Tabbary: **Settings → Sync & backup → Set up a new server**.
+Then in tabbary: **Settings → Sync & backup → Set up a new server**.
 
 > The pairing secret is required. A server with no secret would let the first
 > visitor own the instance, so startup refuses to continue without one.

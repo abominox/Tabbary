@@ -1,5 +1,5 @@
 /**
- * Tabbary import/export E2E.
+ * tabbary import/export E2E.
  *
  * Exercises the real path a user takes:
  *   seed sessions → Settings → Export JSON (actual browser download) →
@@ -134,7 +134,7 @@ async function main() {
       sessions: { tabs: { url: string }[] }[];
     };
     check(
-      'downloaded file is a Tabbary bundle',
+      'downloaded file is a tabbary bundle',
       onDisk.format === 'tabbary-export' && onDisk.counts.tabs >= 2,
       `tabs=${onDisk.counts.tabs}`,
     );

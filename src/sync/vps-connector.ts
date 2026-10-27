@@ -1,5 +1,5 @@
 /**
- * HTTP connector for a self-hosted Tabbary sync server.
+ * HTTP connector for a self-hosted tabbary sync server.
  *
  * No dependencies: fetch + AbortController, both available in the MV3 service
  * worker. Every request fails closed — a network error never looks like
