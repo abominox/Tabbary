@@ -1,7 +1,6 @@
 // TabGroup event handlers: route group changes to the debounced auto-save.
 // Group changes affect tab group membership, so we need to reload tabs too.
 
-import { tabGroupsRepo } from '@/db';
 import { uuid } from '@/lib';
 import { swCache } from '../cache';
 import { requestSaveSession } from '../autosave';
@@ -22,12 +21,18 @@ export function registerTabGroupListeners(): void {
 
   // ── onRemoved ──
   chrome.tabGroups.onRemoved.addListener(async (group) => {
-    // Group was removed by Chrome — soft-delete our record
-    const ourId = swCache.getGroupForChromeId(group.id);
-    if (ourId) {
-      await tabGroupsRepo.softDelete(ourId);
-      swCache.unbindGroup(group.id);
-    }
+    // A group disappearing is not the same as the data becoming worthless.
+    //
+    // Chrome fires this for every group when a window closes, which is exactly
+    // when the session is about to become the thing you restore. Soft-deleting
+    // here meant a closed window kept its tabs but lost its groups, so restore
+    // found every groupId dangling and came back flat. Keep the record: it is
+    // the session's history, and the autosave replaces the set while the window
+    // is alive.
+    //
+    // Only the cache binding goes, because that maps a live chromeGroupId to a
+    // row and the id is no longer live.
+    swCache.unbindGroup(group.id);
     // Trigger save for the session that had this group
     // We need the windowId; try to find it from cached bindings
     // Fallback: iterate active sessions — simplified: trigger for all known windows

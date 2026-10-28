@@ -8,6 +8,7 @@ import {
   parseBookmarksHtml,
   detectAndParseImport,
   isPortableUrl,
+  isRestorableUrl,
   BUNDLE_FORMAT,
 } from '@/lib/bundle';
 import type { Session, Tab, TabGroup } from '@/models';
@@ -469,5 +470,40 @@ describe('detectAndParseImport', () => {
     const result = detectAndParseImport('{ "format": "tabbary-export", ');
     expect(result.source).toBe('none');
     expect(result.warnings[0]).toContain('could not be parsed');
+  });
+});
+
+describe('isRestorableUrl', () => {
+  it('accepts pages that reopen in a tab, including data: URLs', () => {
+    for (const url of [
+      'https://a.test',
+      'http://a.test',
+      'file:///tmp/x',
+      'data:text/html,<h1>page</h1>',
+      'view-source:https://a.test',
+    ]) {
+      expect(isRestorableUrl(url), url).toBe(true);
+    }
+  });
+
+  it('rejects records of the browser UI itself', () => {
+    for (const url of [
+      'chrome://settings',
+      'chrome-extension://abc/index.html',
+      'devtools://devtools/bundled/inspector.html',
+      'edge://settings',
+      'about:blank',
+      'javascript:void(0)',
+      'chrome-search://local-ntp/local-ntp.html',
+      'chrome-untrusted://foo',
+    ]) {
+      expect(isRestorableUrl(url), url).toBe(false);
+    }
+  });
+
+  it('is looser than isPortableUrl for data: URLs', () => {
+    // Captured so a session reflects the window, but never exported.
+    expect(isRestorableUrl('data:text/html,x')).toBe(true);
+    expect(isPortableUrl('data:text/html,x')).toBe(false);
   });
 });

@@ -5,6 +5,7 @@
 import { sessionsRepo, tabsRepo, tabGroupsRepo, sessionVersionsRepo } from '@/db';
 import type { Tab, TabGroup, Session } from '@/models';
 import { uuid } from '@/lib';
+import { isRestorableUrl } from '@/lib/bundle';
 import { swCache } from './cache';
 import { broadcast } from '@/messaging';
 import { requestSyncPush } from '@/sync/scheduler';
@@ -67,7 +68,13 @@ async function saveSession(windowId: number): Promise<void> {
   }
 
   // ── Map chrome tabs → our Tab records ──
-  const ourTabs: Tab[] = chromeTabs.map((ct, idx) => {
+  // Skip tabs that are records of this browser's own UI: this extension's
+  // pages, chrome:// settings, devtools. Capturing them meant they came back
+  // on restore, so opening Settings once added a settings tab to every session
+  // it was open during. data: URLs stay, because they reopen fine.
+  const restorable = chromeTabs.filter((ct) => isRestorableUrl(ct.url ?? ''));
+
+  const ourTabs: Tab[] = restorable.map((ct, idx) => {
     const existingId = ct.id !== undefined ? chromeIdToOurId.get(ct.id) : undefined;
     const groupId = ct.groupId !== undefined && ct.groupId > 0
       ? resolveGroupId(ct.groupId, sessionId)

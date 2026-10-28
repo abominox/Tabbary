@@ -18,6 +18,7 @@
     "test:e2e:bookmarks": "tsx e2e/bookmarks.ts",
     "test:e2e:store": "tsx e2e/store.ts",
     "test:e2e:stress": "tsx e2e/stress.ts",
+    "test:e2e:groups": "TABBARY_HEADED=1 tsx e2e/groups-headed.ts",
     "test:e2e:all": "tsx e2e/m1.ts && tsx e2e/m2.ts && tsx e2e/m3.ts && tsx e2e/io.ts && tsx e2e/sync.ts && tsx e2e/bookmarks.ts && tsx e2e/m6.ts && tsx e2e/m7.ts && tsx e2e/store.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit"
   },

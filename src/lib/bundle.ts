@@ -123,6 +123,29 @@ export function buildBundle(
 }
 
 /** Chrome-internal pages cannot be reopened from another profile. */
+/**
+ * Can this URL be reopened in a tab?
+ *
+ * Deliberately looser than isPortableUrl: a `data:` or `view-source:` URL can
+ * be restored by Chrome but cannot travel through an export or to another
+ * browser, so it is captured but not portable. This excludes only the schemes
+ * that are records of *this* browser's own UI, which would be meaningless or
+ * rejected if reopened.
+ */
+export function isRestorableUrl(url: string): boolean {
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  if (lower.startsWith('chrome://')) return false;
+  if (lower.startsWith('chrome-extension://')) return false;
+  if (lower.startsWith('devtools://')) return false;
+  if (lower.startsWith('edge://')) return false;
+  if (lower.startsWith('about:')) return false;
+  if (lower.startsWith('javascript:')) return false;
+  if (lower.startsWith('chrome-search://')) return false;
+  if (lower.startsWith('chrome-untrusted://')) return false;
+  return true;
+}
+
 export function isPortableUrl(url: string): boolean {
   if (!url) return false;
   const lower = url.toLowerCase();
