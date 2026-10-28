@@ -26,14 +26,14 @@ await page.setContent(`<html><body style="margin:0">
   <div style="display:flex;align-items:center;gap:18px">
     ${icon(52)}
     <span style="font-family:Georgia,serif;font-size:27px;color:${INK};letter-spacing:-.01em">tabbary</span>
-    <span style="font-family:monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6A7180">v0.6 · MIT</span>
+    <span style="font-family:monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6A7180">v0.8 · MIT</span>
   </div>
   <div style="margin-top:auto">
     <div style="font-family:Georgia,serif;font-size:86px;line-height:.98;letter-spacing:-.035em;color:${INK}">
-      Your tabs,<br><em style="color:${LIVE}">kept</em> the way you left them.
+      Keep the tabs<br>you're <em style="color:${LIVE}">working</em> on.
     </div>
     <div style="margin-top:26px;font-size:25px;color:#3B414D;max-width:24ch">
-      A local-first tab manager for Chrome.
+      Saves them as sessions, reopens them with their tab groups.
     </div>
   </div>
   <div style="position:absolute;left:0;right:0;bottom:0;height:6px;background:${LIVE}"></div>

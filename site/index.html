@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tabbary — rows of tabs, quietly kept</title>
-<meta name="description" content="Tabbary is a free, MIT-licensed Chrome extension that saves every browser window as a session you can restore, with tab groups intact. Local-first, no account, no telemetry.">
+<title>tabbary — a tab manager for Chrome</title>
+<meta name="description" content="A Chrome extension that saves your open tabs as sessions and reopens them with tab groups intact. MIT licensed, no account, no telemetry.">
 <meta name="theme-color" content="#f4f1e8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#11131a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/style.css">
 <meta property="og:type" content="website">
-<meta property="og:title" content="tabbary — rows of tabs, quietly kept">
-<meta property="og:description" content="A local-first tab and session manager for Chrome. Auto-saved sessions, tab groups, version history. Free and MIT-licensed.">
+<meta property="og:title" content="tabbary — a tab manager for Chrome">
+<meta property="og:description" content="Saves the tabs in each window as a session while you browse, and reopens them with their tab groups. MIT licensed.">
 <meta property="og:image" content="assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -29,13 +29,13 @@
         </g>
         <circle cx="19" cy="17" r="2.6" fill="#C8402A"/>
       </svg>
-      tabbary <em>v0.8 · MIT</em>
+      tabbary
     </a>
     <nav aria-label="Primary">
-      <a href="#ledger">Status</a>
-      <a href="#surfaces">Surfaces</a>
+      <a href="#what">What it does</a>
       <a href="#privacy">Privacy</a>
-      <a href="#install" class="cta">Install</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/abominox/Tabbary" class="cta">Source</a>
     </nav>
   </div>
 </header>
@@ -43,302 +43,134 @@
 <main>
   <div class="wrap">
 
-    <!-- ── Hero ─────────────────────────────────────── -->
-    <section class="hero" aria-labelledby="hero-title">
-      <p class="kicker">A local-first tab and session manager</p>
+    <section class="intro">
+      <p class="eyebrow">Chrome extension · MIT</p>
 
-      <div class="hero-grid">
-        <div>
-          <h1 id="hero-title">Your tabs,<br><span class="accent">kept</span> the way<br><span class="thin">you left them.</span></h1>
-          <p class="lede">
-            Tabbary is a tab manager. It captures the tabs you are working on — across groups
-            and windows — as a session, continuously and without a save button. Close
-            something by accident, or crash, and it is still there.
-          </p>
-          <div class="hero-actions">
-            <a class="btn btn-solid" href="#install">Install from source</a>
-            <a class="btn btn-ghost" href="https://github.com/abominox/Tabbary">Source <span class="mono">↗</span></a>
-          </div>
-        </div>
+      <h1>Keep the tabs you're working on.</h1>
+
+      <p class="lede">
+        tabbary saves the tabs in each window as a session while you browse. When you come back,
+        it reopens them in order, with their tab groups and pinned tabs.
+      </p>
+      <p class="lede">
+        There is no save button, and no account.
+      </p>
+
+      <div class="actions">
+        <a class="btn btn-solid" href="#install">Install from source</a>
+        <a class="btn btn-ghost" href="https://github.com/abominox/Tabbary">GitHub <span class="mono">↗</span></a>
       </div>
 
-      <dl class="glance" aria-label="At a glance">
-        <div><dt>Licence</dt><dd>MIT</dd></div>
-        <div><dt>Account</dt><dd>not required</dd></div>
-        <div><dt>Host access</dt><dd>none at install</dd></div>
-        <div><dt>Sync</dt><dd>self-hosted, optional</dd></div>
-      </dl>
     </section>
 
-    <!-- ── Ledger ───────────────────────────────────── -->
-    <section class="section" id="ledger" aria-labelledby="ledger-title">
-      <div class="section-head">
-        <span class="section-num">01</span>
-        <div>
-          <h2 id="ledger-title">What is actually built</h2>
-          <p>
-            Every line below is implemented and covered by tests. Nothing here is a mockup,
-            a roadmap promise, or a screenshot of something that does not exist.
-          </p>
-        </div>
-      </div>
+    <figure class="shot shot-wide">
+      <img src="assets/shots/manager.png" width="1280" height="800" loading="lazy"
+           alt="The full-tab manager: a session list on the left, tags in a sidebar, and the tabs of the selected session in a detail pane.">
+      <figcaption>The full-tab manager. Sessions on the left, the tabs inside the selected one on the right.</figcaption>
+    </figure>
 
-      <dl class="ledger">
-        <div class="ledger-row">
-          <dt>Tab capture</dt>
-          <dd>Tabs are saved continuously as you work, grouped into sessions; no save button.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Tab groups</dt>
-          <dd>Names, colours and membership captured and rebuilt on restore.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Restore matching</dt>
-          <dd>On restart, your tabs are matched back to their sessions by URL, not duplicated.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Revision history</dt>
-          <dd>Per-session snapshots; restoring one snapshots the current state first.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Search</dt>
-          <dd>Across every saved tab, session and bookmark — titles and URLs.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Tags</dt>
-          <dd>Counts, bulk rename, bulk delete across every session carrying them.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Bookmarks</dt>
-          <dd>Session, tag and browser scopes; folders; open a folder as a session.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Import / export</dt>
-          <dd>Plain JSON or passphrase-encrypted; OneTab and URL-list import.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Sync</dt>
-          <dd>Ciphertext-only self-hosted server; AES-GCM; 24-word recovery phrase.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Tab suspension</dt>
-          <dd>Native discard with a conservative policy; preview before applying.</dd>
-          <span class="tag done">done</span>
-        </div>
-        <div class="ledger-row">
-          <dt>Store listing</dt>
-          <dd>Icons, screenshots, privacy policy and review submission.</dd>
-          <span class="tag next">next</span>
-        </div>
-      </dl>
+    <section class="block" id="what" aria-labelledby="what-title">
+      <h2 id="what-title">What it does</h2>
+
+      <p>
+        Saving runs off Chrome's tab events. Opening, closing, moving or grouping a tab schedules
+        a write; tabbary waits for the burst to settle, then stores that window's tabs and groups.
+        An accidental close or a browser crash leaves the session on disk.
+      </p>
+      <p>
+        Restoring opens a window, recreates the groups with <code>chrome.tabs.group</code>, then
+        reapplies each group's title, colour and collapsed state. A group that no longer exists is
+        skipped rather than failing the whole restore.
+      </p>
+
+      <ul class="plain">
+        <li>Every session keeps a revision history. Restoring an older version snapshots the current state first, so the restore is undoable.</li>
+        <li>Search covers session names, tab titles, URLs and bookmarks.</li>
+        <li>Tags have counts, bulk rename and bulk delete, applied to every session carrying them.</li>
+        <li>Bookmarks can be scoped to a session, a tag, or Chrome itself, and a folder can be opened as a session.</li>
+        <li>Import accepts tabbary's own JSON or encrypted export, OneTab exports, and plain lists of URLs.</li>
+        <li>Suspension uses Chrome's own discard, and shows what it would unload before it does.</li>
+        <li>The popup, side panel, full-tab manager and dedicated window all read the same database.</li>
+      </ul>
+
+      <p>
+        Session managers tend to charge for restore history, or keep your sessions on their
+        servers. tabbary keeps them in your browser profile, and gives you the sync server to run
+        yourself.
+      </p>
     </section>
 
-    <!-- ── Surfaces ─────────────────────────────────── -->
-    <section class="section" id="surfaces" aria-labelledby="surfaces-title">
-      <div class="section-head">
-        <span class="section-num">02</span>
-        <div>
-          <h2 id="surfaces-title">One tab library, four ways in</h2>
-          <p>
-            The surfaces share state, so moving between them is free. Each one shows the same
-            tabs and sessions; only the amount of space changes.
-          </p>
-        </div>
-      </div>
+    <section class="block" aria-labelledby="missing-title">
+      <h2 id="missing-title">What's missing</h2>
 
-      <div class="surfaces">
-        <ul class="surface-list">
-          <li>
-            <span class="k">pop</span>
-            <span><strong>Popup</strong><span class="d">Current window, recent sessions, search.</span></span>
-            <span class="sc">click icon</span>
-          </li>
-          <li>
-            <span class="k">side</span>
-            <span><strong>Side panel</strong><span class="d">Stays open beside the page you are reading.</span></span>
-            <span class="sc">alt + a</span>
-          </li>
-          <li>
-            <span class="k">tab</span>
-            <span><strong>Full tab</strong><span class="d">Three panes: tags, sessions, detail. Drag between them.</span></span>
-            <span class="sc">alt + s</span>
-          </li>
-          <li>
-            <span class="k">win</span>
-            <span><strong>Dedicated window</strong><span class="d">A compact two-pane view for a second screen.</span></span>
-            <span class="sc">from the popup</span>
-          </li>
-          <li>
-            <span class="k">tag</span>
-            <span><strong>Tags &amp; bookmarks</strong><span class="d">Management views for the things sessions accumulate.</span></span>
-            <span class="sc">alt + t / b</span>
-          </li>
-        </ul>
+      <p>
+        One window is one session; there is no single-window mode. Bookmarks don't sync, because
+        tags travel inside session blobs and Chrome's bookmarks are import-only. Sync polls your
+        server on an interval you set rather than using push. The optional history permission can
+        be granted, but no feature reads it yet.
+      </p>
+    </section>
 
-        <figure class="diagram" aria-label="The same session list rendered as a popup, a side panel, and a full tab.">
-          <svg viewBox="0 0 420 300" role="img">
-            <rect width="420" height="300" fill="none"/>
-            <!-- popup -->
-            <g transform="translate(6,10)">
-              <rect width="150" height="190" rx="6" fill="#F4F1E8" stroke="#14181F" stroke-width="1.2"/>
-              <rect x="0" y="0" width="150" height="22" rx="6" fill="#14181F"/>
-              <text x="9" y="15" font-family="SF Mono, monospace" font-size="7.5" fill="#F4F1E8">tabbary</text>
-              <rect x="8" y="30" width="134" height="14" rx="3" fill="#EEEADE" stroke="#D5CFC0"/>
-              <g font-family="Helvetica, Arial, sans-serif" font-size="7" fill="#14181F">
-                <text x="8" y="60" font-weight="bold">Window 1</text>
-                <text x="136" y="60" text-anchor="end" fill="#6A7180">12</text>
-                <text x="8" y="78">Auth rewrite</text>
-                <text x="136" y="78" text-anchor="end" fill="#6A7180">13</text>
-                <text x="8" y="96">Postgres indexing</text>
-                <text x="136" y="96" text-anchor="end" fill="#6A7180">7</text>
-                <text x="8" y="114" fill="#6A7180">Kitchen renovation</text>
-                <text x="136" y="114" text-anchor="end" fill="#6A7180">8</text>
-              </g>
-              <g font-family="SF Mono, monospace" font-size="6" font-weight="700" text-anchor="middle">
-                <rect x="8" y="64" width="10" height="10" rx="2" fill="#DCE6FF"/><text x="13" y="71.5" fill="#1F4FD8">D</text>
-                <rect x="20" y="64" width="10" height="10" rx="2" fill="#DFF3EC"/><text x="25" y="71.5" fill="#0F7A5F">O</text>
-                <rect x="32" y="64" width="10" height="10" rx="2" fill="#F3E7D8"/><text x="37" y="71.5" fill="#9A5B12">G</text>
-                <rect x="8" y="82" width="10" height="10" rx="2" fill="#E6E2F5"/><text x="13" y="89.5" fill="#5B45A8">W</text>
-                <rect x="20" y="82" width="10" height="10" rx="2" fill="#DCE6FF"/><text x="25" y="89.5" fill="#1F4FD8">D</text>
-              </g>
-              <rect x="8" y="164" width="66" height="18" rx="3" fill="#14181F"/>
-              <text x="41" y="176" text-anchor="middle" font-family="Helvetica" font-size="6.5" fill="#F4F1E8">Open manager</text>
-            </g>
+    <section class="block" id="privacy" aria-labelledby="privacy-title">
+      <h2 id="privacy-title">What it can see</h2>
 
-            <!-- side panel -->
-            <g transform="translate(166,10)">
-              <rect width="118" height="190" rx="6" fill="#F4F1E8" stroke="#14181F" stroke-width="1.2"/>
-              <rect x="0" y="0" width="28" height="190" rx="6" fill="#EEEADE" stroke="#D5CFC0"/>
-              <g font-family="SF Mono, monospace" font-size="5.5" fill="#6A7180">
-                <text x="4" y="18" transform="rotate(-90 4 18)">ACTIVE · CLOSED · SAVED</text>
-              </g>
-              <g font-family="Helvetica, Arial, sans-serif" font-size="7" fill="#14181F">
-                <text x="36" y="24" font-weight="bold">Window 1 · Today</text>
-                <text x="36" y="40" fill="#6A7180">Auth rewrite — OIDC</text>
-                <text x="36" y="56" fill="#6A7180">Postgres indexing</text>
-                <text x="36" y="72" fill="#6A7180">Kitchen renovation</text>
-              </g>
-              <line x1="34" y1="80" x2="110" y2="80" stroke="#D5CFC0"/>
-              <g font-family="Helvetica" font-size="6.5" fill="#3B414D">
-                <text x="36" y="96">Specs · 4</text>
-                <text x="36" y="110">Code · 4</text>
-                <text x="36" y="124">Reference · 5</text>
-                <text x="36" y="138">Ungrouped · 2</text>
-              </g>
-            </g>
+      <p>
+        No host permissions at install. tabbary reads Chrome's tab metadata — titles and URLs —
+        which is what a session needs. It cannot read page contents and does not inject anything
+        into pages.
+      </p>
+      <p>
+        The history and bookmarks permissions are optional. They are requested only when you use
+        the feature that needs them, and can be revoked afterwards without uninstalling.
+      </p>
+      <p>
+        Sync is ciphertext-only. Sessions are encrypted on your device with a key the server never
+        receives, so the server cannot read them, and cannot reset a passphrase you forget. You run
+        that server yourself; <a href="https://github.com/abominox/Tabbary/blob/main/server/DEPLOY.md">there is a deploy guide</a>.
+      </p>
+      <p>
+        Exports are plain JSON by default, so you can read and diff them. There is an encrypted
+        variant if you would rather they were not readable.
+      </p>
 
-            <!-- full tab -->
-            <g transform="translate(294,10)">
-              <rect width="120" height="190" rx="6" fill="#F4F1E8" stroke="#14181F" stroke-width="1.2"/>
-              <rect x="0" y="0" width="30" height="190" fill="#EEEADE" stroke="#D5CFC0"/>
-              <rect x="30" y="0" width="34" height="190" fill="#F4F1E8" stroke="#D5CFC0"/>
-              <g font-family="Helvetica" font-size="5.5" fill="#6A7180">
-                <text x="4" y="14">tags</text>
-                <text x="34" y="14">sessions</text>
-              </g>
-              <g font-family="Helvetica" font-size="6" fill="#14181F">
-                <text x="70" y="20" font-weight="bold">Auth rewrite</text>
-                <text x="70" y="32" fill="#6A7180">13 tabs · 3 groups</text>
-              </g>
-              <g font-family="Helvetica" font-size="5.5" fill="#3B414D">
-                <rect x="68" y="40" width="46" height="34" rx="3" fill="#EEEADE" stroke="#D5CFC0"/>
-                <text x="72" y="50">Specs</text>
-                <text x="72" y="60">Code</text>
-                <text x="72" y="70">Reference</text>
-              </g>
-              <rect x="66" y="86" width="50" height="12" rx="3" fill="#C8402A"/>
-              <text x="91" y="94.5" text-anchor="middle" font-family="Helvetica" font-size="5" fill="#fff">Restore</text>
-            </g>
-
-            <text x="6" y="222" font-family="SF Mono, monospace" font-size="7" fill="#6A7180">Popup</text>
-            <text x="166" y="222" font-family="SF Mono, monospace" font-size="7" fill="#6A7180">Side panel</text>
-            <text x="294" y="222" font-family="SF Mono, monospace" font-size="7" fill="#6A7180">Full tab</text>
-
-            <text x="6" y="252" font-family="Helvetica, Arial, sans-serif" font-size="8.5" fill="#3B414D">One library. The same sessions, rendered for the space you have.</text>
-          </svg>
+      <div class="shot-pair">
+        <figure class="shot">
+          <img src="assets/shots/side-panel.png" width="1280" height="800" loading="lazy"
+               alt="The side panel open beside a web page, listing the current window's sessions.">
+          <figcaption>The side panel stays open beside the page.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="assets/shots/sync.png" width="1280" height="800" loading="lazy"
+               alt="Sync settings, showing the server address field and pairing controls.">
+          <figcaption>Sync settings. Off until you point it at a server.</figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- ── Privacy ──────────────────────────────────── -->
-    <section class="section" id="privacy" aria-labelledby="privacy-title">
-      <div class="section-head">
-        <span class="section-num">03</span>
-        <div>
-          <h2 id="privacy-title">The boring promises, kept</h2>
-          <p>No growth loop, no account system, no telemetry. These are properties of the build, not policy statements.</p>
-        </div>
-      </div>
+    <section class="block" id="install" aria-labelledby="install-title">
+      <h2 id="install-title">Install</h2>
 
-      <div class="statement">
-        <p>
-          <strong>No host permissions at install.</strong> Tabbary cannot read the page you are
-          on. Tab access is scoped to Chrome's tab metadata, which is what a session manager
-          needs and nothing more.
-        </p>
-        <p>
-          <strong>History and bookmarks are optional.</strong> They are requested only when you
-          use the feature that needs them, and can be revoked afterwards without uninstalling.
-        </p>
-        <p>
-          <strong>Sync is ciphertext-only.</strong> Sessions are encrypted on this device with a
-          key the server never sees. You run the server yourself — it is a single Node process
-          with no dependencies, and there is a step-by-step deploy guide. Because it cannot read
-          the blobs, there is no password reset.
-        </p>
-        <p>
-          <strong>Export is plain JSON.</strong> A backup you can read, diff, and script against
-          — and an encrypted variant if you would rather it were not readable.
-        </p>
-      </div>
+      <p>Chrome 116 or newer. There is no store listing yet, so build it from source.</p>
 
-      <div class="facts">
-        <div class="fact"><b>0</b><span>host permissions at install</span></div>
-        <div class="fact"><b>0</b><span>network calls by default</span></div>
-        <div class="fact"><b>256-bit</b><span>AES-GCM session blobs</span></div>
-        <div class="fact"><b>MIT</b><span>licence, whole codebase</span></div>
-      </div>
-    </section>
-
-    <!-- ── Install ──────────────────────────────────── -->
-    <section class="section" id="install" aria-labelledby="install-title">
-      <div class="section-head">
-        <span class="section-num">04</span>
-        <div>
-          <h2 id="install-title">Install from source</h2>
-          <p>Chrome 116+. No account, no key, no store listing yet. About a minute, once.</p>
-        </div>
-      </div>
-
-      <div class="install-grid">
-        <div>
-<pre><code><span class="c"># clone and build</span>
-git clone https://github.com/abominox/Tabbary.git
-cd tabbary
+<pre><code>git clone https://github.com/abominox/Tabbary.git
+cd Tabbary
 npm ci
 npm run build</code></pre>
-          <p style="font-size:.8rem;color:var(--ink-3);margin:0">
-            Verify first if you like: <code>npm test</code> runs 195 unit tests,
-            <code>npm run test:server</code> exercises the sync server.
-          </p>
-        </div>
-        <ol class="steps">
-          <li>Open <code>chrome://extensions</code>.</li>
-          <li>Turn on <strong>Developer mode</strong>.</li>
-          <li>Choose <strong>Load unpacked</strong>.</li>
-          <li>Select the <code>dist/</code> folder.</li>
-          <li>Click the tabbary icon.</li>
-        </ol>
-      </div>
+
+      <p>Then load it:</p>
+
+      <ol class="steps">
+        <li>Open <code>chrome://extensions</code>.</li>
+        <li>Turn on <strong>Developer mode</strong>.</li>
+        <li>Choose <strong>Load unpacked</strong> and select the <code>dist/</code> folder.</li>
+        <li>Click the tabbary icon in the toolbar.</li>
+      </ol>
+
+      <p class="small">
+        <code>npm test</code> runs the unit tests, <code>npm run test:server</code> runs the sync
+        server's tests, and <code>npm run test:e2e:all</code> drives the built extension in
+        Chromium.
+      </p>
     </section>
 
   </div>
@@ -346,12 +178,12 @@ npm run build</code></pre>
 
 <footer>
   <div class="wrap">
-    <span>tabbary 0.6 · rows of tabs, quietly kept</span>
+    <span>tabbary 0.8 · MIT</span>
     <nav aria-label="Footer">
       <a href="https://github.com/abominox/Tabbary">Source</a>
       <a href="https://github.com/abominox/Tabbary/issues">Issues</a>
       <a href="privacy.html">Privacy</a>
-      <a href="https://github.com/abominox/Tabbary/blob/main/LICENSE">MIT licence</a>
+      <a href="https://github.com/abominox/Tabbary/blob/main/LICENSE">Licence</a>
     </nav>
   </div>
 </footer>

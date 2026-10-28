@@ -44,6 +44,7 @@
          padding:.08rem .3rem; border-radius:2px; }
   .lede { font-size:1.05rem; }
   .note { border-left:3px solid var(--vermillion); padding-left:1rem; margin:1.6rem 0; }
+  .note p { margin:0; }
   footer { border-top:1px solid var(--rule); margin-top:3rem; padding-top:1.2rem;
            font-family:var(--mono); font-size:.66rem; letter-spacing:.06em;
            text-transform:uppercase; color:var(--ink-3); }
@@ -65,19 +66,20 @@
       tabbary
     </a>
     <h1>Privacy Policy</h1>
-    <p class="meta">Last updated 27 October 2026 · applies to tabbary 0.8.0 and later</p>
+    <p class="meta">Last updated 28 October 2026 · applies to tabbary 0.8.0 and later</p>
   </header>
 
   <p class="lede">
-    Tabbary is a tab manager for Chrome. This policy describes exactly what the
-    extension can access, what it stores, and what — if anything — leaves your device.
-    It is written to be checked against the source, which is public and MIT-licensed.
+    tabbary is a tab manager for Chrome. This page covers what the extension can
+    access, what it stores on your device, and when it talks to a server.
   </p>
 
   <div class="note">
-    <strong>The short version.</strong> Tabbary stores your tabs in your own browser
-    profile. It makes no network request unless you turn sync on and configure a server.
-    There is no account, no analytics, and no third-party service of any kind.
+    <p>
+      Your tabs stay in your own browser profile. tabbary makes no network request
+      unless you turn on sync and point it at a server. There is no account and no
+      analytics.
+    </p>
   </div>
 
   <h2>What tabbary can access</h2>
@@ -163,8 +165,8 @@
   <h2>Network activity</h2>
 
   <p>
-    <strong>With sync off (the default), tabbary makes no network requests.</strong>
-    Everything — capture, restore, backup, export — happens locally.
+    <strong>With sync off, tabbary makes no network requests.</strong>
+    Capture, restore, backup and export all run locally.
   </p>
 
   <p>If you enable sync, the extension talks only to the server URL you provide:</p>
@@ -176,9 +178,9 @@
   </ul>
 
   <p>
-    This project operates no hosted service and collects no data. You point Tabbary at a
-    server you run yourself; that operator holds ciphertext only. Because the key never
-    leaves your device, the operator cannot read your tabs, and cannot reset your passphrase.
+    This project operates no hosted service and collects no data. You point tabbary at a
+    server you run yourself; that operator holds ciphertext only. The key never leaves your
+    device, so the operator cannot read your tabs or reset your passphrase.
   </p>
 
   <h2>What is never collected</h2>
@@ -194,8 +196,8 @@
   <h2>Third parties</h2>
 
   <p>
-    None. Tabbary loads no remote scripts, fonts, or images. The only hosts it contacts are
-    the sync server you configure yourself.
+    None. tabbary loads no remote scripts, fonts or images. The only host it contacts is
+    the sync server you configure.
   </p>
 
   <h2>Your control over the data</h2>
@@ -217,9 +219,9 @@
   <h2>Changes</h2>
 
   <p>
-    Material changes to this policy will be recorded in the project's changelog and the
-    “last updated” date above will change. Because there is no account, there is no mailing
-    list to notify; the repository is the source of truth.
+    Material changes are recorded in the project's changelog, and the date above changes
+    with them. There is no account system, so there is no mailing list to notify; the
+    repository is where changes are recorded.
   </p>
 
   <h2>Contact</h2>

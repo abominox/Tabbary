@@ -117,9 +117,9 @@ for (const t of tiles) {
       <div style="flex:none">${iconSvg}</div>
       <div>
         <div style="font-family:Georgia,serif;font-size:${headline}px;line-height:1.02;
-          letter-spacing:-0.03em;color:${INK}">Rows of tabs,<br>quietly kept.</div>
+          letter-spacing:-0.03em;color:${INK}">Keep the tabs<br>you're working on.</div>
         <div style="margin-top:${t.w > 600 ? 22 : 10}px;font-size:${sub}px;color:#3B414D">
-          A local-first tab manager for Chrome.
+          Saves them as sessions, reopens them with their groups.
         </div>
       </div>
     </div></body></html>`);

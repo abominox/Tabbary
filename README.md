@@ -1,22 +1,19 @@
 # tabbary
 
-**Rows of tabs, quietly kept.** A local-first tab and session manager for Chrome (MV3).
+A tab manager for Chrome (MV3). It saves the tabs in each window as a session while you
+browse, then reopens them with their tab groups. Everything stays in your browser profile:
+no account, no telemetry, no paid tier.
 
-Tabbary is a **tab manager**. The tabs you are working on — across groups and windows —
-are captured continuously as a *session*, so they survive crashes and restarts and can be
-restored later with their tab groups intact. Everything lives in your own browser profile.
-There is no account, no telemetry, and no paid tier.
-
-> **Status: 0.8, feature-complete for 1.0.** Tab capture, restore matching, revision
-> history, four surfaces, tags, bookmarks, import/export, optional self-hosted sync, and
-> tab suspension are all implemented and tested. What remains is store packaging: real
-> the developer account and store review. See [Roadmap](#roadmap).
+> **Status: 0.8.** Tab capture, restore matching, revision history, four surfaces, tags,
+> bookmarks, import/export, tab suspension and optional self-hosted sync are implemented
+> and tested. What remains is the store developer account and review. See
+> [Roadmap](#roadmap).
 
 ## Why
 
-Existing session managers put restoration, history, and cross-device sync behind a
-subscription. Tabbary's goal is to make the useful parts free and auditable, with
-client-side encryption and a sync server you can run yourself.
+Existing session managers put restore history and cross-device sync behind a subscription,
+or keep your sessions on their servers. tabbary keeps them in your profile, and ships the
+sync server for you to run yourself.
 
 ## Features (working today)
 

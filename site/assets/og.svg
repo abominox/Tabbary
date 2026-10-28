@@ -11,10 +11,10 @@
   </g>
   <text x="140" y="103" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#101828" letter-spacing="-0.4">tabbary</text>
 
-  <text x="80" y="228" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700" fill="#101828" letter-spacing="-2.2">Rows of tabs,</text>
-  <text x="80" y="294" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700" fill="#101828" letter-spacing="-2.2">quietly kept.</text>
+  <text x="80" y="228" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700" fill="#101828" letter-spacing="-2.2">Keep the tabs</text>
+  <text x="80" y="294" font-family="Helvetica, Arial, sans-serif" font-size="62" font-weight="700" fill="#101828" letter-spacing="-2.2">you're working on.</text>
 
-  <text x="80" y="352" font-family="Helvetica, Arial, sans-serif" font-size="25" fill="#38445A">A local-first tab and session manager for Chrome.</text>
+  <text x="80" y="352" font-family="Helvetica, Arial, sans-serif" font-size="25" fill="#38445A">Saves them as sessions, reopens them with their tab groups.</text>
   <text x="80" y="388" font-family="Helvetica, Arial, sans-serif" font-size="25" fill="#38445A">Auto-saved sessions, tab groups, version history.</text>
 
   <g transform="translate(80,452)">
