@@ -50,7 +50,7 @@
 
       <p class="lede">
         tabbary saves the tabs in each window as a session while you browse. When you come back,
-        it reopens them in order, with their tab groups and pinned tabs.
+        it reopens those tabs in their original order, groups and pinned tabs included.
       </p>
       <p class="lede">
         There is no save button, and no account.
@@ -84,10 +84,10 @@
       </p>
 
       <ul class="plain">
-        <li>Every session keeps a revision history. Restoring an older version snapshots the current state first, so the restore is undoable.</li>
+        <li>Sessions keep a revision history. Restoring an older version snapshots the current state first, so the restore is undoable.</li>
         <li>Search covers session names, tab titles, URLs and bookmarks.</li>
-        <li>Tags have counts, bulk rename and bulk delete, applied to every session carrying them.</li>
-        <li>Bookmarks can be scoped to a session, a tag, or Chrome itself, and a folder can be opened as a session.</li>
+        <li>Tags have counts, bulk rename and bulk delete across sessions.</li>
+        <li>Bookmarks live at three scopes: a session, a tag, or a browser import. A folder can also be opened as a session.</li>
         <li>Import accepts tabbary's own JSON or encrypted export, OneTab exports, and plain lists of URLs.</li>
         <li>Suspension uses Chrome's own discard, and shows what it would unload before it does.</li>
         <li>The popup, side panel, full-tab manager and dedicated window all read the same database.</li>
@@ -104,7 +104,7 @@
       <h2 id="missing-title">What's missing</h2>
 
       <p>
-        One window is one session; there is no single-window mode. Bookmarks don't sync, because
+        One window is one session. There is no single-window mode. Bookmarks don't sync, because
         tags travel inside session blobs and Chrome's bookmarks are import-only. Sync polls your
         server on an interval you set rather than using push. The optional history permission can
         be granted, but no feature reads it yet.
@@ -115,7 +115,7 @@
       <h2 id="privacy-title">What it can see</h2>
 
       <p>
-        No host permissions at install. tabbary reads Chrome's tab metadata — titles and URLs —
+        No host permissions at install. tabbary reads Chrome's tab metadata (titles and URLs),
         which is what a session needs. It cannot read page contents and does not inject anything
         into pages.
       </p>
@@ -126,7 +126,7 @@
       <p>
         Sync is ciphertext-only. Sessions are encrypted on your device with a key the server never
         receives, so the server cannot read them, and cannot reset a passphrase you forget. You run
-        that server yourself; <a href="https://github.com/abominox/Tabbary/blob/main/server/DEPLOY.md">there is a deploy guide</a>.
+        that server yourself. <a href="https://github.com/abominox/Tabbary/blob/main/server/DEPLOY.md">There is a deploy guide</a>.
       </p>
       <p>
         Exports are plain JSON by default, so you can read and diff them. There is an encrypted
