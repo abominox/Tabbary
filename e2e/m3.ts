@@ -99,11 +99,28 @@ async function main() {
       `${matches?.length ?? 0} matches`,
     );
 
+    // Compare against the window that actually holds the restored tabs, not the
+    // id returned by windows.create. Opening a window with several URLs can
+    // spawn an extra window (the first URL is navigated in the created window
+    // and the rest arrive in a second one), so the created id is not always the
+    // id that ends up owning the tabs. Asserting on it made this check fail
+    // about one run in three for reasons unrelated to matching.
+    const liveWindows = await page.evaluate(async () => {
+      const wins = await chrome.windows.getAll({ populate: true });
+      return wins
+        .filter((w) => w.type === 'normal')
+        .map((w) => ({ id: w.id!, urls: (w.tabs ?? []).map((t) => t.url ?? '') }));
+    });
+    const alphaWindow = liveWindows.find(
+      (w) => w.urls.includes('https://alpha.test/one') && w.urls.includes('https://alpha.test/two'),
+    );
+
     const alphaMatch = matches?.find((m) => m.sessionId === sessA.id);
     check(
       'match binds the recorded session, not a new one',
-      alphaMatch?.windowId === reopened,
-      `window ${alphaMatch?.windowId} (expected ${reopened})`,
+      alphaWindow != null && alphaMatch?.windowId === alphaWindow.id,
+      `match window ${alphaMatch?.windowId}, restored window ${alphaWindow?.id} ` +
+        `(create() returned ${reopened})`,
     );
     check(
       'match score is confident',
@@ -117,8 +134,8 @@ async function main() {
     )!;
     check(
       'a reopened window auto-binds to its recorded session',
-      beforeState.state === 'active' && beforeState.windowId === reopened,
-      `state=${beforeState.state} window=${beforeState.windowId} (expected ${reopened})`,
+      beforeState.state === 'active' && beforeState.windowId === alphaWindow?.id,
+      `state=${beforeState.state} window=${beforeState.windowId} (expected ${alphaWindow?.id})`,
     );
 
     await querySW(page, { type: 'restoreLastSession' });
