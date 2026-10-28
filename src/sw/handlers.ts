@@ -58,6 +58,41 @@ export function registerBusHandlers(): void {
       return tabsRepo.listBySession(msg.sessionId);
     },
 
+    async getClosedTabs(msg) {
+      return tabsRepo.listClosedBySession(msg.sessionId);
+    },
+
+    async restoreClosedTab(msg) {
+      const tab = await tabsRepo.restoreClosed(msg.tabId);
+      if (!tab) return false;
+
+      // If the session still has a window, put the tab back in it. A closed
+      // session just keeps the row; it will reopen with the session.
+      const session = await sessionsRepo.get(tab.sessionId);
+      if (session?.windowId != null && tab.url) {
+        try {
+          const created = await chrome.tabs.create({
+            windowId: session.windowId,
+            url: tab.url,
+            active: false,
+          });
+          // Bind the new Chrome tab to the restored row. Without this the
+          // following autosave cannot match it, mints a new id, and
+          // soft-deletes this row again, so the tab reappears in the closed
+          // list it was just restored from.
+          if (created.id != null) {
+            await tabsRepo.upsert({ ...tab, chromeTabId: created.id });
+          }
+        } catch (err) {
+          console.warn('[tabbary SW] could not reopen closed tab:', err);
+        }
+      }
+
+      broadcast({ type: 'tabsChanged', sessionId: tab.sessionId });
+      broadcast({ type: 'sessionsChanged' });
+      return true;
+    },
+
     async getSessionGroups(msg) {
       return tabGroupsRepo.listBySession(msg.sessionId);
     },

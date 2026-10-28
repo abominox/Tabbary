@@ -3,6 +3,35 @@
 Notable changes per release. Versions before 0.9 predate this file and are summarised from
 the commits.
 
+## 0.10.0 — 2026-10-28
+
+### Added
+
+- **Closed-tab history.** Closing a tab already soft-deleted its row, so the record was on
+  disk with no way to see it. Each session now keeps its last 50 closed tabs, listed in the
+  detail pane with the time they were closed and a Restore button. Restoring puts the tab
+  back in the session's window, or just back into a closed session.
+- **Keyboard shortcuts in the manager.** `Alt+1`–`Alt+9` select a session, `Alt+J`/`Alt+K`
+  step through sessions, and `Alt+[` / `Alt+]` step through the selected session's tabs and
+  focus them in Chrome. Uses `event.code`, not `event.key`, because Option+[ produces other
+  characters on macOS.
+- **Search scope.** A setting for what the search box matches: session names, tab titles and
+  URLs, or both. The full-tab manager and the popup share one predicate so they cannot drift.
+
+### Fixed
+
+- Restoring a closed tab briefly worked and then the tab reappeared in the closed list: the
+  autosave that followed could not match the new Chrome tab to the restored row, minted a new
+  id and soft-deleted the old one. The created tab id is now bound to the row before the save.
+  This is the same failure mode as the `moveTabs` bug fixed in 0.9.0.
+
+### Tests
+
+- 16 new unit tests (search predicate and closed-tab repository behaviour).
+- New `e2e/m7.ts`, 13 checks: closing a tab records it, restoring reopens it in Chrome, the
+  row id survives the following save, the tab leaves the closed list, the search scope
+  persists, and the shortcuts raise no errors.
+
 ## 0.9.0 — 2026-10-28
 
 ### Import

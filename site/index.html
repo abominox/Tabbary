@@ -85,12 +85,14 @@
 
       <ul class="plain">
         <li>Sessions keep a revision history. Restoring an older version snapshots the current state first, so the restore is undoable.</li>
-        <li>Search covers session names, tab titles, URLs and bookmarks.</li>
+        <li>Closed tabs are kept per session, fifty deep, and can be put back with one click.</li>
+        <li>Search covers session names, tab titles and URLs, and you can narrow it to one or the other.</li>
         <li>Tags have counts, bulk rename and bulk delete across sessions.</li>
         <li>Bookmarks live at three scopes: a session, a tag, or a browser import. A folder can also be opened as a session.</li>
         <li>Import accepts tabbary's own JSON or encrypted export, OneTab exports, bookmarks HTML from any browser, and plain lists of URLs.</li>
         <li>Suspension uses Chrome's own discard, and shows what it would unload before it does.</li>
         <li>The popup, side panel, full-tab manager and dedicated window all read the same database.</li>
+        <li>In the full-tab manager, Alt+1 to Alt+9 picks a session, Alt+J and Alt+K step through them, and Alt+[ and Alt+] step through that session's tabs.</li>
       </ul>
 
       <p>
@@ -178,7 +180,7 @@ npm run build</code></pre>
 
 <footer>
   <div class="wrap">
-    <span>tabbary 0.9 · MIT</span>
+    <span>tabbary 0.10 · MIT</span>
     <nav aria-label="Footer">
       <a href="https://github.com/abominox/Tabbary">Source</a>
       <a href="https://github.com/abominox/Tabbary/issues">Issues</a>

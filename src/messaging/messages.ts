@@ -19,6 +19,14 @@ export interface GetSessionTabsMessage {
   type: 'getSessionTabs';
   sessionId: string;
 }
+export interface GetClosedTabsMessage {
+  type: 'getClosedTabs';
+  sessionId: string;
+}
+export interface RestoreClosedTabMessage {
+  type: 'restoreClosedTab';
+  tabId: string;
+}
 export interface GetSessionGroupsMessage {
   type: 'getSessionGroups';
   sessionId: string;
@@ -185,6 +193,8 @@ export type Message =
   | GetSessionsMessage
   | GetSessionTabsMessage
   | GetSessionGroupsMessage
+  | GetClosedTabsMessage
+  | RestoreClosedTabMessage
   | SearchMessage
   | GetSettingsMessage
   | GetVersionsMessage
@@ -242,6 +252,10 @@ export type MessageResponse<T> = T extends { type: 'getSessions' }
     ? Tab[]
     : T extends { type: 'getSessionGroups' }
       ? TabGroup[]
+      : T extends { type: 'getClosedTabs' }
+        ? Tab[]
+        : T extends { type: 'restoreClosedTab' }
+          ? boolean
       : T extends { type: 'search' }
         ? Session[]
         : T extends { type: 'getSettings' }

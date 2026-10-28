@@ -6,3 +6,4 @@ export {
   hasHostPermission,
   removeHostPermission,
 } from './permissions';
+export { sessionMatchesQuery, type SearchScope } from './search';

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../app/store';
+import { sessionMatchesQuery } from '@/lib/search';
 import { useSessions } from '@/hooks/useSessions';
 import { SessionList } from '../components/SessionList';
 import { ActiveSession } from '../components/ActiveSession';
@@ -32,6 +33,7 @@ export function FullTab() {
   const groups = useStore((s) => s.groups);
   const tags = useStore((s) => s.tags);
   const search = useStore((s) => s.search);
+  const searchScope = useStore((s) => s.settings.searchScope);
   const filter = useStore((s) => s.filter);
   const selectedTagIds = useStore((s) => s.selectedTagIds);
   const setSearch = useStore((s) => s.setSearch);
@@ -43,6 +45,7 @@ export function FullTab() {
   const [historyFor, setHistoryFor] = useState<Session | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [pane, setPane] = useState<Pane>('detail');
+  const [tabCursor, setTabCursor] = useState(0);
 
   // Toast auto-dismiss
   useEffect(() => {
@@ -64,17 +67,9 @@ export function FullTab() {
           ? true
           : s.tags?.some((t) => selectedTagIds.includes(t)),
       )
-      .filter((s) => {
-        if (!search.trim()) return true;
-        const q = search.toLowerCase();
-        if ((s.name ?? '').toLowerCase().includes(q)) return true;
-        return (tabsBySession[s.id] ?? []).some(
-          (t) =>
-            t.title.toLowerCase().includes(q) || t.url.toLowerCase().includes(q),
-        );
-      })
+      .filter((s) => sessionMatchesQuery(s, tabsBySession[s.id] ?? [], search, searchScope))
       .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-  }, [sessions, filter, selectedTagIds, search, tabsBySession]);
+  }, [sessions, filter, selectedTagIds, search, searchScope, tabsBySession]);
 
   const openSessions = visible.filter((s) => s.state === 'active');
   const closedSessions = visible.filter((s) => s.state === 'closed');
@@ -88,6 +83,67 @@ export function FullTab() {
     ? tabsBySession[selected.id] ?? (selected.id === activeSessionId ? tabs : [])
     : [];
   const selectedGroups = selected?.id === activeSessionId ? groups : [];
+
+  // Keyboard: Alt+1..9 picks a session, Alt+J/K steps through sessions, and
+  // Alt+[ / Alt+] steps through the selected session's tabs and focuses them in
+  // Chrome. `code` is used rather than `key` because Option+[ produces other
+  // characters on macOS.
+  useEffect(() => {
+    setTabCursor(0);
+  }, [selected?.id]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!e.altKey || e.metaKey || e.ctrlKey) return;
+
+      const el = e.target as HTMLElement | null;
+      const typing =
+        el != null &&
+        (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+      if (typing) return;
+
+      const index = /^Digit([1-9])$/.exec(e.code);
+
+      if (index) {
+        const target = visible[Number(index[1]) - 1];
+        if (!target) return;
+        e.preventDefault();
+        setSelectedId(target.id);
+        return;
+      }
+
+      if (e.code === 'KeyJ' || e.code === 'KeyK') {
+        if (visible.length === 0) return;
+        e.preventDefault();
+        const at = visible.findIndex((s) => s.id === (selected?.id ?? ''));
+        const step = e.code === 'KeyJ' ? 1 : -1;
+        const next = visible[(at + step + visible.length) % visible.length];
+        if (next) setSelectedId(next.id);
+        return;
+      }
+
+      if (e.code === 'BracketLeft' || e.code === 'BracketRight') {
+        if (selectedTabs.length === 0) return;
+        e.preventDefault();
+        const step = e.code === 'BracketRight' ? 1 : -1;
+        const next = (tabCursor + step + selectedTabs.length) % selectedTabs.length;
+        setTabCursor(next);
+
+        const tab = selectedTabs[next];
+        if (tab?.chromeTabId != null) {
+          chrome.tabs.update(tab.chromeTabId, { active: true }).catch(() => {});
+          if (selected?.windowId != null) {
+            chrome.windows.update(selected.windowId, { focused: true }).catch(() => {});
+          }
+        } else {
+          setToast('That tab is not open in Chrome. Restore the session first.');
+        }
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [visible, selected?.id, selected?.windowId, selectedTabs, tabCursor]);
 
   // ── Actions ──
   const openSession = (id: string) => {
@@ -242,7 +298,10 @@ export function FullTab() {
           />
 
           <p className="mt-auto px-2 pb-1 text-[10px] leading-relaxed text-text-muted">
-            Drag tabs onto a session to move them. Drag a session onto another to merge.
+            Drag tabs onto a session to move them, or onto another session to merge.
+            <span className="mt-1 block font-mono">
+              Alt+1–9 pick a session · Alt+J/K step · Alt+[ ] step tabs
+            </span>
           </p>
         </section>
 

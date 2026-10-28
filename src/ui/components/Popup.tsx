@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../app/store';
+import { sessionMatchesQuery } from '@/lib/search';
 import { useSessions } from '@/hooks/useSessions';
 import { sendMessage } from '@/messaging/bus';
 import { formatRelativeTime, cn } from '@/lib';
@@ -24,6 +25,7 @@ export function Popup({ compact = true }: PopupProps) {
   const sessions = useStore((s) => s.sessions);
   const activeSessionId = useStore((s) => s.activeSessionId);
   const tabsBySession = useStore((s) => s.tabsBySession);
+  const searchScope = useStore((s) => s.settings.searchScope);
   const tabs = useStore((s) => s.tabs);
   const [query, setQuery] = useState('');
   const [toast, setToast] = useState<string | null>(null);
@@ -39,17 +41,11 @@ export function Popup({ compact = true }: PopupProps) {
   const closed = useMemo(() => {
     const list = sessions.filter((s) => s.state === 'closed');
     const q = query.trim().toLowerCase();
-    const filtered = q
-      ? list.filter(
-          (s) =>
-            (s.name ?? '').toLowerCase().includes(q) ||
-            (tabsBySession[s.id] ?? []).some(
-              (t) => t.title.toLowerCase().includes(q) || t.url.toLowerCase().includes(q),
-            ),
-        )
-      : list;
+    const filtered = list.filter((s) =>
+      sessionMatchesQuery(s, tabsBySession[s.id] ?? [], q, searchScope),
+    );
     return filtered.sort((a, b) => (b.closedAt ?? b.updatedAt) - (a.closedAt ?? a.updatedAt));
-  }, [sessions, query, tabsBySession]);
+  }, [sessions, query, searchScope, tabsBySession]);
 
   const openFullTab = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });

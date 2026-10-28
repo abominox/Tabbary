@@ -34,6 +34,50 @@ export const tabsRepo = {
     return tabs[0];
   },
 
+  /**
+   * Closed tabs for a session, newest first.
+   *
+   * Closing a tab does not delete the row: the autosave soft-deletes it, so the
+   * record of what was closed already exists. This is the read side of that.
+   */
+  async listClosedBySession(sessionId: string, limit = 50): Promise<Tab[]> {
+    const rows = await _tabs
+      .where('sessionId')
+      .equals(sessionId)
+      .filter(t => t.deleted)
+      .toArray();
+    return rows.sort((a, b) => b.updatedAt - a.updatedAt).slice(0, limit);
+  },
+
+  /** Bring a closed tab back. Returns the restored row, or undefined. */
+  async restoreClosed(id: string): Promise<Tab | undefined> {
+    const tab = await _tabs.get(id);
+    if (!tab || !tab.deleted) return undefined;
+    const ts = now();
+    await _tabs.update(id, { deleted: false, updatedAt: ts });
+    return { ...tab, deleted: false, updatedAt: ts };
+  },
+
+  /**
+   * Keep only the newest `keep` closed tabs for a session.
+   *
+   * Closed rows are history, not data, so they are hard-deleted once they fall
+   * out of the window. Without this a long-lived session accumulates a row for
+   * every tab ever closed in it.
+   */
+  async pruneClosedTabs(sessionId: string, keep = 50): Promise<number> {
+    const rows = await _tabs
+      .where('sessionId')
+      .equals(sessionId)
+      .filter(t => t.deleted)
+      .toArray();
+    if (rows.length <= keep) return 0;
+    rows.sort((a, b) => b.updatedAt - a.updatedAt);
+    const doomed = rows.slice(keep).map(t => t.id);
+    await _tabs.bulkDelete(doomed);
+    return doomed.length;
+  },
+
   /** Upsert a single tab (insert or update). */
   async upsert(tab: Tab): Promise<void> {
     const existing = await _tabs.get(tab.id);

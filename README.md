@@ -4,7 +4,7 @@ A tab manager for Chrome (MV3). It saves the tabs in each window as a session wh
 browse, then reopens them with their tab groups. Everything stays in your browser profile.
 There is no account and no paid tier. It does not collect telemetry.
 
-> **Status: 0.9.** Capture, restore, revision history, the four surfaces, tags, bookmarks,
+> **Status: 0.10.** Capture, restore, revision history, the four surfaces, tags, bookmarks,
 > import/export, suspension and optional self-hosted sync are implemented and tested.
 > Publishing still needs a Chrome Web Store developer account, then review. See
 > [Roadmap](#roadmap).
@@ -22,13 +22,18 @@ session by URL overlap, so history survives a restart instead of splitting into 
 The toolbar popup, the side panel, the full-tab manager and the compact dedicated window all
 read the same database.
 
+In the full-tab manager, `Alt+1`–`Alt+9` pick a session, `Alt+J`/`Alt+K` step through them,
+and `Alt+[` / `Alt+]` step through the selected session's tabs and focus them in Chrome.
+
 The rest:
 
 - Tab groups keep their names and colours through a restore.
 - Drag a tab onto another session to move it. Merge two sessions with duplicate detection.
 - Per-session revision history, pruned to a configurable limit. Restoring an old revision
   snapshots the current one first, so the restore is undoable.
+- Closed-tab history per session, with a one-click restore. The last 50 closed tabs are kept.
 - Tags with counts, bulk rename and bulk delete.
+- Search with a configurable scope: session names, tab titles and URLs, or both.
 - Bookmarks scoped to a session, a tag, or a browser import. A folder can be opened as a
   session.
 - Suspension uses `chrome.tabs.discard` instead of rewriting URLs.

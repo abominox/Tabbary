@@ -165,6 +165,17 @@ export function Options() {
                 ]}
                 onChange={(v) => save({ preferredSurface: v as Settings['preferredSurface'] })}
               />
+              <SelectRow
+                label="Search scope"
+                hint="What the search box matches. Session names, tab titles and URLs, or both."
+                value={settings.searchScope}
+                options={[
+                  ['all', 'Session names and tabs'],
+                  ['sessions', 'Session names only'],
+                  ['tabs', 'Tab titles and URLs only'],
+                ]}
+                onChange={(v) => save({ searchScope: v as Settings['searchScope'] })}
+              />
             </Panel>
           )}
 

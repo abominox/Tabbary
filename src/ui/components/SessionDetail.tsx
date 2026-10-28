@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Session, Tab, TabGroup } from '@/models';
 import { formatRelativeTime } from '@/lib';
 import { TabMarkStrip } from './TabMarkStrip';
@@ -249,8 +249,77 @@ export function SessionDetail({
             ))}
           </div>
         )}
+
+        <ClosedTabs sessionId={session.id} refreshKey={tabs.length} />
       </div>
     </div>
+  );
+}
+
+/**
+ * Tabs that were closed in this session, newest first.
+ *
+ * Closing a tab soft-deletes its row, so the history is already on disk; this
+ * is the view onto it, with a way back.
+ */
+function ClosedTabs({ sessionId, refreshKey }: { sessionId: string; refreshKey: number }) {
+  const [tabs, setTabs] = useState<Tab[]>([]);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    sendMessage({ type: 'getClosedTabs', sessionId })
+      .then((rows) => {
+        if (alive) setTabs(rows ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [sessionId, refreshKey]);
+
+  const restore = async (tabId: string) => {
+    setBusy(true);
+    try {
+      await sendMessage({ type: 'restoreClosedTab', tabId });
+      const rows = await sendMessage({ type: 'getClosedTabs', sessionId });
+      setTabs(rows ?? []);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (tabs.length === 0) return null;
+
+  return (
+    <details className="mt-3 border-t border-surface-border pt-2">
+      <summary className="cursor-pointer px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-text-muted">
+        Closed tabs ({tabs.length})
+      </summary>
+      <div className="mt-1">
+        {tabs.map((tab) => (
+          <div
+            key={tab.id}
+            className="group flex items-center gap-2 rounded px-2 py-1 text-xs hover:bg-surface-hover"
+          >
+            <span className="truncate text-text-muted line-through decoration-text-muted/40">
+              {tab.title || tab.url}
+            </span>
+            <span className="ml-auto shrink-0 font-mono text-[10px] text-text-muted">
+              {formatRelativeTime(tab.updatedAt)}
+            </span>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void restore(tab.id)}
+              className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium text-accent-600 hover:underline disabled:opacity-50 dark:text-accent-400"
+            >
+              Restore
+            </button>
+          </div>
+        ))}
+      </div>
+    </details>
   );
 }
 

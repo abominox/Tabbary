@@ -143,6 +143,9 @@ async function saveSession(windowId: number): Promise<void> {
   // ── Persist ──
   try {
     await tabsRepo.replaceForSession(sessionId, ourTabs);
+    // Tabs that left the window were just soft-deleted; cap the history so it
+    // does not grow without bound in a long-lived session.
+    await tabsRepo.pruneClosedTabs(sessionId);
     await tabGroupsRepo.replaceForSession(sessionId, ourGroups);
     await sessionsRepo.bumpVersion(sessionId);
   } catch (err) {

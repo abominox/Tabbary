@@ -95,6 +95,8 @@ export interface Settings {
   syncPollIntervalSec: number;
   openSuspended: boolean;
   preferredSurface: 'popup' | 'tab' | 'window' | 'sidepanel';
+  /** What the session search box looks at. */
+  searchScope: 'all' | 'sessions' | 'tabs';
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -112,4 +114,5 @@ export const DEFAULT_SETTINGS: Settings = {
   syncPollIntervalSec: 60,
   openSuspended: false,
   preferredSurface: 'sidepanel',
+  searchScope: 'all',
 };
