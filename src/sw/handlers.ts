@@ -166,24 +166,49 @@ export function registerBusHandlers(): void {
     },
 
     async moveTabs(msg) {
+      // Read the source Chrome tab ids *before* the move. sessionOps nulls
+      // chromeTabId on every moved row, so afterwards there is nothing left to
+      // close and the tabs would linger in the source window.
+      const before = await Promise.all(msg.tabIds.map((id) => tabsRepo.get(id)));
+      const sourceChromeIds = before
+        .map((t) => t?.chromeTabId)
+        .filter((id): id is number => typeof id === 'number');
+
       const result = await sessionOps.moveTabs(msg.tabIds, msg.targetSessionId);
 
-      // If the target session is live, its window must reflect the change.
+      // If the target session is live, open just the tabs that moved.
+      //
+      // This used to call openUrlsInWindow(), which rewrites the whole window:
+      // it reuses one tab, closes the rest, then recreates them. Moving a
+      // single tab therefore reloaded every tab in the destination and lost
+      // their scroll position and form state. It also changed the identity of
+      // tabs that had not moved.
       const target = await sessionsRepo.get(msg.targetSessionId);
       if (target?.windowId != null) {
-        const urls = (await tabsRepo.listBySession(msg.targetSessionId))
-          .map(t => t.url)
-          .filter(Boolean);
-        await openUrlsInWindow(target.windowId, urls);
+        for (const tabId of msg.tabIds) {
+          const tab = await tabsRepo.get(tabId);
+          if (!tab || tab.sessionId !== msg.targetSessionId || !tab.url) continue;
+          try {
+            const created = await chrome.tabs.create({
+              windowId: target.windowId,
+              url: tab.url,
+              active: false,
+            });
+            // Bind the new Chrome tab to the existing row so the autosave that
+            // follows maps back to it instead of creating a new id.
+            if (created.id != null) {
+              await tabsRepo.upsert({ ...tab, chromeTabId: created.id, updatedAt: Date.now() });
+            }
+          } catch (err) {
+            console.warn('[tabbary SW] could not open moved tab:', err);
+          }
+        }
         requestSaveSession(target.windowId);
       }
 
-      // The source window, if live, must lose those tabs.
-      for (const tabId of msg.tabIds) {
-        const tab = await tabsRepo.get(tabId);
-        if (tab?.chromeTabId != null) {
-          await chrome.tabs.remove(tab.chromeTabId).catch(() => {});
-        }
+      // The source window must lose exactly the tabs that moved.
+      for (const chromeId of sourceChromeIds) {
+        await chrome.tabs.remove(chromeId).catch(() => {});
       }
 
       broadcast({ type: 'sessionsChanged' });

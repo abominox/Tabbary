@@ -53,18 +53,20 @@ async function main() {
 
     await waitFor(async () => {
       const s = await querySW<Session[]>(page, { type: 'getSessions' });
-      if (s.length < 2) return false;
+      const a = s.find((x) => x.windowId === winA);
+      const b = s.find((x) => x.windowId === winB);
+      if (!a || !b) return false;
       // Wait for the *specific* URLs, not just a non-zero count: saves are
       // debounced and coalesced, so a count check can pass mid-flight.
-      const all = await Promise.all(
-        s.map(async (x) => {
-          const tabs = await querySW<Tab[]>(page, { type: 'getSessionTabs', sessionId: x.id });
-          return tabs.map((t) => t.url);
-        }),
-      );
-      const want = ['https://example.com/a1', 'https://example.com/a2', 'https://github.com/x/y'];
-      return all.some((urls) => want.every((w) => urls.includes(w)));
-    }, 20000, 400, 'session A fully persisted');
+      const urlsOf = async (id: string) =>
+        (await querySW<Tab[]>(page, { type: 'getSessionTabs', sessionId: id })).map((t) => t.url);
+      const [urlsA, urlsB] = await Promise.all([urlsOf(a.id), urlsOf(b.id)]);
+      const wantA = ['https://example.com/a1', 'https://example.com/a2', 'https://github.com/x/y'];
+      // Both windows must be persisted. The move below asserts that the
+      // destination keeps its own tabs, which proves nothing if it has none
+      // yet, and that gap is what previously made this suite flaky.
+      return wantA.every((w) => urlsA.includes(w)) && urlsB.includes('https://example.org/b1');
+    }, 25000, 400, 'both sessions fully persisted');
 
     let sessions = await querySW<Session[]>(page, { type: 'getSessions' });
     const sessA = sessions.find(s => s.windowId === winA)!;
@@ -82,6 +84,9 @@ async function main() {
     );
 
     // ── M2: move a tab between sessions (the DnD data path) ──
+    const tabsBBefore = await querySW<Tab[]>(page, { type: 'getSessionTabs', sessionId: sessB.id });
+    const keptUrls = tabsBBefore.map(t => t.url).filter(Boolean);
+
     const moveTarget = tabsA[0]!;
     const moveResult = await querySW<{ moved: number }>(page, {
       type: 'moveTabs',
@@ -90,11 +95,21 @@ async function main() {
     });
     check('moveTabs moves across sessions', moveResult?.moved === 1, `moved=${moveResult?.moved}`);
 
+    // The destination window's save is debounced by 250ms, so wait past it.
+    // This check used to run immediately and could pass while the row was
+    // about to be replaced by the save, which is what made it flaky in CI.
+    await page.waitForTimeout(700);
+
     const tabsBAfter = await querySW<Tab[]>(page, { type: 'getSessionTabs', sessionId: sessB.id });
     check(
-      'destination now holds the moved tab',
+      'destination holds the moved tab, same row id after the save',
       tabsBAfter.some(t => t.id === moveTarget.id),
       `${tabsBAfter.length} tabs in destination`,
+    );
+    check(
+      "moving a tab leaves the destination's own tabs alone",
+      keptUrls.length > 0 && keptUrls.every(u => tabsBAfter.some(t => t.url === u)),
+      `kept ${keptUrls.filter(u => tabsBAfter.some(t => t.url === u)).length}/${keptUrls.length}`,
     );
 
     // ── M2: merge with duplicate detection ──
