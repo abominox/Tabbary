@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sendMessage } from '@/messaging/bus';
 import { cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import type { SyncStatus } from '@/messaging/sync';
 
 type Step = 'welcome' | 'capture' | 'surfaces' | 'privacy' | 'done';
@@ -45,7 +46,7 @@ export function Onboarding() {
           </span>
           tabbary
         </span>
-        <ol className="ml-auto flex items-center gap-1" aria-label="Onboarding progress">
+        <ol className="ml-auto flex items-center gap-1" aria-label={t('ob_progress')}>
           {STEPS.slice(0, 4).map((s, i) => (
             <li
               key={s}
@@ -63,34 +64,34 @@ export function Onboarding() {
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-6 py-10">
         {step === 'welcome' && (
           <Section
-            eyebrow="Local-first"
-            title="Your windows, kept the way you left them."
-            body="Tabbary saves each browser window as a session the moment it changes — tabs, groups and all. Close a window by accident, or crash, and it is still there."
+            eyebrow={t('ob_eyebrow_local_first')}
+            title={t('ob_welcome_title')}
+            body={t('ob_welcome_body')}
           >
             <ul className="mt-6 space-y-2 text-[13px] text-text-secondary">
-              <Fact label="No account">Nothing to sign up for, no email, no profile.</Fact>
-              <Fact label="Stored here">Everything lives in this Chrome profile.</Fact>
-              <Fact label="MIT">The source is open, so you can audit or fork it.</Fact>
+              <Fact label={t('ob_fact_no_account_label')}>{t('ob_fact_no_account_body')}</Fact>
+              <Fact label={t('ob_fact_stored_label')}>{t('ob_fact_stored_body')}</Fact>
+              <Fact label={t('ob_fact_mit_label')}>{t('ob_fact_mit_body')}</Fact>
             </ul>
           </Section>
         )}
 
         {step === 'capture' && (
           <Section
-            eyebrow="Capture"
-            title="Sessions save themselves."
-            body="There is no save button to forget. Every tab, group, pin and window move is written shortly after it happens, and each session keeps a short revision history."
+            eyebrow={t('ob_capture_eyebrow')}
+            title={t('ob_capture_title')}
+            body={t('ob_capture_body')}
           >
             <fieldset className="mt-6">
               <legend className="text-[12px] font-medium text-text-primary">
-                When Chrome starts, restore the windows tabbary was tracking?
+                {t('ob_restore_legend')}
               </legend>
               <div className="mt-2 space-y-1.5">
                 {(
                   [
-                    ['yes', 'Yes, restore', 'Matched back to their sessions by URL, so history survives.'],
-                    ['ask', 'Ask each time', 'Show a prompt with the matches and let me choose.'],
-                    ['no', 'No', 'Leave everything closed; I will restore manually.'],
+                    ['yes', t('ob_restore_yes_label'), t('ob_restore_yes_hint')],
+                    ['ask', t('ob_restore_ask_label'), t('ob_restore_ask_hint')],
+                    ['no', t('ob_restore_no_label'), t('ob_restore_no_hint')],
                   ] as const
                 ).map(([value, label, hint]) => (
                   <label
@@ -123,16 +124,16 @@ export function Onboarding() {
 
         {step === 'surfaces' && (
           <Section
-            eyebrow="Four ways in"
-            title="Where you need it, not where we say."
-            body="The same library is available as a popup, a side panel, a dedicated window, and a full tab. They share state, so switching is cheap."
+            eyebrow={t('ob_surfaces_eyebrow')}
+            title={t('ob_surfaces_title')}
+            body={t('ob_surfaces_body')}
           >
             <div className="mt-6 grid gap-2 sm:grid-cols-2">
               {[
-                ['Popup', 'Click the toolbar icon. Alt+A opens the side panel.'],
-                ['Full tab', 'Alt+S. The three-pane manager with drag-and-drop.'],
-                ['Dedicated window', 'A compact two-pane view for a second screen.'],
-                ['Side panel', 'Stays open beside the page you are reading.'],
+                [t('ob_surface_popup_title'), t('ob_surface_popup_body')],
+                [t('ob_surface_tab_title'), t('ob_surface_tab_body')],
+                [t('ob_surface_window_title'), t('ob_surface_window_body')],
+                [t('ob_surface_side_title'), t('ob_surface_side_body')],
               ].map(([title, body]) => (
                 <div
                   key={title}
@@ -148,24 +149,23 @@ export function Onboarding() {
 
         {step === 'privacy' && (
           <Section
-            eyebrow="Privacy"
-            title="Nothing leaves unless you say so."
-            body="The extension asks for no host permissions at install. History and bookmark access are optional and requested only when you use those features."
+            eyebrow={t('ob_privacy_eyebrow')}
+            title={t('ob_privacy_title')}
+            body={t('ob_privacy_body')}
           >
             <div className="mt-6 space-y-2 text-[12px]">
               <div className="rounded-lg border border-surface-border bg-surface-elevated px-3 py-2.5">
-                <p className="font-medium text-text-primary">Sync is optional and self-hosted</p>
+                <p className="font-medium text-text-primary">{t('ob_sync_title')}</p>
                 <p className="mt-0.5 leading-relaxed text-text-muted">
                   {status?.configured
-                    ? `Connected to ${status.endpoint?.replace(/^https?:\/\//, '')}. Blobs are encrypted here before upload.`
-                    : 'Off by default. If you turn it on, you point it at a server you run; it stores ciphertext only.'}
+                    ? t('ob_sync_connected', [status.endpoint?.replace(/^https?:\/\//, '') ?? ''])
+                    : t('ob_sync_off')}
                 </p>
               </div>
               <div className="rounded-lg border border-surface-border bg-surface-elevated px-3 py-2.5">
-                <p className="font-medium text-text-primary">Export anytime</p>
+                <p className="font-medium text-text-primary">{t('ob_export_title')}</p>
                 <p className="mt-0.5 leading-relaxed text-text-muted">
-                  Settings → Import &amp; export writes plain JSON or a passphrase-encrypted
-                  file. No lock-in.
+                  {t('ob_export_body')}
                 </p>
               </div>
             </div>
@@ -174,9 +174,9 @@ export function Onboarding() {
 
         {step === 'done' && (
           <Section
-            eyebrow="Ready"
-            title="That's it."
-            body="Open a window and tabbary starts capturing. Press ? in the manager for keyboard shortcuts."
+            eyebrow={t('ob_done_eyebrow')}
+            title={t('ob_done_title')}
+            body={t('ob_done_body')}
           >
             <div className="mt-6 flex flex-wrap gap-2">
               <button
@@ -184,18 +184,18 @@ export function Onboarding() {
                 onClick={() => void finish()}
                 className="rounded-md bg-accent-600 px-4 py-2 text-[12px] font-semibold text-white hover:bg-accent-700"
               >
-                Open tabbary
+                {t('ob_open_button')}
               </button>
               <button
                 type="button"
                 onClick={() => chrome.runtime.openOptionsPage()}
                 className="rounded-md border border-surface-border px-4 py-2 text-[12px] font-medium text-text-secondary hover:bg-surface-hover"
               >
-                Settings
+                {t('common_settings')}
               </button>
             </div>
             <p className="mt-4 text-[11px] text-text-muted">
-              You can revisit these settings any time; nothing here is permanent.
+              {t('ob_revisit')}
             </p>
           </Section>
         )}

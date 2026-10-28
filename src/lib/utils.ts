@@ -1,3 +1,4 @@
+import { t, uiLocale } from './i18n';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -58,23 +59,25 @@ export function formatRelativeTime(ts: number): string {
   const now = Date.now();
   const diffMs = now - ts;
 
-  if (diffMs < 0) return 'just now';
+  // "just now" is not a duration, so Intl has no phrase for it.
+  if (diffMs < 60_000) return t('timeJustNow');
 
-  const seconds = Math.floor(diffMs / 1000);
-  if (seconds < 60) return 'just now';
+  const locale = uiLocale();
+  // `narrow` is what produces "3h ago" in English, matching the previous
+  // hardcoded output exactly; other locales get their own ordering.
+  const relative = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'narrow' });
 
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
+  const minutes = Math.floor(diffMs / 60_000);
+  if (minutes < 60) return relative.format(-minutes, 'minute');
 
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return relative.format(-hours, 'hour');
 
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  if (days < 7) return relative.format(-days, 'day');
+  if (days < 30) return relative.format(-Math.floor(days / 7), 'week');
 
-  // Fall back to locale date for older timestamps
-  return new Date(ts).toLocaleDateString(undefined, {
+  return new Date(ts).toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

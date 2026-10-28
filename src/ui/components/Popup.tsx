@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../app/store';
+import { t, tn } from '@/lib/i18n';
 import { sessionMatchesQuery } from '@/lib/search';
 import { useSessions } from '@/hooks/useSessions';
 import { sendMessage } from '@/messaging/bus';
@@ -70,10 +71,10 @@ export function Popup({ compact = true }: PopupProps) {
   const restore = async (session: Session) => {
     try {
       await sendMessage({ type: 'openSession', sessionId: session.id });
-      setToast('Restoring in a new window…');
+      setToast(t('popup_restoring'));
       setTimeout(() => window.close(), 600);
     } catch {
-      setToast('Could not restore that session');
+      setToast(t('popup_restore_failed'));
     }
   };
 
@@ -92,14 +93,14 @@ export function Popup({ compact = true }: PopupProps) {
         <span className="text-[12px] font-bold">tabbary</span>
         <span className="ml-1 flex items-center gap-1 text-[10px] text-text-muted">
           <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-          local
+          {t('popup_local')}
         </span>
         <div className="ml-auto flex items-center gap-0.5">
           <button
             type="button"
             onClick={openWindow}
-            title="Open in a window"
-            aria-label="Open in a window"
+            title={t('popup_open_window')}
+            aria-label={t('popup_open_window')}
             className="rounded px-1.5 py-1 text-[11px] text-text-muted hover:bg-surface-hover hover:text-text-primary"
           >
             ⧉
@@ -107,8 +108,8 @@ export function Popup({ compact = true }: PopupProps) {
           <button
             type="button"
             onClick={openSettings}
-            title="Settings"
-            aria-label="Settings"
+            title={t('popup_settings')}
+            aria-label={t('popup_settings')}
             className="rounded px-1.5 py-1 text-[11px] text-text-muted hover:bg-surface-hover hover:text-text-primary"
           >
             ⚙
@@ -125,8 +126,8 @@ export function Popup({ compact = true }: PopupProps) {
             onKeyDown={(e) => {
               if (e.key === 'Enter') openFullTab();
             }}
-            placeholder="Search sessions and tabs…"
-            aria-label="Search sessions and tabs"
+            placeholder={t('popup_search_placeholder')}
+            aria-label={t('popup_search_label')}
             className="w-full rounded-md border border-surface-border bg-surface-elevated py-1.5 pl-7 pr-8 text-[11px] outline-none focus:border-accent-500"
           />
           <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-text-muted">
@@ -141,14 +142,14 @@ export function Popup({ compact = true }: PopupProps) {
       {/* Live window */}
       <section className="shrink-0 px-3 pt-3">
         <h2 className="mb-1 font-mono text-[9px] uppercase tracking-wider text-text-muted">
-          This window
+          {t('popup_this_window')}
         </h2>
         {active ? (
           <div className="rounded-md border border-surface-border bg-surface-elevated px-2.5 py-2">
             <div className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
               <span className="truncate text-[11px] font-medium">
-                {active.name?.trim() || 'Window 1'}
+                {active.name?.trim() || t('common_default_window')}
               </span>
               <span className="ml-auto shrink-0 font-mono text-[10px] text-text-muted">
                 {tabs.length}
@@ -163,7 +164,7 @@ export function Popup({ compact = true }: PopupProps) {
           </div>
         ) : (
           <p className="rounded-md border border-dashed border-surface-border px-2.5 py-2 text-[10px] text-text-muted">
-            No active session in this window yet.
+            {t('popup_no_active')}
           </p>
         )}
       </section>
@@ -172,7 +173,7 @@ export function Popup({ compact = true }: PopupProps) {
       <section className="flex min-h-0 flex-1 flex-col px-3 pt-3">
         <div className="mb-1 flex items-baseline gap-1.5">
           <h2 className="font-mono text-[9px] uppercase tracking-wider text-text-muted">
-            {query ? 'Matches' : 'Recently closed'}
+            {query ? t('popup_matches') : t('popup_recently_closed')}
           </h2>
           <span className="text-[9px] text-text-muted">{closed.length}</span>
         </div>
@@ -180,7 +181,7 @@ export function Popup({ compact = true }: PopupProps) {
         <div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-1">
           {closed.length === 0 && (
             <p className="px-1 py-3 text-[10px] text-text-muted">
-              {query ? 'Nothing matches.' : 'Nothing closed yet.'}
+              {query ? t('popup_nothing_matches') : t('popup_nothing_closed')}
             </p>
           )}
           {closed.slice(0, 40).map((s) => {
@@ -191,21 +192,22 @@ export function Popup({ compact = true }: PopupProps) {
                 type="button"
                 onClick={() => void restore(s)}
                 className="group mb-0.5 flex w-full items-center gap-2 rounded px-1.5 py-1.5 text-left hover:bg-surface-hover"
-                title={`Restore ${sTabs.length} tabs`}
+                title={t('popup_restore_tooltip', [sTabs.length])}
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[11px] font-medium text-text-primary">
-                    {s.name?.trim() || 'Untitled'}
+                    {s.name?.trim() || t('common_untitled')}
                   </p>
                   <div className="mt-0.5 flex items-center gap-1.5">
                     <TabMarkStrip tabs={sTabs} size={11} max={4} muted />
                     <span className="truncate text-[9px] text-text-muted">
-                      {sTabs.length} tabs · {formatRelativeTime(s.closedAt ?? s.updatedAt)}
+                      {tn('common_tabs_one', 'common_tabs_other', sTabs.length, [sTabs.length])} ·{' '}
+                      {formatRelativeTime(s.closedAt ?? s.updatedAt)}
                     </span>
                   </div>
                 </div>
                 <span className="shrink-0 rounded border border-surface-border px-1.5 py-0.5 text-[9px] text-text-muted opacity-0 transition-opacity group-hover:opacity-100">
-                  Restore
+                  {t('common_restore')}
                 </span>
               </button>
             );
@@ -220,7 +222,7 @@ export function Popup({ compact = true }: PopupProps) {
           onClick={openFullTab}
           className="rounded-md bg-accent-600 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-700"
         >
-          Open manager
+          {t('popup_open_manager')}
         </button>
         <button
           type="button"
@@ -230,7 +232,7 @@ export function Popup({ compact = true }: PopupProps) {
           }}
           className="ml-auto text-[10px] text-text-muted hover:text-text-primary"
         >
-          {sessions.length} sessions
+          {tn('common_sessions_one', 'common_sessions_other', sessions.length, [sessions.length])}
         </button>
       </footer>
 

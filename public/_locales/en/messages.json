@@ -16,5 +16,209 @@
   },
   "commandOpenBookmarks": {
     "message": "Open Tabbary bookmarks"
+  },
+  "timeJustNow": {
+    "message": "just now"
+  },
+  "popup_local": {
+    "message": "local"
+  },
+  "popup_open_window": {
+    "message": "Open in a window"
+  },
+  "popup_settings": {
+    "message": "Settings"
+  },
+  "popup_search_placeholder": {
+    "message": "Search sessions and tabs\u2026"
+  },
+  "popup_search_label": {
+    "message": "Search sessions and tabs"
+  },
+  "popup_this_window": {
+    "message": "This window"
+  },
+  "popup_no_active": {
+    "message": "No active session in this window yet."
+  },
+  "popup_matches": {
+    "message": "Matches"
+  },
+  "popup_recently_closed": {
+    "message": "Recently closed"
+  },
+  "popup_nothing_matches": {
+    "message": "Nothing matches."
+  },
+  "popup_nothing_closed": {
+    "message": "Nothing closed yet."
+  },
+  "popup_open_manager": {
+    "message": "Open manager"
+  },
+  "popup_restoring": {
+    "message": "Restoring in a new window\u2026"
+  },
+  "popup_restore_failed": {
+    "message": "Could not restore that session"
+  },
+  "popup_restore_tooltip": {
+    "message": "Restore $1 tabs"
+  },
+  "common_untitled": {
+    "message": "Untitled"
+  },
+  "common_restore": {
+    "message": "Restore"
+  },
+  "common_default_window": {
+    "message": "Window 1"
+  },
+  "common_tabs_one": {
+    "message": "1 tab"
+  },
+  "common_tabs_other": {
+    "message": "$1 tabs"
+  },
+  "common_sessions_one": {
+    "message": "1 session"
+  },
+  "common_sessions_other": {
+    "message": "$1 sessions"
+  },
+  "ob_progress": {
+    "message": "Onboarding progress"
+  },
+  "ob_eyebrow_local_first": {
+    "message": "Local-first"
+  },
+  "ob_welcome_title": {
+    "message": "Your windows, kept the way you left them."
+  },
+  "ob_welcome_body": {
+    "message": "Tabbary saves each browser window as a session the moment it changes \u2014 tabs, groups and all. Close a window by accident, or crash, and it is still there."
+  },
+  "ob_fact_no_account_label": {
+    "message": "No account"
+  },
+  "ob_fact_no_account_body": {
+    "message": "Nothing to sign up for, no email, no profile."
+  },
+  "ob_fact_stored_label": {
+    "message": "Stored here"
+  },
+  "ob_fact_stored_body": {
+    "message": "Everything lives in this Chrome profile."
+  },
+  "ob_fact_mit_label": {
+    "message": "MIT"
+  },
+  "ob_fact_mit_body": {
+    "message": "The source is open, so you can audit or fork it."
+  },
+  "ob_capture_eyebrow": {
+    "message": "Capture"
+  },
+  "ob_capture_title": {
+    "message": "Sessions save themselves."
+  },
+  "ob_capture_body": {
+    "message": "There is no save button to forget. Every tab, group, pin and window move is written shortly after it happens, and each session keeps a short revision history."
+  },
+  "ob_restore_legend": {
+    "message": "When Chrome starts, restore the windows tabbary was tracking?"
+  },
+  "ob_restore_yes_label": {
+    "message": "Yes, restore"
+  },
+  "ob_restore_yes_hint": {
+    "message": "Matched back to their sessions by URL, so history survives."
+  },
+  "ob_restore_ask_label": {
+    "message": "Ask each time"
+  },
+  "ob_restore_ask_hint": {
+    "message": "Show a prompt with the matches and let me choose."
+  },
+  "ob_restore_no_label": {
+    "message": "No"
+  },
+  "ob_restore_no_hint": {
+    "message": "Leave everything closed; I will restore manually."
+  },
+  "ob_surfaces_eyebrow": {
+    "message": "Four ways in"
+  },
+  "ob_surfaces_title": {
+    "message": "Where you need it, not where we say."
+  },
+  "ob_surfaces_body": {
+    "message": "The same library is available as a popup, a side panel, a dedicated window, and a full tab. They share state, so switching is cheap."
+  },
+  "ob_surface_popup_title": {
+    "message": "Popup"
+  },
+  "ob_surface_popup_body": {
+    "message": "Click the toolbar icon. Alt+A opens the side panel."
+  },
+  "ob_surface_tab_title": {
+    "message": "Full tab"
+  },
+  "ob_surface_tab_body": {
+    "message": "Alt+S. The three-pane manager with drag-and-drop."
+  },
+  "ob_surface_window_title": {
+    "message": "Dedicated window"
+  },
+  "ob_surface_window_body": {
+    "message": "A compact two-pane view for a second screen."
+  },
+  "ob_surface_side_title": {
+    "message": "Side panel"
+  },
+  "ob_surface_side_body": {
+    "message": "Stays open beside the page you are reading."
+  },
+  "ob_privacy_eyebrow": {
+    "message": "Privacy"
+  },
+  "ob_privacy_title": {
+    "message": "Nothing leaves unless you say so."
+  },
+  "ob_privacy_body": {
+    "message": "The extension asks for no host permissions at install. History and bookmark access are optional and requested only when you use those features."
+  },
+  "ob_sync_title": {
+    "message": "Sync is optional and self-hosted"
+  },
+  "ob_sync_connected": {
+    "message": "Connected to $1. Blobs are encrypted here before upload."
+  },
+  "ob_sync_off": {
+    "message": "Off by default. If you turn it on, you point it at a server you run; it stores ciphertext only."
+  },
+  "ob_export_title": {
+    "message": "Export anytime"
+  },
+  "ob_export_body": {
+    "message": "Settings \u2192 Import & export writes plain JSON or a passphrase-encrypted file. No lock-in."
+  },
+  "ob_done_eyebrow": {
+    "message": "Ready"
+  },
+  "ob_done_title": {
+    "message": "That's it."
+  },
+  "ob_done_body": {
+    "message": "Open a window and tabbary starts capturing. Press ? in the manager for keyboard shortcuts."
+  },
+  "ob_open_button": {
+    "message": "Open tabbary"
+  },
+  "ob_revisit": {
+    "message": "You can revisit these settings any time; nothing here is permanent."
+  },
+  "common_settings": {
+    "message": "Settings"
   }
 }
