@@ -3,6 +3,7 @@ import { useStore } from '../app/store';
 import { useSessions } from '@/hooks/useSessions';
 import { sendMessage } from '@/messaging/bus';
 import { cn } from '@/lib';
+import { t, tn } from '@/lib/i18n';
 import { isPortableUrl } from '@/lib/bundle';
 import type { Bookmark } from '@/models';
 import { hostnameOf } from '@/lib/tabmark';
@@ -28,9 +29,9 @@ function countLinks(nodes: Node[]): number {
 }
 
 const SCOPES: { id: Scope; label: string; hint: string }[] = [
-  { id: 'session', label: 'Session', hint: 'Saved with one session' },
-  { id: 'tag', label: 'Tags', hint: 'Shared across tagged sessions' },
-  { id: 'browser', label: 'Browser', hint: 'Imported from Chrome, read-only' },
+  { id: 'session', label: 'bm_scope_session', hint: 'bm_scope_session_hint' },
+  { id: 'tag', label: 'bm_scope_tags', hint: 'bm_scope_tags_hint' },
+  { id: 'browser', label: 'bm_scope_browser', hint: 'bm_scope_browser_hint' },
 ];
 
 /**
@@ -202,9 +203,10 @@ export function Bookmarks() {
       <header className="flex shrink-0 flex-wrap items-center gap-3 border-b border-surface-border px-4 py-2.5">
         <div>
           <p className="font-mono text-[9px] uppercase tracking-wider text-text-muted">
-            {totalLinks} link{totalLinks === 1 ? '' : 's'} · {rows.length} items
+            {tn('bm_link_one', 'bm_link_other', totalLinks, [totalLinks])} ·{' '}
+            {tn('bm_item_one', 'bm_item_other', rows.length, [rows.length])}
           </p>
-          <h1 className="text-base font-semibold tracking-tight text-text-primary">Bookmarks</h1>
+          <h1 className="text-base font-semibold tracking-tight text-text-primary">{t('bm_title')}</h1>
         </div>
 
         <div className="ml-auto flex items-center gap-1.5">
@@ -213,14 +215,14 @@ export function Bookmarks() {
             onClick={() => void openAsSession(null)}
             className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
           >
-            Open all as session
+            {t('bm_open_all')}
           </button>
           <button
             type="button"
             onClick={() => setAdding((v) => !v)}
             className="rounded-md bg-accent-600 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-700"
           >
-            Add bookmark
+            {t('bm_add')}
           </button>
         </div>
       </header>
@@ -233,7 +235,7 @@ export function Bookmarks() {
             type="button"
             onClick={() => setScope(s.id)}
             aria-pressed={scope === s.id}
-            title={s.hint}
+            title={t(s.hint)}
             className={cn(
               'rounded-md px-2.5 py-1 text-[11px] font-medium',
               scope === s.id
@@ -241,7 +243,7 @@ export function Bookmarks() {
                 : 'text-text-muted hover:bg-surface-hover hover:text-text-primary',
             )}
           >
-            {s.label}
+            {t(s.label)}
           </button>
         ))}
 
@@ -250,13 +252,13 @@ export function Bookmarks() {
             <select
               value={ownerId ?? ''}
               onChange={(e) => setOwnerId(e.target.value || null)}
-              aria-label="Session"
+              aria-label={t('bm_scope_session')}
               className="max-w-[220px] rounded-md border border-surface-border bg-surface-base px-2 py-1 text-[11px] text-text-primary"
             >
-              {sessions.length === 0 && <option value="">No sessions</option>}
+              {sessions.length === 0 && <option value="">{t('bm_no_sessions')}</option>}
               {sessions.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.name?.trim() || 'Untitled'} ({s.state})
+                  {s.name?.trim() || t('common_untitled')} ({s.state})
                 </option>
               ))}
             </select>
@@ -265,13 +267,13 @@ export function Bookmarks() {
             <select
               value={ownerId ?? ''}
               onChange={(e) => setOwnerId(e.target.value || null)}
-              aria-label="Tag"
+              aria-label={t('bm_scope_tags')}
               className="max-w-[220px] rounded-md border border-surface-border bg-surface-base px-2 py-1 text-[11px] text-text-primary"
             >
-              {tags.length === 0 && <option value="">No tags</option>}
-              {tags.map((t) => (
-                <option key={t.id} value={t.name}>
-                  #{t.name}
+              {tags.length === 0 && <option value="">{t('bm_no_tags')}</option>}
+              {tags.map((tag) => (
+                <option key={tag.id} value={tag.name}>
+                  #{tag.name}
                 </option>
               ))}
             </select>
@@ -282,7 +284,7 @@ export function Bookmarks() {
               onClick={importChrome}
               className="rounded-md border border-surface-border px-2.5 py-1 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
             >
-              Import from Chrome
+              {t('bm_import_chrome')}
             </button>
           )}
           {scope !== 'browser' && (
@@ -291,7 +293,7 @@ export function Bookmarks() {
               onClick={addFolder}
               className="rounded-md border border-surface-border px-2 py-1 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
             >
-              New folder
+              {t('bm_new_folder')}
             </button>
           )}
         </div>
@@ -310,29 +312,29 @@ export function Bookmarks() {
             <input
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="Title (optional)"
-              aria-label="Bookmark title"
+              placeholder={t('bm_title_placeholder')}
+              aria-label={t('bm_title_label')}
               className="w-48 rounded-md border border-surface-border bg-surface-base px-2 py-1.5 text-[11px] outline-none focus:border-accent-500"
             />
             <input
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
-              placeholder="https://…"
-              aria-label="Bookmark URL"
+              placeholder={t('bm_url_placeholder')}
+              aria-label={t('bm_url_label')}
               className="min-w-[240px] flex-1 rounded-md border border-surface-border bg-surface-base px-2 py-1.5 font-mono text-[11px] outline-none focus:border-accent-500"
             />
             <button
               type="submit"
               className="rounded-md bg-accent-600 px-2.5 py-1.5 text-[11px] font-semibold text-white"
             >
-              Save
+              {t('bm_save')}
             </button>
             <button
               type="button"
               onClick={() => setAdding(false)}
               className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] text-text-secondary"
             >
-              Cancel
+              {t('common_cancel')}
             </button>
           </form>
         </div>
@@ -340,20 +342,20 @@ export function Bookmarks() {
 
       {/* Tree */}
       <div className="min-h-0 flex-1 overflow-y-auto px-3 py-2">
-        {loading && <p className="p-3 text-[11px] text-text-muted">Loading…</p>}
+        {loading && <p className="p-3 text-[11px] text-text-muted">{t('common_loading')}</p>}
 
         {!loading && rows.length === 0 && (
           <div className="grid place-items-center p-10 text-center">
             <div className="max-w-sm">
               <p className="text-sm font-medium text-text-primary">
-                {scope === 'browser' ? 'No imported bookmarks' : 'Nothing saved here yet'}
+                {scope === 'browser' ? t('bm_empty_browser_title') : t('bm_empty_title')}
               </p>
               <p className="mt-1 text-xs text-text-muted">
                 {scope === 'browser'
-                  ? 'Import Chrome’s bookmark tree to browse it here and open folders as sessions.'
+                  ? t('bm_empty_browser_body')
                   : scope === 'session'
-                    ? 'Bookmarks here live with their session. Add one, or save a session’s tabs.'
-                    : 'Tag bookmarks are shared by every session carrying that tag.'}
+                    ? t('bm_empty_session_body')
+                    : t('bm_empty_tag_body')}
               </p>
               {scope === 'browser' && (
                 <button
@@ -361,7 +363,7 @@ export function Bookmarks() {
                   onClick={importChrome}
                   className="mt-3 rounded-md bg-accent-600 px-3 py-1.5 text-[11px] font-semibold text-white"
                 >
-                  Import from Chrome
+                  {t('bm_import_chrome')}
                 </button>
               )}
             </div>
@@ -447,7 +449,7 @@ function BookmarkBranch({
             onClick={() => setOpen((v) => !v)}
             className="flex shrink-0 items-center gap-1.5 text-text-muted"
             aria-expanded={open}
-            aria-label={open ? 'Collapse folder' : 'Expand folder'}
+            aria-label={open ? t('bm_collapse') : t('bm_expand')}
           >
             <span className="w-3">{open ? '▾' : '▸'}</span>
             <span aria-hidden="true">📁</span>
@@ -468,7 +470,7 @@ function BookmarkBranch({
               if (e.key === 'Enter') onCommitRename(node.id);
               if (e.key === 'Escape') onCancelRename();
             }}
-            aria-label="Bookmark title"
+            aria-label={t('bm_title_label')}
             className="min-w-0 flex-1 rounded border border-accent-500 bg-surface-base px-1 py-0.5 text-[11px] outline-none"
           />
         ) : node.isFolder ? (
@@ -506,9 +508,9 @@ function BookmarkBranch({
               type="button"
               onClick={() => onOpenAsSession(node.id)}
               className="shrink-0 rounded border border-surface-border px-1.5 py-0.5 text-[9px] text-text-muted opacity-0 hover:text-text-primary group-hover:opacity-100 focus-visible:opacity-100"
-              title="Open this folder as a session"
+              title={t('bm_open_folder')}
             >
-              Open
+              {t('bm_open')}
             </button>
           </>
         )}
@@ -519,7 +521,7 @@ function BookmarkBranch({
               type="button"
               onClick={() => onStartRename(node)}
               className="rounded px-1 text-[10px] text-text-muted hover:bg-surface-border hover:text-text-primary"
-              aria-label={`Rename ${node.title}`}
+              aria-label={t('bm_rename_label', [node.title])}
             >
               ✎
             </button>
@@ -527,7 +529,7 @@ function BookmarkBranch({
               type="button"
               onClick={() => onDelete(node)}
               className="rounded px-1 text-[10px] text-red-500 hover:bg-surface-border"
-              aria-label={`Delete ${node.title}`}
+              aria-label={t('bm_delete_label', [node.title])}
             >
               ✕
             </button>

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import { formatRelativeTime } from '@/lib';
 import type { Session, Tab } from '@/models';
 import { TabMarkStrip } from './TabMarkStrip';
@@ -139,7 +140,7 @@ export function SessionRow({
             'rounded px-1 py-0.5 text-text-muted opacity-0 transition-opacity hover:bg-surface-border hover:text-text-primary group-hover:opacity-100 focus-visible:opacity-100',
             menuOpen && 'opacity-100',
           )}
-          aria-label="Session actions"
+          aria-label={t('sr_actions')}
         >
           ⋯
         </button>

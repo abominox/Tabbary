@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sendMessage } from '@/messaging/bus';
 import { formatRelativeTime } from '@/lib';
+import { t } from '@/lib/i18n';
 import { useStore } from '../app/store';
 
 interface Candidate {
@@ -92,7 +93,7 @@ export function RestoreBanner() {
             <span
               key={m.sessionId}
               className="rounded border border-amber-600/30 bg-surface-base px-1.5 py-0.5 text-[10px] text-text-secondary"
-              title={`${Math.round(m.score * 100)}% match`}
+              title={t('rb_match_pct', [Math.round(m.score * 100)])}
             >
               {nameOf(m.sessionId)}
               {s?.closedAt ? ` · ${formatRelativeTime(s.closedAt)}` : ''}

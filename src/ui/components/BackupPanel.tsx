@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sendMessage } from '@/messaging/bus';
 import { formatRelativeTime, cn } from '@/lib';
+import { t, tn } from '@/lib/i18n';
 import type { BackupView } from '@/messaging/messages';
 
 function formatBytes(n: number): string {
@@ -99,7 +100,7 @@ export function BackupPanel() {
               : 'Reading…'}
           </span>
           <span className="ml-auto text-text-muted">
-            {view?.lastRunAt ? `Last ${formatRelativeTime(view.lastRunAt)}` : 'Never run'}
+            {view?.lastRunAt ? t('bk_last_run', [formatRelativeTime(view.lastRunAt)]) : t('bk_never')}
           </span>
         </div>
         <p className="mt-1.5 text-[10px] leading-relaxed text-text-muted">
@@ -115,7 +116,7 @@ export function BackupPanel() {
           disabled={busy}
           className="rounded-md bg-accent-600 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-700 disabled:opacity-50"
         >
-          {busy ? 'Working…' : 'Back up now'}
+          {busy ? t('common_working') : t('bk_backup_now')}
         </button>
         <button
           type="button"
@@ -123,7 +124,7 @@ export function BackupPanel() {
           disabled={busy || !view}
           className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50"
         >
-          {view?.enabled ? 'Turn off' : 'Turn on'}
+          {view?.enabled ? t('bk_turn_off') : t('bk_turn_on')}
         </button>
       </div>
 
@@ -132,10 +133,10 @@ export function BackupPanel() {
           <table className="w-full text-[11px]">
             <thead>
               <tr className="border-b border-surface-border bg-surface-elevated text-left">
-                <th className="px-2.5 py-1.5 font-medium text-text-muted">When</th>
-                <th className="px-2 py-1.5 font-medium text-text-muted">Tier</th>
-                <th className="px-2 py-1.5 font-medium text-text-muted">Contents</th>
-                <th className="px-2 py-1.5 font-medium text-text-muted">Size</th>
+                <th className="px-2.5 py-1.5 font-medium text-text-muted">{t('bk_col_when')}</th>
+                <th className="px-2 py-1.5 font-medium text-text-muted">{t('bk_col_tier')}</th>
+                <th className="px-2 py-1.5 font-medium text-text-muted">{t('bk_col_contents')}</th>
+                <th className="px-2 py-1.5 font-medium text-text-muted">{t('bk_col_size')}</th>
                 <th className="px-2.5 py-1.5" />
               </tr>
             </thead>
@@ -151,7 +152,8 @@ export function BackupPanel() {
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5 text-text-secondary">
-                    {s.sessions} sessions · {s.tabs} tabs
+                    {tn('common_sessions_one', 'common_sessions_other', s.sessions, [s.sessions])} ·{' '}
+                    {tn('common_tabs_one', 'common_tabs_other', s.tabs, [s.tabs])}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5 font-mono text-[10px] text-text-muted">
                     {formatBytes(s.bytes)}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sendMessage } from '@/messaging/bus';
 import { formatRelativeTime, cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import { isValidRecoveryPhrase } from '@/sync/crypto';
 import type { SyncSetupResult, SyncStatus } from '@/messaging/sync';
 
@@ -213,18 +214,18 @@ export function SyncPanel() {
                   status.lastError ? 'bg-red-500' : status.enabled ? 'bg-green-500' : 'bg-yellow-500',
                 )}
               />
-              {status.lastError ? 'Error' : status.enabled ? 'Syncing' : 'Paused'}
+              {status.lastError ? t('sync_status_error') : status.enabled ? t('sync_status_syncing') : t('sync_status_paused')}
             </span>
             <span className="text-text-muted">
               {status.endpoint?.replace(/^https?:\/\//, '')}
             </span>
             {status.fingerprint && (
               <span className="font-mono text-[10px] text-text-muted">
-                key {status.fingerprint}
+                {t('sync_key', [status.fingerprint])}
               </span>
             )}
             <span className="ml-auto text-text-muted">
-              {status.lastSyncAt ? `Last sync ${formatRelativeTime(status.lastSyncAt)}` : 'Never synced'}
+              {status.lastSyncAt ? t('sync_last_sync', [formatRelativeTime(status.lastSyncAt)]) : t('sync_never')}
             </span>
           </div>
           {status.lastError && (
@@ -237,11 +238,10 @@ export function SyncPanel() {
       {mode === 'choose' && !status.configured && (
         <>
           <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-2.5 text-[11px] leading-relaxed text-text-secondary">
-            <p className="font-medium text-text-primary">Optional, and yours</p>
+            <p className="font-medium text-text-primary">{t('sync_optional_title')}</p>
             <p className="mt-1">
-              Sync talks to a server <em>you</em> run. Sessions are encrypted on this device
-              before upload, so the server holds ciphertext it cannot read. There is no account
-              and no vendor in the middle.
+              {t('sync_optional_body_before')} <em>{t('sync_optional_body_you')}</em>{' '}
+              {t('sync_optional_body_after')}
             </p>
           </div>
 
@@ -252,10 +252,10 @@ export function SyncPanel() {
               className="rounded-lg border border-surface-border px-3 py-3 text-left hover:bg-surface-hover"
             >
               <span className="block text-[12px] font-semibold text-text-primary">
-                Set up a new server
+                {t('sync_setup_title')}
               </span>
               <span className="mt-0.5 block text-[11px] text-text-muted">
-                First device. Creates the encryption key and recovery phrase.
+                {t('sync_setup_body')}
               </span>
             </button>
             <button
@@ -264,10 +264,10 @@ export function SyncPanel() {
               className="rounded-lg border border-surface-border px-3 py-3 text-left hover:bg-surface-hover"
             >
               <span className="block text-[12px] font-semibold text-text-primary">
-                Join an existing one
+                {t('sync_join_title')}
               </span>
               <span className="mt-0.5 block text-[11px] text-text-muted">
-                Second device. Uses the passphrase to unlock the existing key.
+                {t('sync_join_body')}
               </span>
             </button>
           </div>
@@ -278,38 +278,38 @@ export function SyncPanel() {
       {(mode === 'create' || mode === 'join') && (
         <div className="space-y-3 rounded-lg border border-surface-border p-3">
           <Field
-            label="Server URL"
-            hint="Where your sync server is running. http://localhost:8787 for a local one."
+            label={t('sync_server_label')}
+            hint={t('sync_server_hint')}
           >
             <input
               value={endpoint}
               onChange={(e) => setEndpoint(e.target.value)}
-              placeholder="https://sync.example.net"
+              placeholder={t('sync_server_placeholder')}
               spellCheck={false}
               className={inputClass}
             />
           </Field>
 
           <Field
-            label="Pairing secret"
-            hint="The TABBARY_PAIRING_SECRET your server was started with. Sent once, stored by the server only as a hash."
+            label={t('sync_secret_label')}
+            hint={t('sync_secret_hint')}
           >
             <input
               type="password"
               value={pairingSecret}
               onChange={(e) => setPairingSecret(e.target.value)}
-              placeholder="From the server's environment"
+              placeholder={t('sync_secret_placeholder')}
               autoComplete="off"
               className={inputClass}
             />
           </Field>
 
           <Field
-            label={mode === 'create' ? 'Encryption passphrase' : 'Existing passphrase'}
+            label={mode === 'create' ? t('sync_pass_create_label') : t('sync_pass_existing_label')}
             hint={
               mode === 'create'
-                ? 'At least 10 characters. It unlocks the data key and never leaves this device.'
-                : 'The passphrase set on your first device.'
+                ? t('sync_pass_create_hint')
+                : t('sync_pass_existing_hint')
             }
           >
             <input
@@ -321,11 +321,11 @@ export function SyncPanel() {
             />
           </Field>
 
-          <Field label="Device name" hint="Shown in the server's device list. Optional.">
+          <Field label={t('sync_device_label')} hint={t('sync_device_hint')}>
             <input
               value={deviceName}
               onChange={(e) => setDeviceName(e.target.value)}
-              placeholder="Laptop"
+              placeholder={t('sync_device_placeholder')}
               className={inputClass}
             />
           </Field>
@@ -337,7 +337,7 @@ export function SyncPanel() {
               onClick={mode === 'create' ? createAccount : joinAccount}
               className="rounded-md bg-accent-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-700 disabled:opacity-50"
             >
-              {busy ? 'Working…' : mode === 'create' ? 'Create sync account' : 'Connect this device'}
+              {busy ? t('sync_working') : mode === 'create' ? t('sync_create_button') : t('sync_connect_button')}
             </button>
             <button
               type="button"
@@ -347,14 +347,13 @@ export function SyncPanel() {
               }}
               className="rounded-md border border-surface-border px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
             >
-              Back
+              {t('sync_back')}
             </button>
           </div>
 
           {mode === 'create' && (
             <p className="text-[10px] leading-relaxed text-text-muted">
-              You will be shown a 24-word recovery phrase. It is the only way back in if you
-              forget the passphrase — there is nobody who can reset it.
+              {t('sync_create_note')}
             </p>
           )}
         </div>
@@ -365,11 +364,10 @@ export function SyncPanel() {
         <div className="space-y-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3">
           <div>
             <p className="text-[12px] font-semibold text-amber-900 dark:text-amber-200">
-              Save your recovery phrase
+              {t('sync_recovery_title')}
             </p>
             <p className="mt-0.5 text-[11px] text-amber-800 dark:text-amber-300">
-              These 24 words unlock your synced data if you forget the passphrase. They are
-              shown once and are not stored anywhere.
+              {t('sync_recovery_body')}
             </p>
           </div>
 
@@ -387,21 +385,21 @@ export function SyncPanel() {
               type="button"
               onClick={() => {
                 void navigator.clipboard?.writeText(newPhrase);
-                setNotice('Recovery phrase copied to the clipboard.');
+                setNotice(t('sync_copied'));
               }}
               className="rounded-md border border-surface-border bg-surface-base px-2.5 py-1 text-[10px] font-medium text-text-secondary hover:bg-surface-hover"
             >
-              Copy
+              {t('sync_copy')}
             </button>
             <button
               type="button"
               onClick={() => {
                 const blob = new Blob(
                   [
-                    'tabbary recovery phrase\n',
+                    t('sync_recovery_file_header'), '\n',
                     '=======================\n\n',
                     newPhrase.replace(/ /g, '\n'),
-                    '\n\nKeep this offline. Anyone with it can read your synced sessions.\n',
+                    '\n\n', t('sync_recovery_file_footer'), '\n',
                   ],
                   { type: 'text/plain' },
                 );
@@ -414,7 +412,7 @@ export function SyncPanel() {
               }}
               className="rounded-md border border-surface-border bg-surface-base px-2.5 py-1 text-[10px] font-medium text-text-secondary hover:bg-surface-hover"
             >
-              Download as text
+              {t('sync_download')}
             </button>
           </div>
 
@@ -425,7 +423,7 @@ export function SyncPanel() {
               onChange={(e) => setPhraseSaved(e.target.checked)}
               className="mt-0.5"
             />
-            I have saved my recovery phrase somewhere offline.
+            {t('sync_saved_checkbox')}
           </label>
 
           <button
@@ -435,11 +433,11 @@ export function SyncPanel() {
               setNewPhrase(null);
               setPhraseSaved(false);
               setMode('manage');
-              setNotice('Sync is on.');
+              setNotice(t('sync_on'));
             }}
             className="rounded-md bg-amber-600 px-3 py-1.5 text-[11px] font-semibold text-white disabled:opacity-40"
           >
-            Continue
+            {t('sync_continue')}
           </button>
         </div>
       )}
@@ -448,16 +446,16 @@ export function SyncPanel() {
       {(mode === 'manage' || (status.configured && mode === 'choose')) && (
         <div className="space-y-2 rounded-lg border border-surface-border p-3">
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-[11px]">
-            <dt className="text-text-muted">Server</dt>
+            <dt className="text-text-muted">{t('sync_field_server')}</dt>
             <dd className="truncate font-mono text-text-primary">{status.endpoint}</dd>
-            <dt className="text-text-muted">Device</dt>
+            <dt className="text-text-muted">{t('sync_field_device')}</dt>
             <dd className="text-text-primary">{status.deviceName ?? '—'}</dd>
-            <dt className="text-text-muted">Key</dt>
+            <dt className="text-text-muted">{t('sync_field_key')}</dt>
             <dd className="font-mono text-text-primary">{status.fingerprint ?? '—'}</dd>
-            <dt className="text-text-muted">Revision</dt>
+            <dt className="text-text-muted">{t('sync_field_revision')}</dt>
             <dd className="font-mono text-text-primary">{status.cursor}</dd>
-            <dt className="text-text-muted">Recovery</dt>
-            <dd className="text-text-primary">{status.hasRecovery ? 'stored on this device' : 'missing'}</dd>
+            <dt className="text-text-muted">{t('sync_field_recovery')}</dt>
+            <dd className="text-text-primary">{status.hasRecovery ? t('sync_recovery_stored') : t('sync_recovery_missing')}</dd>
           </dl>
 
           <div className="flex flex-wrap gap-1.5 pt-1">
@@ -467,7 +465,7 @@ export function SyncPanel() {
               disabled={busy}
               className="rounded-md bg-accent-600 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-700 disabled:opacity-50"
             >
-              {busy ? 'Syncing…' : 'Sync now'}
+              {busy ? t('sync_syncing') : t('sync_now')}
             </button>
             <button
               type="button"
@@ -475,7 +473,7 @@ export function SyncPanel() {
               disabled={busy}
               className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50"
             >
-              Test connection
+              {t('sync_test')}
             </button>
             <button
               type="button"
@@ -483,7 +481,7 @@ export function SyncPanel() {
               disabled={busy}
               className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50"
             >
-              Pause
+              {t('sync_pause')}
             </button>
             <button
               type="button"
@@ -491,13 +489,12 @@ export function SyncPanel() {
               disabled={busy}
               className="ml-auto rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-red-600 hover:bg-surface-hover disabled:opacity-50 dark:text-red-400"
             >
-              Forget this server
+              {t('sync_forget')}
             </button>
           </div>
 
           <p className="pt-1 text-[10px] leading-relaxed text-text-muted">
-            Forgetting removes the server URL, its host permission, and this device's keys. Data
-            already on the server is untouched; delete the server's database to remove it.
+            {t('sync_forget_note')}
           </p>
         </div>
       )}
@@ -506,14 +503,14 @@ export function SyncPanel() {
       {status.configured && !status.enabled && mode !== 'recovery' && (
         <div className="space-y-2 rounded-lg border border-surface-border p-3">
           <p className="text-[11px] text-text-secondary">
-            Sync is paused. Enter your passphrase to resume on this device.
+            {t('sync_paused_body')}
           </p>
           <div className="flex gap-1.5">
             <input
               type="password"
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
-              placeholder="Passphrase"
+              placeholder={t('sync_pass_placeholder')}
               autoComplete="current-password"
               className={inputClass}
             />
@@ -523,7 +520,7 @@ export function SyncPanel() {
               disabled={busy}
               className="shrink-0 rounded-md bg-accent-600 px-2.5 py-1 text-[11px] font-semibold text-white disabled:opacity-50"
             >
-              Resume
+              {t('sync_resume')}
             </button>
           </div>
           <button
@@ -531,7 +528,7 @@ export function SyncPanel() {
             onClick={() => setMode('recovery')}
             className="text-[10px] text-accent-600 underline underline-offset-2 dark:text-accent-400"
           >
-            Use a recovery phrase instead
+            {t('sync_use_recovery')}
           </button>
         </div>
       )}
@@ -540,18 +537,18 @@ export function SyncPanel() {
       {mode === 'recovery' && !newPhrase && (
         <div className="space-y-2 rounded-lg border border-surface-border p-3">
           <p className="text-[11px] text-text-secondary">
-            Enter your 24-word recovery phrase to unlock syncing on this device.
+            {t('sync_unlock_body')}
           </p>
           <textarea
             value={recovery}
             onChange={(e) => setRecovery(e.target.value)}
             rows={3}
             spellCheck={false}
-            placeholder="word1 word2 word3 …"
+            placeholder={t('sync_words_placeholder')}
             className={cn(inputClass, 'font-mono')}
           />
           <p className="text-[10px] text-text-muted">
-            {recovery.trim() ? (isValidRecoveryPhrase(recovery) ? '✓ Valid phrase' : `${recovery.trim().split(/\s+/).length} of 24 words`) : ''}
+            {recovery.trim() ? (isValidRecoveryPhrase(recovery) ? t('sync_phrase_valid') : t('sync_phrase_progress', [recovery.trim().split(/\s+/).length])) : ''}
           </p>
           <div className="flex gap-1.5">
             <button
@@ -560,7 +557,7 @@ export function SyncPanel() {
               disabled={busy || !isValidRecoveryPhrase(recovery)}
               className="rounded-md bg-accent-600 px-2.5 py-1.5 text-[11px] font-semibold text-white disabled:opacity-40"
             >
-              Unlock
+              {t('sync_unlock')}
             </button>
             <button
               type="button"
@@ -570,7 +567,7 @@ export function SyncPanel() {
               }}
               className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
             >
-              Cancel
+              {t('sync_cancel')}
             </button>
           </div>
         </div>
@@ -589,7 +586,7 @@ export function SyncPanel() {
       )}
 
       <details className="rounded-md border border-surface-border px-3 py-2 text-[11px]">
-        <summary className="cursor-pointer text-text-secondary">Run your own server</summary>
+        <summary className="cursor-pointer text-text-secondary">{t('sync_run_own')}</summary>
         <pre className="mt-2 overflow-x-auto rounded-md bg-text-primary p-2.5 font-mono text-[10px] leading-relaxed text-surface-base">
 {`# 1. Generate a pairing secret
 openssl rand -base64 32
@@ -604,8 +601,7 @@ docker run -d -p 8787:8787 \\
   ghcr.io/abominox/tabbary-sync`}
         </pre>
         <p className="mt-2 text-[10px] leading-relaxed text-text-muted">
-          The server keeps ciphertext, device token hashes, and a monotonic revision counter.
-          Put it behind TLS (Caddy, nginx, or a tunnel) before using it from another machine.
+          {t('sync_run_own_note')}
         </p>
       </details>
     </div>

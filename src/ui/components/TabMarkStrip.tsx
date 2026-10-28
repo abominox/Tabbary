@@ -1,4 +1,5 @@
 import { cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import { tabMark } from '@/lib/tabmark';
 import type { Tab } from '@/models';
 
@@ -57,7 +58,7 @@ export function TabMarkStrip({
       {overflow > 0 && (
         <span
           className="ml-[1px] font-mono text-[9px] leading-none text-text-muted"
-          title={`${overflow} more`}
+          title={t('tm_more', [overflow])}
         >
           +{overflow}
         </span>

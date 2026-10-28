@@ -220,5 +220,737 @@
   },
   "common_settings": {
     "message": "Settings"
+  },
+  "opt_section_general": {
+    "message": "General"
+  },
+  "opt_section_interface": {
+    "message": "Interface"
+  },
+  "opt_section_sessions": {
+    "message": "Sessions"
+  },
+  "opt_section_tabs": {
+    "message": "Tabs"
+  },
+  "opt_section_data": {
+    "message": "Import & export"
+  },
+  "opt_section_sync": {
+    "message": "Sync & backup"
+  },
+  "opt_section_history": {
+    "message": "Storage & history"
+  },
+  "opt_section_account": {
+    "message": "Account"
+  },
+  "opt_version_line": {
+    "message": "tabbary $1 \u00b7 MIT"
+  },
+  "opt_title": {
+    "message": "Settings"
+  },
+  "opt_saved": {
+    "message": "Saved"
+  },
+  "opt_intro": {
+    "message": "Defaults favour privacy. Everything is stored in this browser profile, and the source is open for anyone to audit."
+  },
+  "opt_sections_label": {
+    "message": "Settings sections"
+  },
+  "opt_strip_backups": {
+    "message": "Local backups"
+  },
+  "opt_strip_backups_detail": {
+    "message": "Automatic, on this device"
+  },
+  "opt_strip_sync": {
+    "message": "Encrypted sync"
+  },
+  "opt_strip_sync_detail": {
+    "message": "Optional, you hold the key"
+  },
+  "opt_strip_no_ads": {
+    "message": "No ads, no account"
+  },
+  "opt_strip_no_ads_detail": {
+    "message": "Nothing to sign up for"
+  },
+  "opt_general_desc": {
+    "message": "Startup and capture behaviour."
+  },
+  "opt_restore_label": {
+    "message": "Restore sessions on startup"
+  },
+  "opt_restore_hint": {
+    "message": "Whether tabbary reopens the windows it was tracking when Chrome starts."
+  },
+  "opt_restore_yes": {
+    "message": "Yes, restore"
+  },
+  "opt_restore_ask": {
+    "message": "Ask each time"
+  },
+  "opt_restore_no": {
+    "message": "No"
+  },
+  "opt_session_mode": {
+    "message": "Session mode"
+  },
+  "opt_session_mode_body": {
+    "message": "Tabbary currently tracks one session per browser window. A combined \u201csingle window\u201d mode is not implemented, so the option is not shown rather than pretending to work."
+  },
+  "opt_autosave_label": {
+    "message": "Auto-save sessions"
+  },
+  "opt_autosave_hint": {
+    "message": "Persist tabs as they change. Turning this off freezes session state until you save manually."
+  },
+  "opt_surface_label": {
+    "message": "Preferred surface"
+  },
+  "opt_surface_hint": {
+    "message": "Where the toolbar button opens tabbary."
+  },
+  "opt_surface_sidepanel": {
+    "message": "Side panel"
+  },
+  "opt_surface_tab": {
+    "message": "Full tab"
+  },
+  "opt_surface_window": {
+    "message": "Separate window"
+  },
+  "opt_surface_popup": {
+    "message": "Popup"
+  },
+  "opt_search_label": {
+    "message": "Search scope"
+  },
+  "opt_search_hint": {
+    "message": "What the search box matches. Session names, tab titles and URLs, or both."
+  },
+  "opt_search_all": {
+    "message": "Session names and tabs"
+  },
+  "opt_search_sessions": {
+    "message": "Session names only"
+  },
+  "opt_search_tabs": {
+    "message": "Tab titles and URLs only"
+  },
+  "opt_interface_desc": {
+    "message": "How tabbary looks."
+  },
+  "opt_theme_label": {
+    "message": "Theme"
+  },
+  "opt_theme_system": {
+    "message": "Match system"
+  },
+  "opt_theme_light": {
+    "message": "Light"
+  },
+  "opt_theme_dark": {
+    "message": "Dark"
+  },
+  "opt_density_label": {
+    "message": "Density"
+  },
+  "opt_density_hint": {
+    "message": "Compact rows fit more sessions in the rail."
+  },
+  "opt_density_comfortable": {
+    "message": "Comfortable"
+  },
+  "opt_density_compact": {
+    "message": "Compact"
+  },
+  "opt_sessions_desc": {
+    "message": "What counts as a session, and when it closes."
+  },
+  "opt_open_suspended_label": {
+    "message": "Open sessions suspended"
+  },
+  "opt_open_suspended_hint": {
+    "message": "Restore tabs without loading them until they are clicked."
+  },
+  "opt_revisions_label": {
+    "message": "Revisions kept per session"
+  },
+  "opt_revisions_hint": {
+    "message": "Older revisions are pruned first. Higher values use more disk."
+  },
+  "opt_tabs_desc": {
+    "message": "Behaviour when restoring and opening tabs."
+  },
+  "opt_tabs_suspended_label": {
+    "message": "Open restored sessions suspended"
+  },
+  "opt_tabs_suspended_hint": {
+    "message": "Uses Chrome's native discard rather than rewriting the URL."
+  },
+  "opt_discard_note_before": {
+    "message": "tabbary calls"
+  },
+  "opt_discard_note_after": {
+    "message": "instead of sending tabs through a third-party suspense service, so the address bar always shows the real URL."
+  },
+  "opt_data_desc": {
+    "message": "Move your sessions in and out. Everything is processed on this device."
+  },
+  "opt_sync_desc": {
+    "message": "Optional, self-hosted, and encrypted on this device before anything is uploaded."
+  },
+  "opt_history_desc": {
+    "message": "What tabbary keeps on this device."
+  },
+  "opt_local_title": {
+    "message": "Everything is local"
+  },
+  "opt_local_body": {
+    "message": "Sessions, groups, tags, and revisions live in IndexedDB inside this browser profile. Nothing is uploaded, and removing the extension removes the data."
+  },
+  "opt_backups_title": {
+    "message": "Local backups"
+  },
+  "opt_reset_confirm": {
+    "message": "Reset all settings to their defaults?"
+  },
+  "opt_reset_button": {
+    "message": "Reset settings to defaults"
+  },
+  "opt_account_desc": {
+    "message": "There isn't one."
+  },
+  "opt_account_title": {
+    "message": "No account required"
+  },
+  "opt_account_body": {
+    "message": "tabbary has no sign-in, no user profile, and no server holding your data. If you later run the optional sync server, it stores ciphertext only and you hold the key."
+  },
+  "opt_licence_before": {
+    "message": "Licence: MIT \u00b7 Source:"
+  },
+  "sync_status_error": {
+    "message": "Error"
+  },
+  "sync_status_syncing": {
+    "message": "Syncing"
+  },
+  "sync_status_paused": {
+    "message": "Paused"
+  },
+  "sync_key": {
+    "message": "key $1"
+  },
+  "sync_last_sync": {
+    "message": "Last sync $1"
+  },
+  "sync_never": {
+    "message": "Never synced"
+  },
+  "sync_optional_title": {
+    "message": "Optional, and yours"
+  },
+  "sync_optional_body_before": {
+    "message": "Sync talks to a server"
+  },
+  "sync_optional_body_you": {
+    "message": "you"
+  },
+  "sync_optional_body_after": {
+    "message": "run. Sessions are encrypted on this device before upload, so the server holds ciphertext it cannot read. There is no account and no vendor in the middle."
+  },
+  "sync_setup_title": {
+    "message": "Set up a new server"
+  },
+  "sync_setup_body": {
+    "message": "First device. Creates the encryption key and recovery phrase."
+  },
+  "sync_join_title": {
+    "message": "Join an existing one"
+  },
+  "sync_join_body": {
+    "message": "Second device. Uses the passphrase to unlock the existing key."
+  },
+  "sync_server_label": {
+    "message": "Server URL"
+  },
+  "sync_server_hint": {
+    "message": "Where your sync server is running. http://localhost:8787 for a local one."
+  },
+  "sync_server_placeholder": {
+    "message": "https://sync.example.net"
+  },
+  "sync_secret_label": {
+    "message": "Pairing secret"
+  },
+  "sync_secret_hint": {
+    "message": "The TABBARY_PAIRING_SECRET your server was started with. Sent once, stored by the server only as a hash."
+  },
+  "sync_secret_placeholder": {
+    "message": "From the server's environment"
+  },
+  "sync_pass_create_label": {
+    "message": "Encryption passphrase"
+  },
+  "sync_pass_existing_label": {
+    "message": "Existing passphrase"
+  },
+  "sync_pass_create_hint": {
+    "message": "At least 10 characters. It unlocks the data key and never leaves this device."
+  },
+  "sync_pass_existing_hint": {
+    "message": "The passphrase set on your first device."
+  },
+  "sync_device_label": {
+    "message": "Device name"
+  },
+  "sync_device_hint": {
+    "message": "Shown in the server's device list. Optional."
+  },
+  "sync_device_placeholder": {
+    "message": "Laptop"
+  },
+  "sync_working": {
+    "message": "Working\u2026"
+  },
+  "sync_create_button": {
+    "message": "Create sync account"
+  },
+  "sync_connect_button": {
+    "message": "Connect this device"
+  },
+  "sync_back": {
+    "message": "Back"
+  },
+  "sync_create_note": {
+    "message": "You will be shown a 24-word recovery phrase. It is the only way back in if you forget the passphrase \u2014 there is nobody who can reset it."
+  },
+  "sync_recovery_title": {
+    "message": "Save your recovery phrase"
+  },
+  "sync_recovery_body": {
+    "message": "These 24 words unlock your synced data if you forget the passphrase. They are shown once and are not stored anywhere."
+  },
+  "sync_copied": {
+    "message": "Recovery phrase copied to the clipboard."
+  },
+  "sync_copy": {
+    "message": "Copy"
+  },
+  "sync_download": {
+    "message": "Download as text"
+  },
+  "sync_recovery_file_header": {
+    "message": "tabbary recovery phrase"
+  },
+  "sync_recovery_file_footer": {
+    "message": "Keep this offline. Anyone with it can read your synced sessions."
+  },
+  "sync_saved_checkbox": {
+    "message": "I have saved my recovery phrase somewhere offline."
+  },
+  "sync_on": {
+    "message": "Sync is on."
+  },
+  "sync_continue": {
+    "message": "Continue"
+  },
+  "sync_field_server": {
+    "message": "Server"
+  },
+  "sync_field_device": {
+    "message": "Device"
+  },
+  "sync_field_key": {
+    "message": "Key"
+  },
+  "sync_field_revision": {
+    "message": "Revision"
+  },
+  "sync_field_recovery": {
+    "message": "Recovery"
+  },
+  "sync_recovery_stored": {
+    "message": "stored on this device"
+  },
+  "sync_recovery_missing": {
+    "message": "missing"
+  },
+  "sync_syncing": {
+    "message": "Syncing\u2026"
+  },
+  "sync_now": {
+    "message": "Sync now"
+  },
+  "sync_test": {
+    "message": "Test connection"
+  },
+  "sync_pause": {
+    "message": "Pause"
+  },
+  "sync_forget": {
+    "message": "Forget this server"
+  },
+  "sync_forget_note": {
+    "message": "Forgetting removes the server URL, its host permission, and this device's keys. Data already on the server is untouched; delete the server's database to remove it."
+  },
+  "sync_paused_body": {
+    "message": "Sync is paused. Enter your passphrase to resume on this device."
+  },
+  "sync_pass_placeholder": {
+    "message": "Passphrase"
+  },
+  "sync_resume": {
+    "message": "Resume"
+  },
+  "sync_use_recovery": {
+    "message": "Use a recovery phrase instead"
+  },
+  "sync_unlock_body": {
+    "message": "Enter your 24-word recovery phrase to unlock syncing on this device."
+  },
+  "sync_words_placeholder": {
+    "message": "word1 word2 word3 \u2026"
+  },
+  "sync_phrase_valid": {
+    "message": "\u2713 Valid phrase"
+  },
+  "sync_phrase_progress": {
+    "message": "$1 of 24 words"
+  },
+  "sync_unlock": {
+    "message": "Unlock"
+  },
+  "sync_cancel": {
+    "message": "Cancel"
+  },
+  "sync_run_own": {
+    "message": "Run your own server"
+  },
+  "sync_run_own_note": {
+    "message": "The server keeps ciphertext, device token hashes, and a monotonic revision counter. Put it behind TLS (Caddy, nginx, or a tunnel) before using it from another machine."
+  },
+  "bm_scope_session": {
+    "message": "Session"
+  },
+  "bm_scope_session_hint": {
+    "message": "Saved with one session"
+  },
+  "bm_scope_tags": {
+    "message": "Tags"
+  },
+  "bm_scope_tags_hint": {
+    "message": "Shared across tagged sessions"
+  },
+  "bm_scope_browser": {
+    "message": "Browser"
+  },
+  "bm_scope_browser_hint": {
+    "message": "Imported from Chrome, read-only"
+  },
+  "bm_link_one": {
+    "message": "1 link"
+  },
+  "bm_link_other": {
+    "message": "$1 links"
+  },
+  "bm_item_one": {
+    "message": "1 item"
+  },
+  "bm_item_other": {
+    "message": "$1 items"
+  },
+  "bm_title": {
+    "message": "Bookmarks"
+  },
+  "bm_open_all": {
+    "message": "Open all as session"
+  },
+  "bm_add": {
+    "message": "Add bookmark"
+  },
+  "bm_no_sessions": {
+    "message": "No sessions"
+  },
+  "bm_no_tags": {
+    "message": "No tags"
+  },
+  "bm_import_chrome": {
+    "message": "Import from Chrome"
+  },
+  "bm_new_folder": {
+    "message": "New folder"
+  },
+  "bm_title_placeholder": {
+    "message": "Title (optional)"
+  },
+  "bm_title_label": {
+    "message": "Bookmark title"
+  },
+  "bm_url_placeholder": {
+    "message": "https://\u2026"
+  },
+  "bm_url_label": {
+    "message": "Bookmark URL"
+  },
+  "bm_save": {
+    "message": "Save"
+  },
+  "common_cancel": {
+    "message": "Cancel"
+  },
+  "common_loading": {
+    "message": "Loading\u2026"
+  },
+  "bm_empty_browser_title": {
+    "message": "No imported bookmarks"
+  },
+  "bm_empty_title": {
+    "message": "Nothing saved here yet"
+  },
+  "bm_empty_browser_body": {
+    "message": "Import Chrome\u2019s bookmark tree to browse it here and open folders as sessions."
+  },
+  "bm_empty_session_body": {
+    "message": "Bookmarks here live with their session. Add one, or save a session\u2019s tabs."
+  },
+  "bm_empty_tag_body": {
+    "message": "Tag bookmarks are shared by every session carrying that tag."
+  },
+  "bm_collapse": {
+    "message": "Collapse folder"
+  },
+  "bm_expand": {
+    "message": "Expand folder"
+  },
+  "bm_open_folder": {
+    "message": "Open this folder as a session"
+  },
+  "bm_open": {
+    "message": "Open"
+  },
+  "bm_rename_label": {
+    "message": "Rename $1"
+  },
+  "bm_delete_label": {
+    "message": "Delete $1"
+  },
+  "rev_title": {
+    "message": "Session history"
+  },
+  "rev_select": {
+    "message": "Select a revision to preview it."
+  },
+  "rev_live_note": {
+    "message": "The live window will be updated to match."
+  },
+  "rev_no_tabs": {
+    "message": "No tabs recorded."
+  },
+  "ft_sessions_label": {
+    "message": "Sessions"
+  },
+  "ft_active_sessions": {
+    "message": "Active sessions"
+  },
+  "ft_empty_active": {
+    "message": "No active windows"
+  },
+  "ft_closed_sessions": {
+    "message": "Closed sessions"
+  },
+  "ft_no_selection": {
+    "message": "No session selected"
+  },
+  "ft_no_selection_body": {
+    "message": "Pick a session on the left to see its groups, tabs, and revision history."
+  },
+  "ft_tags_failed": {
+    "message": "Could not update tags"
+  },
+  "common_search_placeholder": {
+    "message": "Search\u2026"
+  },
+  "sp_sessions": {
+    "message": "Sessions"
+  },
+  "sp_no_match": {
+    "message": "No sessions match"
+  },
+  "dw_active": {
+    "message": "Active"
+  },
+  "dw_closed": {
+    "message": "Closed"
+  },
+  "dw_empty_closed": {
+    "message": "Nothing closed"
+  },
+  "dw_select": {
+    "message": "Select a session to see its tabs."
+  },
+  "tg_title": {
+    "message": "Tags"
+  },
+  "tg_filter_placeholder": {
+    "message": "Filter tags\u2026"
+  },
+  "tg_rename_label": {
+    "message": "Rename tag $1"
+  },
+  "tg_rename": {
+    "message": "Rename"
+  },
+  "tg_delete_label": {
+    "message": "Delete tag $1"
+  },
+  "tg_delete_title": {
+    "message": "Remove from all sessions"
+  },
+  "tg_select": {
+    "message": "Select a tag"
+  },
+  "tg_select_body": {
+    "message": "See every session carrying it, then rename or remove it in bulk."
+  },
+  "tg_label": {
+    "message": "Tag"
+  },
+  "tg_empty": {
+    "message": "No sessions carry this tag."
+  },
+  "common_working": {
+    "message": "Working\u2026"
+  },
+  "dp_on_device": {
+    "message": "On this device"
+  },
+  "dp_summary": {
+    "message": "$1 sessions \u00b7 $2 tabs \u00b7 stored locally"
+  },
+  "dp_reading": {
+    "message": "Reading local data\u2026"
+  },
+  "dp_export": {
+    "message": "Export"
+  },
+  "dp_export_body": {
+    "message": "Plain JSON is human-readable and has no lock-in. Encryption is optional."
+  },
+  "dp_export_format": {
+    "message": "Export format"
+  },
+  "dp_json": {
+    "message": "Plain JSON"
+  },
+  "dp_json_hint": {
+    "message": "Readable, diffable"
+  },
+  "dp_encrypted": {
+    "message": "Encrypted"
+  },
+  "dp_encrypted_hint": {
+    "message": "Passphrase-protected"
+  },
+  "dp_pass_placeholder": {
+    "message": "At least 8 characters"
+  },
+  "dp_export_encrypted": {
+    "message": "Export encrypted"
+  },
+  "dp_export_json": {
+    "message": "Export JSON"
+  },
+  "dp_import": {
+    "message": "Import"
+  },
+  "dp_paste": {
+    "message": "Paste text instead"
+  },
+  "bk_last_run": {
+    "message": "Last $1"
+  },
+  "bk_never": {
+    "message": "Never run"
+  },
+  "bk_backup_now": {
+    "message": "Back up now"
+  },
+  "bk_turn_off": {
+    "message": "Turn off"
+  },
+  "bk_turn_on": {
+    "message": "Turn on"
+  },
+  "bk_col_when": {
+    "message": "When"
+  },
+  "bk_col_tier": {
+    "message": "Tier"
+  },
+  "bk_col_contents": {
+    "message": "Contents"
+  },
+  "bk_col_size": {
+    "message": "Size"
+  },
+  "sw_full_tab": {
+    "message": "Open full-tab manager"
+  },
+  "sw_window": {
+    "message": "Open in dedicated window"
+  },
+  "sw_popup": {
+    "message": "Open popup"
+  },
+  "sd_suspended_one": {
+    "message": "Suspended 1 tab"
+  },
+  "sd_suspended_other": {
+    "message": "Suspended $1 tabs"
+  },
+  "sd_left_alone": {
+    "message": " \u00b7 $1 left alone"
+  },
+  "sd_suspend_failed": {
+    "message": "Could not suspend"
+  },
+  "sd_suspend_title": {
+    "message": "Discard idle tabs in this window (native Chrome discard)"
+  },
+  "sd_suspend": {
+    "message": "Suspend idle"
+  },
+  "sd_merge": {
+    "message": "Merge\u2026"
+  },
+  "sd_merge_into": {
+    "message": "Merge this into"
+  },
+  "sd_no_other": {
+    "message": "No other sessions"
+  },
+  "sd_tags_placeholder": {
+    "message": "research, reading"
+  },
+  "sb_placeholder": {
+    "message": "Search sessions\u2026"
+  },
+  "sb_clear": {
+    "message": "Clear search"
+  },
+  "sr_actions": {
+    "message": "Session actions"
+  },
+  "tm_more": {
+    "message": "$1 more"
+  },
+  "rb_match_pct": {
+    "message": "$1% match"
   }
 }

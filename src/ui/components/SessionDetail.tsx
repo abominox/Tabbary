@@ -6,6 +6,7 @@ import { TabGroupSection } from './TabGroupSection';
 import { EmptyState } from './EmptyState';
 import { sendMessage } from '@/messaging/bus';
 import { cn } from '@/lib';
+import { t, tn } from '@/lib/i18n';
 
 interface SessionDetailProps {
   session: Session;
@@ -112,15 +113,15 @@ export function SessionDetail({
                   });
                   setSuspendNote(
                     r
-                      ? `Suspended ${r.discarded} tab${r.discarded === 1 ? '' : 's'}` +
-                          (r.skipped.length ? ` · ${r.skipped.length} left alone` : '')
-                      : 'Could not suspend',
+                      ? tn('sd_suspended_one', 'sd_suspended_other', r.discarded, [r.discarded]) +
+                          (r.skipped.length ? t('sd_left_alone', [r.skipped.length]) : '')
+                      : t('sd_suspend_failed'),
                   );
                 }}
-                title="Discard idle tabs in this window (native Chrome discard)"
+                title={t('sd_suspend_title')}
                 className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
               >
-                Suspend idle
+                {t('sd_suspend')}
               </button>
             )}
             <div className="relative">
@@ -129,15 +130,15 @@ export function SessionDetail({
                 onClick={() => setMergeOpen((v) => !v)}
                 className="rounded-md border border-surface-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
               >
-                Merge…
+                {t('sd_merge')}
               </button>
               {mergeOpen && (
                 <div className="absolute right-0 top-full z-30 mt-1 max-h-64 w-56 overflow-y-auto rounded-lg border border-surface-border bg-surface-elevated p-1 shadow-lg">
                   <p className="px-2 py-1 text-[10px] uppercase tracking-wider text-text-muted">
-                    Merge this into
+                    {t('sd_merge_into')}
                   </p>
                   {candidates.length === 0 && (
-                    <p className="px-2 py-1.5 text-[11px] text-text-muted">No other sessions</p>
+                    <p className="px-2 py-1.5 text-[11px] text-text-muted">{t('sd_no_other')}</p>
                   )}
                   {candidates.map((c) => (
                     <button
@@ -191,7 +192,7 @@ export function SessionDetail({
             onKeyDown={(e) => {
               if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
             }}
-            placeholder="research, reading"
+            placeholder={t('sd_tags_placeholder')}
             className="min-w-0 flex-1 rounded border border-surface-border bg-surface-base px-2 py-1 text-[11px] text-text-primary outline-none focus:border-accent-500"
           />
         </div>

@@ -7,6 +7,7 @@ import { RevisionDrawer } from '../components/RevisionDrawer';
 import { SearchBar } from '../components/SearchBar';
 import { sendMessage } from '@/messaging/bus';
 import { cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import type { Session } from '@/models';
 
 /**
@@ -72,7 +73,7 @@ export function DedicatedWindow() {
             value={search}
             onChange={setSearch}
             onClear={clearSearch}
-            placeholder="Search…"
+            placeholder={t('common_search_placeholder')}
           />
         </div>
         <button
@@ -174,7 +175,7 @@ export function DedicatedWindow() {
             </>
           ) : (
             <div className="grid flex-1 place-items-center p-6 text-center">
-              <p className="text-[11px] text-text-muted">Select a session to see its tabs.</p>
+              <p className="text-[11px] text-text-muted">{t('dw_select')}</p>
             </div>
           )}
         </main>

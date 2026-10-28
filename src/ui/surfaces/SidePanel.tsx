@@ -1,4 +1,5 @@
 import { useStore } from '../app/store';
+import { t } from '@/lib/i18n';
 import { useSessions } from '@/hooks/useSessions';
 import { SearchBar } from '../components/SearchBar';
 import { TagRail } from '../components/TagRail';
@@ -79,7 +80,7 @@ export function SidePanel() {
             value={search}
             onChange={setSearch}
             onClear={clearSearch}
-            placeholder="Search…"
+            placeholder={t('common_search_placeholder')}
           />
           <TagRail
             tags={tags}

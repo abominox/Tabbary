@@ -3,6 +3,7 @@ import { sendMessage } from '@/messaging/bus';
 import { encryptJson, decryptJson, isEncryptedPayload } from '@/lib/crypto';
 import type { ExportResult } from '@/db/io';
 import { cn } from '@/lib';
+import { t } from '@/lib/i18n';
 
 type Mode = 'json' | 'encrypted';
 
@@ -146,30 +147,30 @@ export function DataPanel() {
     <div className="space-y-4">
       {/* Summary */}
       <div className="rounded-lg border border-surface-border bg-surface-elevated px-3 py-2.5">
-        <p className="text-[11px] font-medium text-text-primary">On this device</p>
+        <p className="text-[11px] font-medium text-text-primary">{t('dp_on_device')}</p>
         <p className="mt-0.5 text-[11px] text-text-muted">
           {summary
-            ? `${summary.sessions} sessions · ${summary.tabs} tabs · stored locally`
-            : 'Reading local data…'}
+            ? t('dp_summary', [summary.sessions, summary.tabs])
+            : t('dp_reading')}
         </p>
       </div>
 
       {/* Export */}
       <section className="rounded-lg border border-surface-border">
         <header className="border-b border-surface-border px-3 py-2.5">
-          <h3 className="text-[12px] font-semibold text-text-primary">Export</h3>
+          <h3 className="text-[12px] font-semibold text-text-primary">{t('dp_export')}</h3>
           <p className="mt-0.5 text-[11px] text-text-muted">
-            Plain JSON is human-readable and has no lock-in. Encryption is optional.
+            {t('dp_export_body')}
           </p>
         </header>
 
         <div className="space-y-3 px-3 py-3">
           <fieldset className="flex flex-wrap gap-2">
-            <legend className="sr-only">Export format</legend>
+            <legend className="sr-only">{t('dp_export_format')}</legend>
             {(
               [
-                ['json', 'Plain JSON', 'Readable, diffable'],
-                ['encrypted', 'Encrypted', 'Passphrase-protected'],
+                ['json', t('dp_json'), t('dp_json_hint')],
+                ['encrypted', t('dp_encrypted'), t('dp_encrypted_hint')],
               ] as const
             ).map(([value, label, hint]) => (
               <label
@@ -207,7 +208,7 @@ export function DataPanel() {
                 type="password"
                 value={passphrase}
                 onChange={(e) => setPassphrase(e.target.value)}
-                placeholder="At least 8 characters"
+                placeholder={t('dp_pass_placeholder')}
                 autoComplete="new-password"
                 className="mt-1 w-full max-w-sm rounded-md border border-surface-border bg-surface-base px-2 py-1.5 text-[12px] outline-none focus:border-accent-500"
               />
@@ -225,7 +226,7 @@ export function DataPanel() {
               disabled={busy}
               className="rounded-md bg-accent-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-700 disabled:opacity-50"
             >
-              {busy ? 'Working…' : mode === 'encrypted' ? 'Export encrypted' : 'Export JSON'}
+              {busy ? t('common_working') : mode === 'encrypted' ? t('dp_export_encrypted') : t('dp_export_json')}
             </button>
             <span className="text-[10px] text-text-muted">
               Sessions, groups, tags, pinned state and tab order.
@@ -237,7 +238,7 @@ export function DataPanel() {
       {/* Import */}
       <section className="rounded-lg border border-surface-border">
         <header className="border-b border-surface-border px-3 py-2.5">
-          <h3 className="text-[12px] font-semibold text-text-primary">Import</h3>
+          <h3 className="text-[12px] font-semibold text-text-primary">{t('dp_import')}</h3>
           <p className="mt-0.5 text-[11px] text-text-muted">
             tabbary JSON or encrypted export, a OneTab export, a bookmarks HTML file
             (Chrome, Edge, Firefox or Safari), or a plain list of URLs.
@@ -287,7 +288,7 @@ export function DataPanel() {
           </div>
 
           <details className="text-[11px]">
-            <summary className="cursor-pointer text-text-secondary">Paste text instead</summary>
+            <summary className="cursor-pointer text-text-secondary">{t('dp_paste')}</summary>
             <textarea
               id="import-text"
               rows={4}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../app/store';
 import { cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import { DataPanel } from '../components/DataPanel';
 import { SyncPanel } from '../components/SyncPanel';
 import { BackupPanel } from '../components/BackupPanel';
@@ -18,14 +19,14 @@ type SectionId =
   | 'account';
 
 const SECTIONS: { id: SectionId; label: string }[] = [
-  { id: 'general', label: 'General' },
-  { id: 'interface', label: 'Interface' },
-  { id: 'sessions', label: 'Sessions' },
-  { id: 'tabs', label: 'Tabs' },
-  { id: 'data', label: 'Import & export' },
-  { id: 'sync', label: 'Sync & backup' },
-  { id: 'history', label: 'Storage & history' },
-  { id: 'account', label: 'Account' },
+  { id: 'general', label: 'opt_section_general' },
+  { id: 'interface', label: 'opt_section_interface' },
+  { id: 'sessions', label: 'opt_section_sessions' },
+  { id: 'tabs', label: 'opt_section_tabs' },
+  { id: 'data', label: 'opt_section_data' },
+  { id: 'sync', label: 'opt_section_sync' },
+  { id: 'history', label: 'opt_section_history' },
+  { id: 'account', label: 'opt_section_account' },
 ];
 
 export function Options() {
@@ -64,14 +65,13 @@ export function Options() {
       <header className="flex items-start gap-3">
         <div className="flex-1">
           <p className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
-            tabbary {chrome.runtime.getManifest().version} · MIT
+            {t('opt_version_line', [chrome.runtime.getManifest().version])}
           </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-text-primary">
-            Settings
+            {t('opt_title')}
           </h1>
           <p className="mt-1 max-w-xl text-sm text-text-secondary">
-            Defaults favour privacy. Everything is stored in this browser profile, and the
-            source is open for anyone to audit.
+            {t('opt_intro')}
           </p>
         </div>
         <span
@@ -81,16 +81,16 @@ export function Options() {
           )}
           role="status"
         >
-          Saved
+          {t('opt_saved')}
         </span>
       </header>
 
       {/* FOSS strip */}
       <div className="grid gap-2 sm:grid-cols-3">
         {[
-          { title: 'Local backups', detail: 'Automatic, on this device' },
-          { title: 'Encrypted sync', detail: 'Optional, you hold the key' },
-          { title: 'No ads, no account', detail: 'Nothing to sign up for' },
+          { title: t('opt_strip_backups'), detail: t('opt_strip_backups_detail') },
+          { title: t('opt_strip_sync'), detail: t('opt_strip_sync_detail') },
+          { title: t('opt_strip_no_ads'), detail: t('opt_strip_no_ads_detail') },
         ].map((item) => (
           <div
             key={item.title}
@@ -103,7 +103,7 @@ export function Options() {
       </div>
 
       <div className="flex min-h-0 flex-1 gap-6">
-        <nav aria-label="Settings sections" className="w-44 shrink-0">
+        <nav aria-label={t('opt_sections_label')} className="w-44 shrink-0">
           <ul className="space-y-0.5">
             {SECTIONS.map((s) => (
               <li key={s.id}>
@@ -118,7 +118,7 @@ export function Options() {
                       : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
                   )}
                 >
-                  {s.label}
+                  {t(s.label)}
                 </button>
               </li>
             ))}
@@ -127,52 +127,50 @@ export function Options() {
 
         <div className="min-w-0 flex-1 pb-8">
           {section === 'general' && (
-            <Panel title="General" description="Startup and capture behaviour.">
+            <Panel title={t('opt_section_general')} description={t('opt_general_desc')}>
               <SelectRow
-                label="Restore sessions on startup"
-                hint="Whether tabbary reopens the windows it was tracking when Chrome starts."
+                label={t('opt_restore_label')}
+                hint={t('opt_restore_hint')}
                 value={settings.restoreOnStartup}
                 options={[
-                  ['yes', 'Yes, restore'],
-                  ['ask', 'Ask each time'],
-                  ['no', 'No'],
+                  ['yes', t('opt_restore_yes')],
+                  ['ask', t('opt_restore_ask')],
+                  ['no', t('opt_restore_no')],
                 ]}
                 onChange={(v) => save({ restoreOnStartup: v as Settings['restoreOnStartup'] })}
               />
               <div className="px-3 py-3">
-                <p className="text-[12px] font-medium text-text-primary">Session mode</p>
+                <p className="text-[12px] font-medium text-text-primary">{t('opt_session_mode')}</p>
                 <p className="mt-0.5 text-[11px] leading-relaxed text-text-muted">
-                  Tabbary currently tracks one session per browser window. A combined
-                  &ldquo;single window&rdquo; mode is not implemented, so the option is not shown
-                  rather than pretending to work.
+                  {t('opt_session_mode_body')}
                 </p>
               </div>
               <ToggleRow
-                label="Auto-save sessions"
-                hint="Persist tabs as they change. Turning this off freezes session state until you save manually."
+                label={t('opt_autosave_label')}
+                hint={t('opt_autosave_hint')}
                 checked={settings.autosave}
                 onChange={(v) => save({ autosave: v })}
               />
               <SelectRow
-                label="Preferred surface"
-                hint="Where the toolbar button opens tabbary."
+                label={t('opt_surface_label')}
+                hint={t('opt_surface_hint')}
                 value={settings.preferredSurface}
                 options={[
-                  ['sidepanel', 'Side panel'],
-                  ['tab', 'Full tab'],
-                  ['window', 'Separate window'],
-                  ['popup', 'Popup'],
+                  ['sidepanel', t('opt_surface_sidepanel')],
+                  ['tab', t('opt_surface_tab')],
+                  ['window', t('opt_surface_window')],
+                  ['popup', t('opt_surface_popup')],
                 ]}
                 onChange={(v) => save({ preferredSurface: v as Settings['preferredSurface'] })}
               />
               <SelectRow
-                label="Search scope"
-                hint="What the search box matches. Session names, tab titles and URLs, or both."
+                label={t('opt_search_label')}
+                hint={t('opt_search_hint')}
                 value={settings.searchScope}
                 options={[
-                  ['all', 'Session names and tabs'],
-                  ['sessions', 'Session names only'],
-                  ['tabs', 'Tab titles and URLs only'],
+                  ['all', t('opt_search_all')],
+                  ['sessions', t('opt_search_sessions')],
+                  ['tabs', t('opt_search_tabs')],
                 ]}
                 onChange={(v) => save({ searchScope: v as Settings['searchScope'] })}
               />
@@ -180,24 +178,24 @@ export function Options() {
           )}
 
           {section === 'interface' && (
-            <Panel title="Interface" description="How tabbary looks.">
+            <Panel title={t('opt_section_interface')} description={t('opt_interface_desc')}>
               <SelectRow
-                label="Theme"
+                label={t('opt_theme_label')}
                 value={settings.theme}
                 options={[
-                  ['system', 'Match system'],
-                  ['light', 'Light'],
-                  ['dark', 'Dark'],
+                  ['system', t('opt_theme_system')],
+                  ['light', t('opt_theme_light')],
+                  ['dark', t('opt_theme_dark')],
                 ]}
                 onChange={(v) => save({ theme: v as Settings['theme'] })}
               />
               <SelectRow
-                label="Density"
-                hint="Compact rows fit more sessions in the rail."
+                label={t('opt_density_label')}
+                hint={t('opt_density_hint')}
                 value={settings.density}
                 options={[
-                  ['comfortable', 'Comfortable'],
-                  ['compact', 'Compact'],
+                  ['comfortable', t('opt_density_comfortable')],
+                  ['compact', t('opt_density_compact')],
                 ]}
                 onChange={(v) => save({ density: v as Settings['density'] })}
               />
@@ -205,16 +203,16 @@ export function Options() {
           )}
 
           {section === 'sessions' && (
-            <Panel title="Sessions" description="What counts as a session, and when it closes.">
+            <Panel title={t('opt_section_sessions')} description={t('opt_sessions_desc')}>
               <ToggleRow
-                label="Open sessions suspended"
-                hint="Restore tabs without loading them until they are clicked."
+                label={t('opt_open_suspended_label')}
+                hint={t('opt_open_suspended_hint')}
                 checked={settings.openSuspended}
                 onChange={(v) => save({ openSuspended: v })}
               />
               <NumberRow
-                label="Revisions kept per session"
-                hint="Older revisions are pruned first. Higher values use more disk."
+                label={t('opt_revisions_label')}
+                hint={t('opt_revisions_hint')}
                 value={settings.versionHistoryLimit}
                 min={1}
                 max={100}
@@ -224,25 +222,25 @@ export function Options() {
           )}
 
           {section === 'tabs' && (
-            <Panel title="Tabs" description="Behaviour when restoring and opening tabs.">
+            <Panel title={t('opt_section_tabs')} description={t('opt_tabs_desc')}>
               <ToggleRow
-                label="Open restored sessions suspended"
-                hint="Uses Chrome's native discard rather than rewriting the URL."
+                label={t('opt_tabs_suspended_label')}
+                hint={t('opt_tabs_suspended_hint')}
                 checked={settings.openSuspended}
                 onChange={(v) => save({ openSuspended: v })}
               />
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-2.5 text-[11px] leading-relaxed text-text-secondary">
-                tabbary calls <code className="font-mono">chrome.tabs.discard</code> instead of
-                sending tabs through a third-party suspense service, so the address bar always
-                shows the real URL.
+                {t('opt_discard_note_before')}{' '}
+                <code className="font-mono">chrome.tabs.discard</code>{' '}
+                {t('opt_discard_note_after')}
               </div>
             </Panel>
           )}
 
           {section === 'data' && (
             <Panel
-              title="Import & export"
-              description="Move your sessions in and out. Everything is processed on this device."
+              title={t('opt_section_data')}
+              description={t('opt_data_desc')}
             >
               <div className="px-3 py-3">
                 <DataPanel />
@@ -252,8 +250,8 @@ export function Options() {
 
           {section === 'sync' && (
             <Panel
-              title="Sync & backup"
-              description="Optional, self-hosted, and encrypted on this device before anything is uploaded."
+              title={t('opt_section_sync')}
+              description={t('opt_sync_desc')}
             >
               <div className="px-3 py-3">
                 <SyncPanel />
@@ -262,44 +260,41 @@ export function Options() {
           )}
 
           {section === 'history' && (
-            <Panel title="Storage & history" description="What tabbary keeps on this device.">
+            <Panel title={t('opt_section_history')} description={t('opt_history_desc')}>
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-3 text-[11px] text-text-secondary">
-                <p className="font-medium text-text-primary">Everything is local</p>
+                <p className="font-medium text-text-primary">{t('opt_local_title')}</p>
                 <p className="mt-1 leading-relaxed">
-                  Sessions, groups, tags, and revisions live in IndexedDB inside this browser
-                  profile. Nothing is uploaded, and removing the extension removes the data.
+                  {t('opt_local_body')}
                 </p>
               </div>
               <div className="px-3 py-3">
-                <p className="mb-2 text-[12px] font-medium text-text-primary">Local backups</p>
+                <p className="mb-2 text-[12px] font-medium text-text-primary">{t('opt_backups_title')}</p>
                 <BackupPanel />
               </div>
               <button
                 type="button"
                 onClick={async () => {
-                  if (!confirm('Reset all settings to their defaults?')) return;
+                  if (!confirm(t('opt_reset_confirm'))) return;
                   await resetSettings();
                   setSavedAt(Date.now());
                 }}
                 className="rounded-md border border-surface-border px-3 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-hover"
               >
-                Reset settings to defaults
+                {t('opt_reset_button')}
               </button>
             </Panel>
           )}
 
           {section === 'account' && (
-            <Panel title="Account" description="There isn't one.">
+            <Panel title={t('opt_section_account')} description={t('opt_account_desc')}>
               <div className="rounded-md border border-surface-border bg-surface-elevated px-3 py-3 text-[11px] leading-relaxed text-text-secondary">
-                <p className="font-medium text-text-primary">No account required</p>
+                <p className="font-medium text-text-primary">{t('opt_account_title')}</p>
                 <p className="mt-1">
-                  tabbary has no sign-in, no user profile, and no server holding your data. If
-                  you later run the optional sync server, it stores ciphertext only and you
-                  hold the key.
+                  {t('opt_account_body')}
                 </p>
               </div>
               <p className="text-[11px] text-text-muted">
-                Licence: MIT · Source:{' '}
+                {t('opt_licence_before')}{' '}
                 <a
                   className="text-accent-600 underline underline-offset-2"
                   href="https://github.com/abominox/Tabbary"

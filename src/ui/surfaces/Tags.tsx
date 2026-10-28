@@ -5,6 +5,7 @@ import { sendMessage } from '@/messaging/bus';
 import { SessionList } from '../components/SessionList';
 import { SearchBar } from '../components/SearchBar';
 import { cn, formatRelativeTime } from '@/lib';
+import { t, tn } from '@/lib/i18n';
 import { TabMarkStrip } from '../components/TabMarkStrip';
 
 export type TagCount = { name: string; count: number };
@@ -94,7 +95,7 @@ export function Tags() {
           <h1 className="text-base font-semibold tracking-tight text-text-primary">Tags</h1>
         </div>
         <div className="ml-auto w-56">
-          <SearchBar value={search} onChange={setSearch} placeholder="Filter tags…" />
+          <SearchBar value={search} onChange={setSearch} placeholder={t('tg_filter_placeholder')} />
         </div>
       </header>
 
@@ -192,7 +193,7 @@ export function Tags() {
           {!selected ? (
             <div className="grid flex-1 place-items-center p-8 text-center">
               <div className="max-w-xs">
-                <p className="text-sm font-medium text-text-primary">Select a tag</p>
+                <p className="text-sm font-medium text-text-primary">{t('tg_select')}</p>
                 <p className="mt-1 text-xs text-text-muted">
                   See every session carrying it, then rename or remove it in bulk.
                 </p>
@@ -223,7 +224,7 @@ export function Tags() {
 
               <div className="min-h-0 flex-1 overflow-y-auto p-2">
                 {selectedSessions.length === 0 && (
-                  <p className="p-3 text-[11px] text-text-muted">No sessions carry this tag.</p>
+                  <p className="p-3 text-[11px] text-text-muted">{t('tg_empty')}</p>
                 )}
                 {selectedSessions.map((s) => {
                   const sTabs = tabsBySession[s.id] ?? [];

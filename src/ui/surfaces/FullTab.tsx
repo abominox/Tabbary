@@ -11,6 +11,7 @@ import { SearchBar } from '../components/SearchBar';
 import { TagRail } from '../components/TagRail';
 import { sendMessage } from '@/messaging/bus';
 import { cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import type { Session } from '@/models';
 
 type Pane = 'library' | 'detail';
@@ -214,7 +215,7 @@ export function FullTab() {
             value={search}
             onChange={setSearch}
             onClear={clearSearch}
-            placeholder="Search sessions and tabs…"
+            placeholder={t('popup_search_placeholder')}
           />
         </div>
 
@@ -330,7 +331,7 @@ export function FullTab() {
           ) : (
             <div className="grid flex-1 place-items-center p-8 text-center">
               <div className="max-w-xs">
-                <p className="text-sm font-medium text-text-primary">No session selected</p>
+                <p className="text-sm font-medium text-text-primary">{t('ft_no_selection')}</p>
                 <p className="mt-1 text-xs text-text-muted">
                   Pick a session on the left to see its groups, tabs, and revision history.
                 </p>

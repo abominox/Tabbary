@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Session, SessionVersion } from '@/models';
 import { sendMessage } from '@/messaging/bus';
 import { formatRelativeTime, cn } from '@/lib';
+import { t } from '@/lib/i18n';
 import { TabMarkStrip } from './TabMarkStrip';
 
 interface RevisionDrawerProps {
@@ -73,7 +74,7 @@ export function RevisionDrawer({ session, onClose, onChanged }: RevisionDrawerPr
       <aside
         role="dialog"
         aria-modal="true"
-        aria-label="Session history"
+        aria-label={t('rev_title')}
         className="fixed right-0 top-0 z-50 flex h-full w-full max-w-2xl flex-col border-l border-surface-border bg-surface-base shadow-2xl"
       >
         <header className="flex shrink-0 items-center gap-3 border-b border-surface-border px-4 py-3">
@@ -98,7 +99,7 @@ export function RevisionDrawer({ session, onClose, onChanged }: RevisionDrawerPr
           {/* Revision list */}
           <div className="w-56 shrink-0 overflow-y-auto border-r border-surface-border bg-surface-elevated p-1.5">
             {versions === null && (
-              <p className="px-2 py-2 text-[11px] text-text-muted">Loading…</p>
+              <p className="px-2 py-2 text-[11px] text-text-muted">{t('common_loading')}</p>
             )}
             {versions?.length === 0 && (
               <p className="px-2 py-2 text-[11px] text-text-muted">
@@ -148,7 +149,7 @@ export function RevisionDrawer({ session, onClose, onChanged }: RevisionDrawerPr
           {/* Preview */}
           <div className="min-w-0 flex-1 overflow-y-auto p-4">
             {!selected && (
-              <p className="text-xs text-text-muted">Select a revision to preview it.</p>
+              <p className="text-xs text-text-muted">{t('rev_select')}</p>
             )}
 
             {selected && (
@@ -206,7 +207,7 @@ export function RevisionDrawer({ session, onClose, onChanged }: RevisionDrawerPr
                       Restore <strong>{selected.snapshot.tabs.length} tabs</strong> from this
                       revision? The current state is snapshotted first, so you can undo this.
                       {session.state === 'active' && (
-                        <> The live window will be updated to match.</>
+                        <> {t('rev_live_note')}</>
                       )}
                     </p>
                     <div className="mt-2 flex gap-1.5">
@@ -234,7 +235,7 @@ export function RevisionDrawer({ session, onClose, onChanged }: RevisionDrawerPr
                 </h4>
                 <div className="mt-1">
                   {selected.snapshot.tabs.length === 0 && (
-                    <p className="text-[11px] text-text-muted">No tabs recorded.</p>
+                    <p className="text-[11px] text-text-muted">{t('rev_no_tabs')}</p>
                   )}
                   {selected.snapshot.tabs.map((t) => (
                     <div
