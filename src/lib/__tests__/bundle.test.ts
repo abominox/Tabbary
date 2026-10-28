@@ -4,6 +4,8 @@ import {
   parseBundle,
   parseUrlList,
   parseOneTab,
+  parseLinkList,
+  parseBookmarksHtml,
   detectAndParseImport,
   isPortableUrl,
   BUNDLE_FORMAT,
@@ -330,5 +332,142 @@ describe('legacy export tags', () => {
 
   it('rejects an unrelated format tag', () => {
     expect(parseBundle({ format: 'something-else', version: 1, sessions: [] }).ok).toBe(false);
+  });
+});
+
+describe('parseLinkList', () => {
+  it('reads a bulleted list', () => {
+    const tabs = parseLinkList('- https://a.test/1\n* https://a.test/2\n+ https://a.test/3');
+    expect(tabs.map((t) => t.url)).toEqual([
+      'https://a.test/1',
+      'https://a.test/2',
+      'https://a.test/3',
+    ]);
+  });
+
+  it('reads a numbered list', () => {
+    const tabs = parseLinkList('1. https://a.test/1\n2) https://a.test/2');
+    expect(tabs.map((t) => t.url)).toHaveLength(2);
+  });
+
+  it('takes the title from a markdown link', () => {
+    const tabs = parseLinkList('- [Spec A](https://a.test/1)\n- [Spec B](https://a.test/2)');
+    expect(tabs[0]).toMatchObject({ url: 'https://a.test/1', title: 'Spec A' });
+    expect(tabs[1]).toMatchObject({ url: 'https://a.test/2', title: 'Spec B' });
+  });
+
+  it('takes a title after a separator', () => {
+    expect(parseLinkList('https://a.test | Some title')[0]!.title).toBe('Some title');
+    expect(parseLinkList('https://a.test\tTab title')[0]!.title).toBe('Tab title');
+  });
+
+  it('drops trailing punctuation and duplicates', () => {
+    const tabs = parseLinkList('https://a.test/1.\nhttps://a.test/1');
+    expect(tabs).toHaveLength(1);
+  });
+
+  it('ignores non-portable URLs', () => {
+    const tabs = parseLinkList('chrome://settings\nabout:blank\nhttps://ok.test');
+    expect(tabs.map((t) => t.url)).toEqual(['https://ok.test']);
+  });
+
+  it('returns nothing for prose with no links', () => {
+    expect(parseLinkList('nothing to see here')).toEqual([]);
+  });
+});
+
+describe('parseBookmarksHtml', () => {
+  const html = `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<TITLE>Bookmarks</TITLE>
+<H1>Bookmarks</H1>
+<DL><p>
+    <DT><A HREF="https://root.test/loose" ADD_DATE="1700000000">Loose link</A>
+    <DT><H3 ADD_DATE="1700000000">Research</H3>
+    <DL><p>
+        <DT><A HREF="https://a.test/1" ADD_DATE="1700000000">Title A</A>
+        <DT><A HREF="https://a.test/2">Title &amp; more</A>
+        <DT><H3>Papers</H3>
+        <DL><p>
+            <DT><A HREF="https://a.test/paper">A paper</A>
+        </DL><p>
+    </DL><p>
+    <DT><H3>Empty folder</H3>
+    <DL><p>
+    </DL><p>
+</DL><p>`;
+
+  it('turns each folder into a session', () => {
+    const sessions = parseBookmarksHtml(html);
+    const names = sessions.map((s) => s.name);
+
+    expect(names).toContain('Bookmarks');          // loose root bookmarks
+    expect(names).toContain('Research');
+    expect(names).toContain('Research / Papers');  // nested folder keeps its path
+    expect(names).not.toContain('Empty folder');   // nothing to import
+  });
+
+  it('keeps titles and decodes entities', () => {
+    const research = parseBookmarksHtml(html).find((s) => s.name === 'Research')!;
+    expect(research.tabs.map((t) => t.title)).toEqual(['Title A', 'Title & more']);
+  });
+
+  it('keeps a nested folder separate from its parent', () => {
+    const sessions = parseBookmarksHtml(html);
+    const papers = sessions.find((s) => s.name === 'Research / Papers')!;
+    expect(papers.tabs.map((t) => t.url)).toEqual(['https://a.test/paper']);
+  });
+
+  it('numbers tabs in document order within a session', () => {
+    const research = parseBookmarksHtml(html).find((s) => s.name === 'Research')!;
+    expect(research.tabs.map((t) => t.position)).toEqual([0, 1]);
+  });
+
+  it('skips browser-internal URLs', () => {
+    const sessions = parseBookmarksHtml(
+      '<DL><DT><H3>X</H3><DL><DT><A HREF="chrome://settings">S</A>' +
+        '<DT><A HREF="https://ok.test">OK</A></DL></DL>',
+    );
+    expect(sessions[0]!.tabs.map((t) => t.url)).toEqual(['https://ok.test']);
+  });
+
+  it('returns nothing when the file has no links', () => {
+    expect(parseBookmarksHtml('<html><body>no bookmarks</body></html>')).toEqual([]);
+  });
+});
+
+describe('detectAndParseImport', () => {
+  it('recognises a bookmarks HTML file', () => {
+    const html = '<DL><DT><H3>Work</H3><DL>' +
+      '<DT><A HREF="https://w.test/1">W1</A></DL></DL>';
+    const result = detectAndParseImport(html);
+    expect(result.source).toBe('bookmarks');
+    expect(result.sessions[0]!.tabs.map((t) => t.url)).toEqual(['https://w.test/1']);
+  });
+
+  it('reads a bulleted URL list instead of reporting nothing', () => {
+    const result = detectAndParseImport('- https://a.test/1\n- https://a.test/2');
+    expect(result.source).toBe('urls');
+    expect(result.sessions[0]!.tabs).toHaveLength(2);
+  });
+
+  it('explains foreign JSON instead of blaming the file', () => {
+    // A Session Buddy style file: JSON, has sessions, but not our format.
+    const foreign = JSON.stringify({
+      version: '3.2.0',
+      sessions: [{ name: 'Work', tabs: [{ url: 'https://a.test' }] }],
+    });
+    const result = detectAndParseImport(foreign);
+
+    expect(result.source).toBe('none');
+    expect(result.warnings[0]).toContain('not a tabbary export');
+    expect(result.warnings[0]).not.toContain('expected format');
+    expect(result.warnings.join(' ')).toContain('bookmarks HTML');
+  });
+
+  it('still reports a corrupted JSON file as such', () => {
+    const result = detectAndParseImport('{ "format": "tabbary-export", ');
+    expect(result.source).toBe('none');
+    expect(result.warnings[0]).toContain('could not be parsed');
   });
 });

@@ -239,7 +239,8 @@ export function DataPanel() {
         <header className="border-b border-surface-border px-3 py-2.5">
           <h3 className="text-[12px] font-semibold text-text-primary">Import</h3>
           <p className="mt-0.5 text-[11px] text-text-muted">
-            tabbary JSON or encrypted export, a OneTab export, or a plain list of URLs.
+            tabbary JSON or encrypted export, a OneTab export, a bookmarks HTML file
+            (Chrome, Edge, Firefox or Safari), or a plain list of URLs.
           </p>
         </header>
 
@@ -276,7 +277,7 @@ export function DataPanel() {
             <input
               ref={fileRef}
               type="file"
-              accept=".json,.tabbary,.txt,application/json,text/plain"
+              accept=".json,.tabbary,.txt,.html,.htm,application/json,text/plain,text/html"
               className="hidden"
               onChange={(e) => void onFiles(e.target.files)}
             />

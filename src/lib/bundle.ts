@@ -257,23 +257,64 @@ export function parseBundle(input: unknown): ParseResult {
 
 // ── Foreign importers ─────────────────────────────────────
 
-/** Parse a newline-separated list of URLs (one per line, blanks ignored). */
-export function parseUrlList(text: string): string[] {
-  const urls: string[] = [];
+/** Strip a leading list marker: "- ", "* ", "1. ", "1) ", "• ". */
+function stripListMarker(line: string): string {
+  return line.replace(/^\s*(?:\d+[.)]|[-*+\u2022])\s+/, '').trim();
+}
+
+/**
+ * Pull tabs out of loose text.
+ *
+ * Handles the shapes people actually paste into an import box:
+ *
+ *   https://a.example
+ *   - https://a.example
+ *   1. https://a.example
+ *   [Title](https://a.example)
+ *   https://a.example<TAB>Title
+ *   https://a.example | Title
+ *
+ * A leading bullet used to defeat the old parser: it took the first
+ * whitespace-separated token as the URL, which is "-" for every line of a
+ * bulleted list, so nothing imported at all.
+ */
+export function parseLinkList(text: string): BundleTab[] {
+  const tabs: BundleTab[] = [];
   const seen = new Set<string>();
 
-  for (const line of text.split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed) continue;
-    // Accept bare URLs copied from a title line by taking the first token.
-    const candidate = trimmed.split(/\s+/)[0]!;
-    if (!isPortableUrl(candidate)) continue;
-    if (seen.has(candidate)) continue;
-    seen.add(candidate);
-    urls.push(candidate);
+  for (const raw of text.split(/\r?\n/)) {
+    const line = stripListMarker(raw);
+    if (!line) continue;
+
+    let url = '';
+    let title = '';
+
+    const md = line.match(/^\[([^\]]*)\]\(\s*<?([^)\s>]+)>?\s*\)/);
+    if (md) {
+      title = md[1] ?? '';
+      url = md[2] ?? '';
+    } else {
+      const found = line.match(/(?:https?|file):\/\/[^\s<>"'`)\]]+/i);
+      if (!found) continue;
+      url = found[0].replace(/[.,;:]+$/, '');
+      // "url<TAB>title", "url | title", "url - title"
+      const rest = line.slice((found.index ?? 0) + found[0].length);
+      const sep = rest.match(/^\s*(?:\t|\||-|\u2014)\s*(.+)$/);
+      title = sep ? (sep[1] ?? '').trim() : '';
+    }
+
+    if (!isPortableUrl(url)) continue;
+    if (seen.has(url)) continue;
+    seen.add(url);
+    tabs.push({ url, title: title.trim(), pinned: false, position: tabs.length, groupId: null });
   }
 
-  return urls;
+  return tabs;
+}
+
+/** Parse a newline-separated list of URLs (one per line, blanks ignored). */
+export function parseUrlList(text: string): string[] {
+  return parseLinkList(text).map((t) => t.url);
 }
 
 /**
@@ -358,35 +399,160 @@ function wrapSession(name: string, tabs: BundleTab[]): BundleSession {
   };
 }
 
+// ── Bookmarks HTML (Netscape format) ──────────────────────
+
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+};
+
+function decodeEntities(value: string): string {
+  return value
+    .replace(/&#x([0-9a-f]+);/gi, (m, hex: string) => {
+      const code = parseInt(hex, 16);
+      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
+    })
+    .replace(/&#(\d+);/g, (m, dec: string) => {
+      const code = Number(dec);
+      return Number.isFinite(code) ? String.fromCodePoint(code) : m;
+    })
+    .replace(/&([a-z]+);/gi, (m, name: string) => NAMED_ENTITIES[name.toLowerCase()] ?? m);
+}
+
+/**
+ * Parse a Netscape bookmarks file.
+ *
+ * Chrome, Edge, Firefox and Safari all export this format, so it is the one
+ * bookmark file you can get out of any browser without a third-party tool.
+ * Folders become sessions and a folder's full path is its session name, which
+ * keeps two folders called "Docs" in different places distinguishable.
+ *
+ * Parsed with a regex scan rather than DOMParser so it also works off the main
+ * thread and in Node, where DOMParser does not exist.
+ */
+export function parseBookmarksHtml(text: string): BundleSession[] {
+  if (!/<a\s[^>]*href\s*=/i.test(text)) return [];
+
+  const token =
+    /<h3[^>]*>([\s\S]*?)<\/h3>|<a\s[^>]*href\s*=\s*["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>|<dl\b[^>]*>|<\/dl>/gi;
+
+  // Each <dl> is one nesting level; the value is the folder that owns it.
+  const openFolders: (string | null)[] = [];
+  let pendingFolder: string | null = null;
+  const byFolder = new Map<string, BundleTab[]>();
+
+  const stripTags = (s: string) => s.replace(/<[^>]*>/g, '');
+
+  let match: RegExpExecArray | null;
+  while ((match = token.exec(text)) !== null) {
+    const [raw, heading, href, anchorText] = match;
+
+    if (heading !== undefined) {
+      pendingFolder = decodeEntities(stripTags(heading)).trim() || null;
+      continue;
+    }
+
+    if (href !== undefined) {
+      const path = openFolders.filter((f): f is string => Boolean(f)).join(' / ');
+      const url = decodeEntities(href).trim();
+      if (!isPortableUrl(url)) continue;
+
+      const list = byFolder.get(path) ?? [];
+      if (list.some((t) => t.url === url)) continue;
+      list.push({
+        url,
+        title: decodeEntities(stripTags(anchorText ?? '')).trim(),
+        pinned: false,
+        position: list.length,
+        groupId: null,
+      });
+      byFolder.set(path, list);
+      continue;
+    }
+
+    if (/^<dl/i.test(raw)) {
+      openFolders.push(pendingFolder);
+      pendingFolder = null;
+    } else {
+      openFolders.pop();
+    }
+  }
+
+  const sessions: BundleSession[] = [];
+  for (const [path, tabs] of byFolder) {
+    if (tabs.length === 0) continue;
+    sessions.push(wrapSession(path || 'Bookmarks', tabs));
+  }
+  return sessions;
+}
+
 /**
  * Turn arbitrary text into sessions, trying the most specific format first.
  * Returns the detected source so the UI can tell the user what happened.
  */
 export function detectAndParseImport(text: string): {
-  source: 'tabbary' | 'onetab' | 'urls' | 'none';
+  source: 'tabbary' | 'onetab' | 'bookmarks' | 'urls' | 'none';
   sessions: BundleSession[];
   warnings: string[];
 } {
   const trimmed = text.trim();
   if (!trimmed) return { source: 'none', sessions: [], warnings: [] };
 
-  // tabbary JSON
+  // ── tabbary JSON ──
   if (trimmed.startsWith('{')) {
+    let parsed: unknown;
     try {
-      const parsed: unknown = JSON.parse(trimmed);
-      const result = parseBundle(parsed);
-      if (result.ok && result.bundle) {
-        return { source: 'tabbary', sessions: result.bundle.sessions, warnings: result.warnings };
-      }
-      if (result.error) {
-        return { source: 'none', sessions: [], warnings: [result.error] };
-      }
+      parsed = JSON.parse(trimmed);
     } catch {
-      // not JSON
+      return {
+        source: 'none',
+        sessions: [],
+        warnings: ['That file starts like JSON but could not be parsed.'],
+      };
     }
+
+    const result = parseBundle(parsed);
+    if (result.ok && result.bundle) {
+      return { source: 'tabbary', sessions: result.bundle.sessions, warnings: result.warnings };
+    }
+
+    // A JSON file from another manager used to report "Not a tabbary export
+    // (expected format ...)", which blames the user's file for a format we do
+    // not read. Say what it looks like and what is actually supported.
+    const looksForeign =
+      typeof parsed === 'object' && parsed !== null && !('format' in (parsed as object));
+
+    return {
+      source: 'none',
+      sessions: [],
+      warnings: looksForeign
+        ? [
+            'That is JSON, but not a tabbary export. Other managers store their own schema.',
+            'Supported: tabbary JSON or encrypted export, OneTab, bookmarks HTML, plain URL lists.',
+          ]
+        : [result.error ?? 'That JSON is not a tabbary export.'],
+    };
   }
 
-  // OneTab JSON/plain
+  // ── Bookmarks HTML (Netscape format) ──
+  // Chrome, Edge, Firefox and Safari all export this; it needs no guessing.
+  if (/<a\s[^>]*href\s*=/i.test(trimmed) && /<dl\b|<h3\b|netscape-bookmark/i.test(trimmed)) {
+    const sessions = parseBookmarksHtml(trimmed);
+    if (sessions.length > 0) {
+      return { source: 'bookmarks', sessions, warnings: [] };
+    }
+    return {
+      source: 'none',
+      sessions: [],
+      warnings: ['That looks like bookmarks HTML, but no importable links were found.'],
+    };
+  }
+
+  // ── OneTab ──
   if (trimmed.startsWith('[') || /\n\s*\n/.test(trimmed) || /\t/.test(trimmed)) {
     const sessions = parseOneTab(trimmed);
     if (sessions.length > 0) {
@@ -394,32 +560,13 @@ export function detectAndParseImport(text: string): {
     }
   }
 
-  // Plain URL list
-  const urls = parseUrlList(trimmed);
-  if (urls.length > 0) {
-    const ts = Date.now();
+  // ── Loose links ──
+  const links = parseLinkList(trimmed);
+  if (links.length > 0) {
     return {
       source: 'urls',
       warnings: [],
-      sessions: [
-        {
-          id: `import-${Math.random().toString(36).slice(2, 10)}`,
-          name: `Imported links (${urls.length})`,
-          state: 'closed',
-          tags: ['imported'],
-          createdAt: ts,
-          updatedAt: ts,
-          closedAt: ts,
-          groups: [],
-          tabs: urls.map((url, i) => ({
-            url,
-            title: '',
-            pinned: false,
-            position: i,
-            groupId: null,
-          })),
-        },
-      ],
+      sessions: [wrapSession(`Imported links (${links.length})`, links)],
     };
   }
 

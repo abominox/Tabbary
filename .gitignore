@@ -17,3 +17,9 @@ ms-playwright/
 server/data/
 data/
 .env
+
+# stress test output
+stress-results.json
+
+# release artifacts built locally
+/tabbary-*.zip

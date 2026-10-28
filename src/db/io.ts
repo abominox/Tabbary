@@ -147,7 +147,7 @@ async function importOne(bs: BundleSession): Promise<void> {
 }
 
 export interface ImportTextResult extends ImportResult {
-  source: 'tabbary' | 'onetab' | 'urls' | 'none';
+  source: 'tabbary' | 'onetab' | 'bookmarks' | 'urls' | 'none';
   error?: string;
 }
 
