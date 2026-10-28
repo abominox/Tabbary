@@ -26,7 +26,7 @@ await page.setContent(`<html><body style="margin:0">
   <div style="display:flex;align-items:center;gap:18px">
     ${icon(52)}
     <span style="font-family:Georgia,serif;font-size:27px;color:${INK};letter-spacing:-.01em">tabbary</span>
-    <span style="font-family:monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6A7180">v0.8 · MIT</span>
+    <span style="font-family:monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#6A7180">v0.9 · MIT</span>
   </div>
   <div style="margin-top:auto">
     <div style="font-family:Georgia,serif;font-size:86px;line-height:.98;letter-spacing:-.035em;color:${INK}">
